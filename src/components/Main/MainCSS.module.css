@@ -1,8 +1,70 @@
 .background {
   display: flex;
   position: relative;
-  background: blue; /* DEV */
+  background: lightblue; /* DEV */
   /* z-index: 10000; */
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
+  justify-content: center;
+    align-items: center;
 }
+
+.rowsAndColumns {
+  display: flex;
+  background: gray;
+  width: 150px;
+  height: 150px;
+  flex-wrap: wrap;
+}
+
+.crossCircle {
+  background: lightcoral; /* DEV */
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 600px;
+  height: 60px;
+}
+
+.cross {
+  background: red; /* DEV */
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 30px;
+  height: 30px;
+}
+
+.circle {
+  background: blue; /* DEV */
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 30px;
+  height: 30px;
+}
+
+
+
+.eachRow {
+  background: gray;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 600px;
+  height: 60px;
+  
+}
+
+.eachBox {
+  display: flex;
+  position: relative;
+  background: red; /* DEV */
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 0 0 2px blue inset;
+  justify-content: center;
+  align-items: center;
+}
+
