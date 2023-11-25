@@ -1,0 +1,8 @@
+.background {
+  display: flex;
+  position: relative;
+  background: blue; /* DEV */
+  /* z-index: 10000; */
+  width: 100vw;
+  height: 100vh;
+}

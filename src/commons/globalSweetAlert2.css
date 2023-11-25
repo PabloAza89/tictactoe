@@ -5,19 +5,3 @@
 .swal2-container {
   z-index: 10000 !important;
 }
-
-/* BREAKPOINTS */
-/* MIN <    MED    > LAR */
-/* 424 < 425 ~ 825 > 826 */
-
-@media screen and (orientation: portrait) and (max-width: 424px) { /* LESS THAN 424px */
-  .swal2-popup {
-    font-size: 12px !important;
-  }
-}
-
-@media screen and (orientation: landscape) and (max-height: 424px) { /* LESS THAN 424px */
-  .swal2-popup {
-    font-size: 12px !important;
-  }
-}
