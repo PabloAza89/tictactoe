@@ -1,0 +1,40 @@
+.background {
+  display: flex;
+  position: relative;
+  flex-direction : column;
+  width: 100%;
+}
+
+.wallpaperBody {
+  display: flex;
+  position: fixed;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+}
+
+.wallpaperNav {
+  display: flex;
+  position: fixed;
+  z-index: 2 !important;
+  width: 100% !important;
+  height: 100% !important;
+  clip-path: polygon(0% 0, 100% 0%, 100% 100px, 0 100px); /* CROP THE BAVBAR IMAGE */
+}
+
+/* ONLY SMAPORT AND SMALAND */
+@media screen
+and (orientation: portrait)
+and (max-device-width: 424px),
+screen
+and (orientation: landscape)
+and (max-device-height: 424px) {
+  .wallpaperBody {
+    width: 100vw;
+    height: 100vh
+  }
+  .wallpaperNav {
+    width: 100vw !important;
+    height: 100vh !important
+  }
+}

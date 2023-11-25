@@ -1,0 +1,21 @@
+html {
+  height: 100%;
+  width: 100%;
+  background: #eeeeee /* DEFAULT BACKGROUND COLOR */
+}
+
+body {
+  display: flex;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  overflow-x: hidden;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
