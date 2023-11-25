@@ -98,6 +98,30 @@ const Main = () => {
   
 }
 
+  interface highlighterI {
+    array: any[], 
+    letter: string
+  }
+
+  const highlighter = async ({ array, letter }: highlighterI) => {
+    gameEnd.current = true
+    winner.current = `${letter}`
+    setWinnerState(`${letter}`)
+
+    setTimeout(() => {
+      $(`#${array[0].id}`)
+        .css("background", "yellow")
+    }, 300)
+    setTimeout(() => {
+      $(`#${array[1].id}`)
+        .css("background", "yellow")
+    }, 600)
+    setTimeout(() => {
+      $(`#${array[2].id}`)
+        .css("background", "yellow")
+    }, 900)
+  }
+
   const checkWinner = async () => {
     let arr = [...rowsAndColumns]
     console.log("123 UPDATE")
@@ -106,119 +130,37 @@ const Main = () => {
     //let diagonalTargets = [0,2]
     rowTargets.forEach(e => {
       if (arr.slice(e,e+3).every(e => e.value === 'X')) {
-        console.log("123 X WINS !")
-        //setGameEnd(true)
-        gameEnd.current = true
-        //winner.current = "X"
-        winner.current = "X"
-        setWinnerState("X")
-
-        arr.slice(e,e+3).forEach(e => {
-          $(`#${e.id}`)
-            .css("background", "yellow")
-        })
-        
-  
+        highlighter({ array: arr.slice(e,e+3), letter: "X" })
       }
       if (arr.slice(e,e+3).every(e => e.value === 'O')) {
-        console.log("123 O WINS !")
-        //setGameEnd(true)
-        gameEnd.current = true
-        winner.current = "O"
-        setWinnerState("O")
-
-        arr.slice(e,e+3).forEach(e => {
-          $(`#${e.id}`)
-            .css("background", "yellow")
-        })
-
+        highlighter({ array: arr.slice(e,e+3), letter: "O" })
       }
     })
 
     columnsTargets.forEach((e, index) => {
       if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'X')) {
-        console.log("123 X WINS !")
-        //setGameEnd(true)
-        gameEnd.current = true
-        winner.current = "X"
-        setWinnerState("X");
-
-        [arr[e],arr[e+3],arr[e+6]].forEach(e => {
-          $(`#${e.id}`)
-            .css("background", "yellow")
-        })
-  
+        
+        highlighter({ array: [arr[e],arr[e+3],arr[e+6]], letter: "X" })
       }
       if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'O')) {
-        console.log("123 O WINS !")
-        //setGameEnd(true)
-        gameEnd.current = true
-        winner.current = "O"
-        setWinnerState("O");
-
-        [arr[e],arr[e+3],arr[e+6]].forEach(e => {
-          $(`#${e.id}`)
-            .css("background", "yellow")
-        })
-
-
+        highlighter({ array: [arr[e],arr[e+3],arr[e+6]], letter: "O" })   
       }
     })
 
     
       if ([arr[0],arr[4],arr[8]].every(e => e.value === 'X')) {
-        console.log("123 X WINS !")
-        //setGameEnd(true)
-        gameEnd.current = true
-        winner.current = "X"
-        setWinnerState("X");
-
-        [arr[0],arr[4],arr[8]].forEach(e => {
-          $(`#${e.id}`)
-            .css("background", "yellow")
-        })
-        
-        
-  
+        highlighter({ array: [arr[0],arr[4],arr[8]], letter: "X" })
       }
       if ([arr[0],arr[4],arr[8]].every(e => e.value === 'O')) {
-        console.log("123 O WINS !")
-        //setGameEnd(true)
-        gameEnd.current = true
-        winner.current = "O"
-        setWinnerState("O");
-
-        [arr[0],arr[4],arr[8]].forEach(e => {
-          $(`#${e.id}`)
-            .css("background", "yellow")
-        })
-
+        highlighter({ array: [arr[0],arr[4],arr[8]], letter: "O" })
       }
 
       if ([arr[2],arr[4],arr[6]].every(e => e.value === 'X')) {
-        console.log("123 X WINS !")
-        //setGameEnd(true)
-        gameEnd.current = true
-        winner.current = "X"
-        setWinnerState("X");
-
-        [arr[2],arr[4],arr[6]].forEach(e => {
-          $(`#${e.id}`)
-            .css("background", "yellow")
-        })
-  
+        highlighter({ array: [arr[2],arr[4],arr[6]], letter: "X" })
       }
       if ([arr[2],arr[4],arr[6]].every(e => e.value === 'O')) {
-        console.log("123 O WINS !")
-        //setGameEnd(true)
-        gameEnd.current = true
-        winner.current = "O"
-        setWinnerState("O");
-
-        [arr[2],arr[4],arr[6]].forEach(e => {
-          $(`#${e.id}`)
-            .css("background", "yellow")
-        })
+       
+        highlighter({ array: [arr[2],arr[4],arr[6]], letter: "O" })
 
       }
 
@@ -227,16 +169,17 @@ const Main = () => {
           console.log("123 GAME END")
           setTimeout(() => {
             Swal.fire({
-              title: winner.current !== "" ? `GAME END\n${winner.current} WINS !` : `GAME END\n TIED GAME`,
+              title: winner.current !== "" ? `${winner.current} WINS !` : `TIED GAME`,
               icon: 'success',
               showConfirmButton: false,
               showDenyButton: false,
               showCancelButton: false,
-              timer: 1500,
+              timer: 1000,
             })
-          }, 500)
+          }, 1200)
         }
   }
+  
 
   return (
     <div className={css.background}>
