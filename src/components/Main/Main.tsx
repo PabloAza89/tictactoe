@@ -4,24 +4,21 @@ import { useNavigate } from "react-router-dom";
 import { Button } from '@mui/material/';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
+import $ from 'jquery';
 
 const Main = () => {
 
-  const [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>(
-    [
-      {checked: false, value: ''}, {checked: false, value: ''}, {checked: false, value: ''},
-      {checked: false, value: ''}, {checked: false, value: ''}, {checked: false, value: ''},
-      {checked: false, value: ''}, {checked: false, value: ''}, {checked: false, value: ''}
-    ]
-  )
+  const [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
+
+  Array.from({length: 9}, (e,i) => ({ value: ''}))
 
   const [ clickBlocked, setClickBlocked ] = useState(false)
   //const [ gameEnd, setGameEnd ] = useState(false)
   let gameEnd = useRef(false)
   let winner = useRef("")
-  //const [ winner, setWinner ] = useState("")
+  const [ winnerState, setWinnerState ] = useState("")
 
-  let IAvalue = useRef(Math.floor(Math.random() * 9))
+  let IAvalue = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
 
   const handleClick = async ({ target }: any) => {
@@ -82,12 +79,12 @@ const Main = () => {
 
 
   userAction()
-  .then(() => checkWinner())
+  .then(() => { if (!clickBlocked && !gameEnd.current) { checkWinner() }})
   .then(() =>
     {  
       if (!clickBlocked && !gameEnd.current) {
-      
-        setTimeout(() => {  IAResponse()  }, 700)
+        let randomTimes = [ 400, 500, 700, 800, 900 ]
+        setTimeout(() => {  IAResponse()  }, randomTimes[Math.floor(Math.random() * 4)])
 
         
       }   
@@ -96,6 +93,9 @@ const Main = () => {
       
     }
   )//.then(() => checkWinner())
+
+
+  
 }
 
   const checkWinner = async () => {
@@ -111,6 +111,13 @@ const Main = () => {
         gameEnd.current = true
         //winner.current = "X"
         winner.current = "X"
+        setWinnerState("X")
+
+        arr.slice(e,e+3).forEach(e => {
+          $(`#${e.id}`)
+            .css("background", "yellow")
+        })
+        
   
       }
       if (arr.slice(e,e+3).every(e => e.value === 'O')) {
@@ -118,6 +125,13 @@ const Main = () => {
         //setGameEnd(true)
         gameEnd.current = true
         winner.current = "O"
+        setWinnerState("O")
+
+        arr.slice(e,e+3).forEach(e => {
+          $(`#${e.id}`)
+            .css("background", "yellow")
+        })
+
       }
     })
 
@@ -127,6 +141,12 @@ const Main = () => {
         //setGameEnd(true)
         gameEnd.current = true
         winner.current = "X"
+        setWinnerState("X");
+
+        [arr[e],arr[e+3],arr[e+6]].forEach(e => {
+          $(`#${e.id}`)
+            .css("background", "yellow")
+        })
   
       }
       if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'O')) {
@@ -134,6 +154,14 @@ const Main = () => {
         //setGameEnd(true)
         gameEnd.current = true
         winner.current = "O"
+        setWinnerState("O");
+
+        [arr[e],arr[e+3],arr[e+6]].forEach(e => {
+          $(`#${e.id}`)
+            .css("background", "yellow")
+        })
+
+
       }
     })
 
@@ -143,6 +171,14 @@ const Main = () => {
         //setGameEnd(true)
         gameEnd.current = true
         winner.current = "X"
+        setWinnerState("X");
+
+        [arr[0],arr[4],arr[8]].forEach(e => {
+          $(`#${e.id}`)
+            .css("background", "yellow")
+        })
+        
+        
   
       }
       if ([arr[0],arr[4],arr[8]].every(e => e.value === 'O')) {
@@ -150,6 +186,13 @@ const Main = () => {
         //setGameEnd(true)
         gameEnd.current = true
         winner.current = "O"
+        setWinnerState("O");
+
+        [arr[0],arr[4],arr[8]].forEach(e => {
+          $(`#${e.id}`)
+            .css("background", "yellow")
+        })
+
       }
 
       if ([arr[2],arr[4],arr[6]].every(e => e.value === 'X')) {
@@ -157,6 +200,12 @@ const Main = () => {
         //setGameEnd(true)
         gameEnd.current = true
         winner.current = "X"
+        setWinnerState("X");
+
+        [arr[2],arr[4],arr[6]].forEach(e => {
+          $(`#${e.id}`)
+            .css("background", "yellow")
+        })
   
       }
       if ([arr[2],arr[4],arr[6]].every(e => e.value === 'O')) {
@@ -164,6 +213,13 @@ const Main = () => {
         //setGameEnd(true)
         gameEnd.current = true
         winner.current = "O"
+        setWinnerState("O");
+
+        [arr[2],arr[4],arr[6]].forEach(e => {
+          $(`#${e.id}`)
+            .css("background", "yellow")
+        })
+
       }
 
     //let copyRowsAndColumns = [...rowsAndColumns]
@@ -176,7 +232,7 @@ const Main = () => {
               showConfirmButton: false,
               showDenyButton: false,
               showCancelButton: false,
-              timer: 3000,
+              timer: 1500,
             })
           }, 500)
         }
@@ -187,6 +243,19 @@ const Main = () => {
       <Button
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
+        onClick={() => {
+          setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })));
+          gameEnd.current = false;
+          winner.current = "";
+          setWinnerState("")
+          setClickBlocked(false)
+          rowsAndColumns.forEach(e => {
+            $(`#${e.id}`)
+            .css("background", "red")
+          })
+
+
+        }}
       >
         NEW GAME
       </Button>
@@ -195,7 +264,7 @@ const Main = () => {
         <div>IA: O</div>
       </div>
       <div className={css.participants}>
-        { winner.current !== "" ? `WINNER: ${winner.current}` : null} 
+        { winner.current !== "" ? `WINNER: ${winnerState}` : null}
       </div>
       <div className={css.rowsAndColumns}>
         {
