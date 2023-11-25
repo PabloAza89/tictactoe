@@ -16,15 +16,19 @@ const Main = () => {
   )
 
   const [ clickBlocked, setClickBlocked ] = useState(false)
+  //const [ gameEnd, setGameEnd ] = useState(false)
+  let gameEnd = useRef(false)
+  let winner = useRef("")
 
   let IAvalue = useRef(Math.floor(Math.random() * 9))
+
 
   const handleClick = async ({ target }: any) => {
 
     const userAction = async () => {
       let copyRowsAndColumns = [...rowsAndColumns]
 
-      if (copyRowsAndColumns[target].value === "" && !clickBlocked) {
+      if (copyRowsAndColumns[target].value === "" && !clickBlocked && !gameEnd.current) {
         setClickBlocked(true)
         rowsAndColumns[target].value = "X"
         setRowsAndColumns(copyRowsAndColumns)
@@ -47,7 +51,7 @@ const Main = () => {
      if (copyRowsAndColumns[IAvalue.current].value === "") {        
          copyRowsAndColumns[IAvalue.current].value = "O"
          setRowsAndColumns(copyRowsAndColumns)
-         setClickBlocked(false)
+         //setClickBlocked(false)
          
      } else {
        let success = false
@@ -56,13 +60,14 @@ const Main = () => {
          if (copyRowsAndColumns[IAvalue.current].value === "") {                
                copyRowsAndColumns[IAvalue.current].value = "O"
                setRowsAndColumns(copyRowsAndColumns)
-               setClickBlocked(false)
+               //setClickBlocked(false)
            success = true
          }
        } while (copyRowsAndColumns[IAvalue.current].value !== "" && success === false)
      }
 
-     
+     setClickBlocked(false)
+     checkWinner()
    
    } //
 
@@ -72,39 +77,112 @@ const Main = () => {
 
  }
 
+
+
+
   userAction()
+  .then(() => checkWinner())
   .then(() =>
     {  
-      if (!clickBlocked) {
+      if (!clickBlocked && !gameEnd.current) {
+      
         setTimeout(() => {  IAResponse()  }, 700)
 
-        let copyRowsAndColumns = [...rowsAndColumns]
-        if (copyRowsAndColumns.filter(e => e.value === '').length === 0) {
+        
+      }   
+
+      
+      
+    }
+  )//.then(() => checkWinner())
+}
+
+  const checkWinner = async () => {
+    let arr = [...rowsAndColumns]
+    console.log("123 UPDATE")
+    let rowTargets = [0,3,6]
+    let columnsTargets = [0,1,2]
+    let diagonalTargets = [0,2]
+    rowTargets.forEach(e => {
+      if (arr.slice(e,e+3).every(e => e.value === 'X')) {
+        console.log("123 X WINS !")
+        //setGameEnd(true)
+        gameEnd.current = true
+        winner.current = "X"
+  
+      }
+      if (arr.slice(e,e+3).every(e => e.value === 'O')) {
+        console.log("123 O WINS !")
+        //setGameEnd(true)
+        gameEnd.current = true
+        winner.current = "O"
+      }
+    })
+
+    columnsTargets.forEach((e, index) => {
+      if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'X')) {
+        console.log("123 X WINS !")
+        //setGameEnd(true)
+        gameEnd.current = true
+        winner.current = "X"
+  
+      }
+      if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'O')) {
+        console.log("123 O WINS !")
+        //setGameEnd(true)
+        gameEnd.current = true
+        winner.current = "O"
+      }
+    })
+
+    
+      if ([arr[0],arr[4],arr[8]].every(e => e.value === 'X')) {
+        console.log("123 X WINS !")
+        //setGameEnd(true)
+        gameEnd.current = true
+        winner.current = "X"
+  
+      }
+      if ([arr[0],arr[4],arr[8]].every(e => e.value === 'O')) {
+        console.log("123 O WINS !")
+        //setGameEnd(true)
+        gameEnd.current = true
+        winner.current = "O"
+      }
+
+      if ([arr[2],arr[4],arr[6]].every(e => e.value === 'X')) {
+        console.log("123 X WINS !")
+        //setGameEnd(true)
+        gameEnd.current = true
+        winner.current = "X"
+  
+      }
+      if ([arr[2],arr[4],arr[6]].every(e => e.value === 'O')) {
+        console.log("123 O WINS !")
+        //setGameEnd(true)
+        gameEnd.current = true
+        winner.current = "O"
+      }
+
+    //let copyRowsAndColumns = [...rowsAndColumns]
+        if (arr.filter(e => e.value === '').length === 0 || gameEnd.current) {
           console.log("123 GAME END")
           setTimeout(() => {
             Swal.fire({
-              title: `GAME END !`,
+              title: `GAME END\n${winner.current} WINS !`,
               icon: 'success',
               showConfirmButton: false,
               showDenyButton: false,
               showCancelButton: false,
-              timer: 1000,
+              timer: 3000,
             })
           }, 500)
         }
 
 
-      }
-    }
-  )}
-
+  }
   
-  // function TEST(index) {
-  //   useEffect(() => {
-  //     return rowsAndColumns[index].value
-  //   },[rowsAndColumns])
-  // }
-    
+  
 
   
 
@@ -124,7 +202,6 @@ const Main = () => {
                 onClick={(e) => { handleClick({ target: index }) }}
                 className={css.eachBox}
               >
-                {/* {rowsAndColumns[parseInt((e.target as HTMLInputElement).id, 10)].value} */}
                 { rowsAndColumns[index].value }
               </div>
             )
