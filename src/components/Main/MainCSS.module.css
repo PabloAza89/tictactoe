@@ -45,7 +45,11 @@
   height: 30px;
 }
 
-
+.participants {
+  display: flex;
+  flex-direction: column;
+  font-size: 40px;
+}
 
 .eachRow {
   background: gray;

@@ -19,6 +19,7 @@ const Main = () => {
   //const [ gameEnd, setGameEnd ] = useState(false)
   let gameEnd = useRef(false)
   let winner = useRef("")
+  //const [ winner, setWinner ] = useState("")
 
   let IAvalue = useRef(Math.floor(Math.random() * 9))
 
@@ -102,12 +103,13 @@ const Main = () => {
     console.log("123 UPDATE")
     let rowTargets = [0,3,6]
     let columnsTargets = [0,1,2]
-    let diagonalTargets = [0,2]
+    //let diagonalTargets = [0,2]
     rowTargets.forEach(e => {
       if (arr.slice(e,e+3).every(e => e.value === 'X')) {
         console.log("123 X WINS !")
         //setGameEnd(true)
         gameEnd.current = true
+        //winner.current = "X"
         winner.current = "X"
   
       }
@@ -169,7 +171,7 @@ const Main = () => {
           console.log("123 GAME END")
           setTimeout(() => {
             Swal.fire({
-              title: `GAME END\n${winner.current} WINS !`,
+              title: winner.current !== "" ? `GAME END\n${winner.current} WINS !` : `GAME END\n TIED GAME`,
               icon: 'success',
               showConfirmButton: false,
               showDenyButton: false,
@@ -178,19 +180,22 @@ const Main = () => {
             })
           }, 500)
         }
-
-
   }
-  
-  
-
-  
 
   return (
     <div className={css.background}>
-      <div className={css.crossCircle}>
-        <div className={css.cross}>X</div>
-        <div className={css.circle}>O</div>
+      <Button
+        variant="outlined"
+        sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
+      >
+        NEW GAME
+      </Button>
+      <div className={css.participants}>
+        <div>You: X</div>
+        <div>IA: O</div>
+      </div>
+      <div className={css.participants}>
+        { winner.current !== "" ? `WINNER: ${winner.current}` : null} 
       </div>
       <div className={css.rowsAndColumns}>
         {
