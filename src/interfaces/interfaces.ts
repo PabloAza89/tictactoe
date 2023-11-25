@@ -1,4 +1,5 @@
-export interface colorsArrayI {
-  value: string,
-  name: string
+export interface pointsI {
+  [index: string]: any,
+  "X": number,
+  "O": number
 }

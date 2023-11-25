@@ -10,6 +10,33 @@
     align-items: center;
 }
 
+.points {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  height: 150px;
+  background: gray; /* DEV */
+}
+
+.participant {
+  display: flex;
+  flex-direction: row;
+  background: lightcoral; /* DEV */
+  align-items: center;
+}
+
+.turn {
+  color: red;
+  font-size: 20px;
+  animation: blink 1s linear infinite
+}
+
+
+@keyframes blink {
+  0% { opacity: 0 };
+  100% { opacity: 1 }
+}
+
 .rowsAndColumns {
   display: flex;
   background: gray;
