@@ -8,3 +8,7 @@ export interface highlighterI {
   array: any[],
   letter: string
 }
+
+export interface handleClickI {
+  target?: number | undefined
+}

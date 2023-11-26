@@ -5,7 +5,7 @@ import { Button } from '@mui/material/';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
-import { pointsI, highlighterI } from '../../interfaces/interfaces';
+import { pointsI, highlighterI, handleClickI } from '../../interfaces/interfaces';
 
 const Main = () => {
 
@@ -16,19 +16,24 @@ const Main = () => {
   const [ gameEndState, setGameEndState ] = useState(false)
   let winner = useRef("")
   const [ winnerState, setWinnerState ] = useState("")
-  const [ youTurn, setYouTurn ] = useState(true)
+  const [ userTurn, setUserTurn ] = useState(true)
+  //const [ startUser, setStartUser ] = useState(true)
+  const [ startUser, setStartUser ] = useState(false)
+  const [ newGameStarted, setNewGameStarted ] = useState(false)
   let IAvalue = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
-  const handleClick = async ({ target }: any) => {
+  const handleClick = async ({ target }: handleClickI) => {
+
+    console.log("123 TARGET", target)
 
     const userAction = async () => {
       let copyRowsAndColumns = [...rowsAndColumns]
 
-      if (copyRowsAndColumns[target].value === "" && !clickBlocked && !gameEnd.current && youTurn) {
+      if (target !== undefined && copyRowsAndColumns[target].value === "" && !clickBlocked && !gameEnd.current && userTurn) {
         setClickBlocked(true)
         rowsAndColumns[target].value = "X"
         setRowsAndColumns(copyRowsAndColumns)
-        setYouTurn(false)
+        setUserTurn(false)
       }
     }
 
@@ -41,7 +46,7 @@ const Main = () => {
           copyRowsAndColumns[IAvalue.current].value = "O"
           setRowsAndColumns(copyRowsAndColumns)
           setClickBlocked(false)
-          setYouTurn(true)
+          setUserTurn(true)
         } else {
           let success = false
           do {
@@ -51,7 +56,7 @@ const Main = () => {
               setRowsAndColumns(copyRowsAndColumns)
               setClickBlocked(false)
               success = true
-              setYouTurn(true)
+              setUserTurn(true)
             }
           } while (copyRowsAndColumns[IAvalue.current].value !== "" && success === false)
         }
@@ -59,16 +64,24 @@ const Main = () => {
       }
     }
 
-    userAction()
-    .then(() => {
-      if (!clickBlocked && !gameEnd.current) checkWinner()
-    })
-    .then(() => {
-      if (!clickBlocked && !gameEnd.current) {
-        let randomTimes = [ 400, 500, 700, 800, 900 ]
-        setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
-      }
-    })
+    //if (startUser) {
+      userAction()
+      .then(() => {
+        if (!clickBlocked && !gameEnd.current) checkWinner()
+      })
+      .then(() => {
+        if (!clickBlocked && !gameEnd.current) {
+          let randomTimes = [ 700, 800, 900, 1000, 1100 ]
+          setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
+        }
+      })
+    // } else {
+    //   IAResponse()
+    // }
+      
+
+
+
   }
 
   const highlighter = async ({ array, letter }: highlighterI) => {
@@ -127,9 +140,9 @@ const Main = () => {
         Swal.fire({
           title:
             winner.current !== "" && winner.current === "X" ?
-            `YOU WINS !` :
+            `YOU WIN !` :
             winner.current !== "" && winner.current === "O" ?
-            `IA WINS !` :
+            `IA WIN !` :
             `TIED GAME`,
           text:
             actionPoints === 100 ?
@@ -157,7 +170,7 @@ const Main = () => {
     setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
     gameEnd.current = false;
     setGameEndState(false)
-    setYouTurn(true)
+    setUserTurn(true)
     winner.current = "";
     setWinnerState("")
     actionPoints = 0;
@@ -169,13 +182,82 @@ const Main = () => {
     })
   }
 
+  const selectOptions = () => {
+    Swal.fire({
+      title: `WELCOME TO TIC-TAC-TOE !`,
+      text: 'Please, select who start first..',
+      //icon: 'info',
+      showDenyButton: true,
+      confirmButtonText: 'LET ME START !',
+      denyButtonText: `    IA STARTS !   `,
+      confirmButtonColor: '#800080', // LEFT OPTION
+      denyButtonColor: '#008000', // RIGHT OPTION
+    })
+    .then((result) => {
+      if (result.isConfirmed) {
+        console.log("CONFIRMED")
+        setStartUser(true)
+        setNewGameStarted(true)
+      }
+      if (result.isDenied) {
+        console.log("REJECTED")
+        setStartUser(false)
+        setNewGameStarted(true)
+      }
+      
+      //else { console.log("REJECTED") }
+    })  
+  }
+
+  useEffect(() => {
+    console.log("EXECUTED IA")
+    if (!startUser && newGameStarted) {
+      console.log("EXECUTED INNER IA")
+      handleClick({})
+    }
+  },[newGameStarted, !startUser])
+
+  // $.keyframe.define([{
+  //   name: 'myfirst',
+  //   '0%':   {top:"0px"},
+  //   '50%': {top:$("#testcontainer").innerHeight() + "px"},
+  //   '100%': {top:"0px"}
+  // }]);
+
+  $(function() {
+    $(`#rowsAndColumns`)
+      .on("mouseenter", function() {
+        $(`#buttonStart`)
+          //.addClass(`${css.animation}`);
+          .addClass(`${css.shakeAnimation}`);
+          // .css(`animation-name`,`shakeLTR`)
+          // .css(`animation-duration`,`2.5s`)
+          // .css(`animation-iteration-count`,`infinite`)
+          console.log("hover")
+      })
+      .on("mouseleave", function() {
+        $(`#buttonStart`)
+          .removeClass(`${css.shakeAnimation}`);
+          // .stop()
+          // .css(`animationName`,`none`)
+          // .css(`animationDuration`,`0s`)
+          // .css(`animationIterationCount`,`none`)
+          console.log("leave")
+      })
+
+  })
+    
+  
+
   return (
     <div className={css.background}>
       <Button
+        id={`buttonStart`}
         className={css.button}
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
-        onClick={() => resetGame() }
+        //onClick={() => resetGame() }
+        onClick={() => selectOptions() }
       >
         NEW GAME
       </Button>
@@ -184,12 +266,12 @@ const Main = () => {
           <div className={css.pointsTitle}>Points:</div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ youTurn && !gameEndState ? `TURN ` : null }</div>
+          <div className={css.turn}>{ newGameStarted && userTurn && !gameEndState ? `TURN ` : null }</div>
           <div className={css.participantName}>You:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.X} </div></div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ !youTurn && !gameEndState ? `TURN ` : null }</div>
+          <div className={css.turn}>{ newGameStarted && !userTurn && !gameEndState ? `TURN ` : null }</div>
           <div className={css.participantName}>IA:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.O} </div></div>
         </div>
@@ -206,14 +288,19 @@ const Main = () => {
         </div>
       </div>
 
-      <div className={css.rowsAndColumns}>
+      <div id={`rowsAndColumns`} className={css.rowsAndColumns}>
         {
           rowsAndColumns.map((e, index) => {
             return (
               <div
                 key={index}
                 id={`${index}`}
-                onClick={(e) => { handleClick({ target: index }) }}
+                onClick={(e) => { 
+                  if (newGameStarted) {
+                    handleClick({ target: index })
+                  }
+                  
+                }}
                 className={css.eachBox}
               >
                 { rowsAndColumns[index].value }
