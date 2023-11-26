@@ -52,17 +52,17 @@
 
 .changeColor {
   animation-name: changeCol;
-  animation-duration: 2s;
+  animation-duration: 1s;
   animation-iteration-count: infinite;
 }
 
 @keyframes changeCol {
   0% { color: red; transform: scale(1.0) }
   24.99% { color: red; transform: scale(1.0) }
-  25% { color: yellow; transform: scale(1.1)}
-  49.99% { color: yellow; transform: scale(1.1)}
-  50% { color: green; transform: scale(1.0) }
-  74.99% { color: green; transform: scale(1.0) }
+  25% { color: green; transform: scale(1.1)}
+  49.99% { color: green; transform: scale(1.1)}
+  50% { color: darkviolet; transform: scale(1.0) }
+  74.99% { color: darkviolet; transform: scale(1.0) }
   75% { color: blue; transform: scale(1.1) }
   100% { color: blue; transform: scale(1.1) }
 }

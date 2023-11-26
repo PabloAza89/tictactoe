@@ -20,6 +20,8 @@ const Main = () => {
   //const [ startUser, setStartUser ] = useState(true)
   const [ startUser, setStartUser ] = useState(false)
   const [ newGameStarted, setNewGameStarted ] = useState(false)
+  //const [ newGameStartedRecently, setNewGameStartedRecently ] = useState(false)
+  let newGameStartedRecently = useRef(false)
   let IAvalue = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
   const handleClick = async ({ target }: handleClickI) => {
@@ -70,9 +72,20 @@ const Main = () => {
         if (!clickBlocked && !gameEnd.current) checkWinner()
       })
       .then(() => {
+
         if (!clickBlocked && !gameEnd.current) {
-          let randomTimes = [ 700, 800, 900, 1000, 1100 ]
-          setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
+          console.log("123 entro aca 1?")
+          if (newGameStartedRecently.current) {
+            console.log("123 entro aca 2?")
+            setTimeout(() => {
+              let randomTimes = [ 700, 800, 900, 1000, 1100 ]
+              setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
+            }, 4300)
+          } else {
+            let randomTimes = [ 700, 800, 900, 1000, 1100 ]
+            setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
+          }
+          
         }
       })
     // } else {
@@ -182,6 +195,14 @@ const Main = () => {
   }
 
   const resetGame = () => {
+
+    resetTimer()
+    setPoints({ "X": 0, "O": 0 })
+    $(`#buttonStart`)
+      .removeClass(`${css.shakeAnimation}`);
+    $(`#timerBox`)
+      .removeClass(`${css.changeColor}`)
+    setNewGameStarted(false)
     setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
     gameEnd.current = false;
     setGameEndState(false)
@@ -198,16 +219,8 @@ const Main = () => {
   }
 
   const selectOptions = () => {
-
     $(`#buttonStart`)
       .removeClass(`${css.shakeAnimation}`);
-      // .attr("class", "noAnimation")
-      // .attr("class", "button")
-        //.stop()
-        //.css(`animationName`,`none`)
-        // .css(`animationDuration`,`0s`)
-        // .css(`animationIterationCount`,`none`)
-
 
     Swal.fire({
       title: `WELCOME TO TIC-TAC-TOE !`,
@@ -220,14 +233,12 @@ const Main = () => {
       denyButtonColor: '#008000', // RIGHT OPTION
     })
     .then((result) => {
-
-
-
       if (result.isConfirmed) {
         startsIn()
         console.log("CONFIRMED")
         setStartUser(true)
         setNewGameStarted(true)
+        newGameStartedRecently.current = true
         //startTimer()
         $(`#buttonStart`)
           .removeClass(`${css.shakeAnimation}`);
@@ -240,6 +251,7 @@ const Main = () => {
         console.log("REJECTED")
         setStartUser(false)
         setNewGameStarted(true)
+        newGameStartedRecently.current = true
         //startTimer()
         $(`#buttonStart`)
           .removeClass(`${css.shakeAnimation}`);
@@ -249,29 +261,42 @@ const Main = () => {
       }
       else {
         console.log("OTHER")
-
-        //$(function() {
-          //if (!newGameStarted) {
-            $(`#buttonStart`)
-              .addClass(`${css.shakeAnimation}`)
-          //}
-        //})
-
-
-        //if (!newGameStarted) {
-          // $(`#buttonStart`)
-          //   .addClass(`${css.shakeAnimation}`)
-          //   .css(`animationName`,`shakeAnimation`)
-          //   .css(`animationDuration`,`2.5s`)
-          //   .css(`animationIterationCount`,`infinite`)
-
-        //}
-
-
+        $(`#buttonStart`)
+          .addClass(`${css.shakeAnimation}`)
       }
-
-      //else { console.log("REJECTED") }
     })
+
+  }
+
+  const buttonHandler = () => {
+
+    // $(`#buttonStart`)
+    //   .removeClass(`${css.shakeAnimation}`);
+
+    if (newGameStarted) {
+      Swal.fire({
+        title: `DO YOU WANT TO START A NEW GAME ?`,
+        text: 'All points gonna be lost !..',
+        icon: 'info',
+        showDenyButton: true,
+        confirmButtonText: 'START NEW GAME !',
+        denyButtonText: `CONTINUE PLAYING !`,
+        confirmButtonColor: '#800080', // LEFT OPTION
+        denyButtonColor: '#008000', // RIGHT OPTION
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          //setNewGameStartedRecently(true)
+          resetGame()
+          selectOptions()
+          // $(`#buttonStart`)
+          //   .removeClass(`${css.shakeAnimation}`);
+        }
+      })
+
+    } else {
+      selectOptions()
+    }
   }
 
   useEffect(() => {
@@ -283,42 +308,24 @@ const Main = () => {
   },[newGameStarted, !startUser])
 
   $(function() {
-    if (!newGameStarted) {
+    if (!newGameStarted && !newGameStartedRecently.current) {
       $(`#buttonStart`)
         .addClass(`${css.shakeAnimation}`)
-      // $(`#rowsAndColumns`)
-      //   .on("mouseenter", function() {
-      //     $(`#buttonStart`)
-      //       .addClass(`${css.shakeAnimation}`)
-      //   })
-      //   .on("mouseleave", function() {
-      //     $(`#buttonStart`)
-      //       .removeClass(`${css.shakeAnimation}`)
-      //   })
-
     } else {
       $(`#buttonStart`)
-          .removeClass(`${css.shakeAnimation}`);
+        .removeClass(`${css.shakeAnimation}`);
     }
   })
 
-  //let offset = 0;
   let offset = useRef(0);
-  //const [ offset, setOffset ] = useState(0)
-  //let paused = true;
   let paused = useRef(true);
-  //const [ paused, setPaused ] = useState(true)
 
   render();
     
   function startTimer() {
     if (paused.current) {
-      //paused = false;
-      //paused = false;
       paused.current = false;
-      //setPaused(false);
       offset.current -= Date.now();
-      //setOffset(offset - Date.now());
       render();
     }
   }
@@ -326,11 +333,8 @@ const Main = () => {
   function stopTimer() {
     console.log("PAUSED VALUE", paused.current)
     if (!paused.current) {
-      //paused = true;
       paused.current = true;
-      //setPaused(true);
       offset.current += Date.now();
-      //setOffset(offset + Date.now())
       render()
     }
   }
@@ -338,12 +342,8 @@ const Main = () => {
   function resetTimer() {
     if (paused.current) {
       offset.current = 0;
-      //setOffset(0)
       render();
-    } else {
-      offset.current =- Date.now();
-      //setOffset(offset - Date.now());
-    }
+    } else offset.current =- Date.now();
   }
 
   function format(value: any, scale: any, modulo: any, padding: any) {
@@ -353,21 +353,16 @@ const Main = () => {
 
   function render() {
 
-    
-
-
     var value = paused.current ? offset.current : Date.now() + offset.current;
 
-    let qq = document.getElementById('s_ms')
-    if (qq !== null) qq.textContent = format(value, 1, 1000, 3);
-    let qq2 = document.getElementById('s_seconds')
-    if (qq2 !== null) qq2.textContent = format(value, 1000, 60, 2);
-    let qq3 = document.getElementById('s_minutes')
-    if (qq3 !== null) qq3.textContent = format(value, 60000, 60, 2);
+    let miliseconds = document.getElementById('s_ms')
+    if (miliseconds !== null) miliseconds.textContent = format(value, 1, 1000, 3);
+    let seconds = document.getElementById('s_seconds')
+    if (seconds !== null) seconds.textContent = format(value, 1000, 60, 2);
+    let minutes = document.getElementById('s_minutes')
+    if (minutes !== null) minutes.textContent = format(value, 60000, 60, 2);
 
-    if(!paused.current) {
-      requestAnimationFrame(render);
-    }
+    if(!paused.current) requestAnimationFrame(render);
   }
 
   // startTimer() //
@@ -426,7 +421,7 @@ const Main = () => {
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
         //onClick={() => resetGame() }
-        onClick={() => { selectOptions() } }
+        onClick={() => { buttonHandler() } }
       >
         NEW GAME
       </Button>
