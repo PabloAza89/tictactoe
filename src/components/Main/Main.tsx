@@ -17,6 +17,7 @@ const Main = () => {
   let winner = useRef("")
   const [ winnerState, setWinnerState ] = useState("")
   const [ userTurn, setUserTurn ] = useState(true)
+  let shouldAIstart = useRef(false)
   //const [ startUser, setStartUser ] = useState(true)
   const [ startUser, setStartUser ] = useState(false)
   const [ newGameStarted, setNewGameStarted ] = useState(false)
@@ -49,6 +50,7 @@ const Main = () => {
           setRowsAndColumns(copyRowsAndColumns)
           setClickBlocked(false)
           setUserTurn(true)
+          shouldAIstart.current = false
         } else {
           let success = false
           do {
@@ -58,6 +60,7 @@ const Main = () => {
               setRowsAndColumns(copyRowsAndColumns)
               setClickBlocked(false)
               success = true
+              shouldAIstart.current = false
               setUserTurn(true)
             }
           } while (copyRowsAndColumns[IAvalue.current].value !== "" && success === false)
@@ -74,8 +77,8 @@ const Main = () => {
       .then(() => {
 
         if (!clickBlocked && !gameEnd.current) {
-          console.log("123 entro aca 1?")
-          if (newGameStartedRecently.current) {
+          //console.log("123 entro aca 1?")
+          if (shouldAIstart.current) {
             console.log("123 entro aca 2?")
             setTimeout(() => {
               let randomTimes = [ 700, 800, 900, 1000, 1100 ]
@@ -233,12 +236,13 @@ const Main = () => {
       denyButtonColor: '#008000', // RIGHT OPTION
     })
     .then((result) => {
-      if (result.isConfirmed) {
+      if (result.isConfirmed) { // START USER
         startsIn()
         console.log("CONFIRMED")
         setStartUser(true)
         setNewGameStarted(true)
-        newGameStartedRecently.current = true
+        shouldAIstart.current = false
+        //newGameStartedRecently.current = true
         //startTimer()
         $(`#buttonStart`)
           .removeClass(`${css.shakeAnimation}`);
@@ -246,12 +250,13 @@ const Main = () => {
           startTimer()
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
-      else if (result.isDenied) {
+      else if (result.isDenied) { // START AI
         startsIn()
         console.log("REJECTED")
         setStartUser(false)
         setNewGameStarted(true)
-        newGameStartedRecently.current = true
+        shouldAIstart.current = true
+        //newGameStartedRecently.current = true
         //startTimer()
         $(`#buttonStart`)
           .removeClass(`${css.shakeAnimation}`);
