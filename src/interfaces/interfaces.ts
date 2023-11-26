@@ -3,3 +3,8 @@ export interface pointsI {
   "X": number,
   "O": number
 }
+
+export interface highlighterI {
+  array: any[],
+  letter: string
+}

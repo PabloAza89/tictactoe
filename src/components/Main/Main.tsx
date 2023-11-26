@@ -5,115 +5,76 @@ import { Button } from '@mui/material/';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
-import { pointsI } from '../../interfaces/interfaces';
+import { pointsI, highlighterI } from '../../interfaces/interfaces';
 
 const Main = () => {
 
   const [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
-
-  Array.from({length: 9}, (e,i) => ({ value: ''}))
-
   const [ clickBlocked, setClickBlocked ] = useState(false)
-
-  const [ points, setPoints ] = useState<pointsI>({
-    "X": 0,
-    "O": 0
-  })
-  
-  //const [ gameEnd, setGameEnd ] = useState(false)
+  const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
   let gameEnd = useRef(false)
   const [ gameEndState, setGameEndState ] = useState(false)
   let winner = useRef("")
   const [ winnerState, setWinnerState ] = useState("")
-
   const [ youTurn, setYouTurn ] = useState(true)
-
-
   let IAvalue = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
-
 
   const handleClick = async ({ target }: any) => {
 
     const userAction = async () => {
       let copyRowsAndColumns = [...rowsAndColumns]
 
-      if (copyRowsAndColumns[target].value === "" && !clickBlocked && !gameEnd.current) {
+      if (copyRowsAndColumns[target].value === "" && !clickBlocked && !gameEnd.current && youTurn) {
         setClickBlocked(true)
         rowsAndColumns[target].value = "X"
         setRowsAndColumns(copyRowsAndColumns)
         setYouTurn(false)
       }
-
-      //console.log("123 filter(e => e.value === '').length", copyRowsAndColumns.filter(e => e.value === '').length)
     }
 
     const IAResponse = async () => {
-    
-     
-     let copyRowsAndColumns = [...rowsAndColumns]
+      let copyRowsAndColumns = [...rowsAndColumns]
 
-   if (copyRowsAndColumns.filter(e => e.value === '').length > 1) {
-       
-     if (copyRowsAndColumns[IAvalue.current].value === "") {        
-         copyRowsAndColumns[IAvalue.current].value = "O"
-         setRowsAndColumns(copyRowsAndColumns)
-         //setClickBlocked(false)
-         setClickBlocked(false)
-         setYouTurn(true)
-         
-     } else {
-       let success = false
-       do {
-         IAvalue.current = Math.floor(Math.random() * 9)
-         if (copyRowsAndColumns[IAvalue.current].value === "") {                
-               copyRowsAndColumns[IAvalue.current].value = "O"
-               setRowsAndColumns(copyRowsAndColumns)
-               //setClickBlocked(false)
-               setClickBlocked(false)
-           success = true
-           setYouTurn(true)
-         }
-       } while (copyRowsAndColumns[IAvalue.current].value !== "" && success === false)
-     }
+      if (copyRowsAndColumns.filter(e => e.value === '').length > 1) {
 
-     
-     checkWinner()
-   
-   } 
-
-
-
- }
-
-
-
-
-  userAction()
-  .then(() => { if (!clickBlocked && !gameEnd.current) { checkWinner() }})
-  .then(() =>
-    {  
-      if (!clickBlocked && !gameEnd.current) {
-        let randomTimes = [ 400, 500, 700, 800, 900 ]
-        setTimeout(() => {  IAResponse()  }, randomTimes[Math.floor(Math.random() * 5)])
+        if (copyRowsAndColumns[IAvalue.current].value === "") {
+          copyRowsAndColumns[IAvalue.current].value = "O"
+          setRowsAndColumns(copyRowsAndColumns)
+          setClickBlocked(false)
+          setYouTurn(true)
+        } else {
+          let success = false
+          do {
+            IAvalue.current = Math.floor(Math.random() * 9)
+            if (copyRowsAndColumns[IAvalue.current].value === "") {
+              copyRowsAndColumns[IAvalue.current].value = "O"
+              setRowsAndColumns(copyRowsAndColumns)
+              setClickBlocked(false)
+              success = true
+              setYouTurn(true)
+            }
+          } while (copyRowsAndColumns[IAvalue.current].value !== "" && success === false)
+        }
+      checkWinner()
       }
     }
-  )
 
-}
-
-  interface highlighterI {
-    array: any[],
-    letter: string
+    userAction()
+    .then(() => {
+      if (!clickBlocked && !gameEnd.current) checkWinner()
+    })
+    .then(() => {
+      if (!clickBlocked && !gameEnd.current) {
+        let randomTimes = [ 400, 500, 700, 800, 900 ]
+        setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
+      }
+    })
   }
 
   const highlighter = async ({ array, letter }: highlighterI) => {
-
-    console.log("EXECUTED HL")
+    actionPoints = actionPoints + 100
     gameEnd.current = true
     setGameEndState(true)
-    // winner.current = `${letter}`
-    // setWinnerState(`${letter}`)
-
     setTimeout(() => {
       $(`#${array[0].id}`)
         .css("background", "yellow")
@@ -129,133 +90,69 @@ const Main = () => {
 
     setTimeout(() => {
       let copyPoints: pointsI = {...points}
-      //copyPoints[letter] = copyPoints[letter] + 1
       copyPoints[letter] = copyPoints[letter] + actionPoints
       setPoints(copyPoints)
-
       winner.current = `${letter}`
       setTimeout(() => {
-        
         setWinnerState(`${letter}`) // APPEARS WHEN POP-UP
-      },300)
-
+      }, 300)
     }, 1200)
-
-    
-    // setTimeout(() => {
-
-    //   winner.current = `${letter}`
-    //   setWinnerState(`${letter}`)
-
-
-    // }, 1300)
-    
-
-    // if (letter === 'X') {
-    //   //points[letter]
-    // }
-    
-
-
-
-
   }
 
   let actionPoints: number = 0
 
   const checkWinner = async () => {
-    
     let arr = [...rowsAndColumns]
-    console.log("123 UPDATE")
     let rowTargets = [0,3,6]
     let columnsTargets = [0,1,2]
     //let diagonalTargets = [0,2]
     rowTargets.forEach(e => {
-      if (arr.slice(e,e+3).every(e => e.value === 'X')) {
-        highlighter({ array: arr.slice(e,e+3), letter: "X" })
-        actionPoints = actionPoints + 100
-      }
-      if (arr.slice(e,e+3).every(e => e.value === 'O')) {
-        highlighter({ array: arr.slice(e,e+3), letter: "O" })
-        actionPoints = actionPoints + 100
-      }
+      if (arr.slice(e,e+3).every(e => e.value === 'X')) highlighter({ array: arr.slice(e,e+3), letter: "X" })
+      if (arr.slice(e,e+3).every(e => e.value === 'O')) highlighter({ array: arr.slice(e,e+3), letter: "O" })
     })
 
     columnsTargets.forEach((e, index) => {
-      if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'X')) {
-        
-        highlighter({ array: [arr[e],arr[e+3],arr[e+6]], letter: "X" })
-        actionPoints = actionPoints + 100
-      }
-      if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'O')) {
-        highlighter({ array: [arr[e],arr[e+3],arr[e+6]], letter: "O" })
-        actionPoints = actionPoints + 100
-      }
+      if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'X')) highlighter({ array: [arr[e],arr[e+3],arr[e+6]], letter: "X" })
+      if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'O')) highlighter({ array: [arr[e],arr[e+3],arr[e+6]], letter: "O" })
     })
 
-    
-      if ([arr[0],arr[4],arr[8]].every(e => e.value === 'X')) {
-        highlighter({ array: [arr[0],arr[4],arr[8]], letter: "X" })
-        actionPoints = actionPoints + 100
-      }
-      if ([arr[0],arr[4],arr[8]].every(e => e.value === 'O')) {
-        highlighter({ array: [arr[0],arr[4],arr[8]], letter: "O" })
-        actionPoints = actionPoints + 100
-      }
+    if ([arr[0],arr[4],arr[8]].every(e => e.value === 'X')) highlighter({ array: [arr[0],arr[4],arr[8]], letter: "X" })
+    if ([arr[0],arr[4],arr[8]].every(e => e.value === 'O')) highlighter({ array: [arr[0],arr[4],arr[8]], letter: "O" })
+    if ([arr[2],arr[4],arr[6]].every(e => e.value === 'X')) highlighter({ array: [arr[2],arr[4],arr[6]], letter: "X" })
+    if ([arr[2],arr[4],arr[6]].every(e => e.value === 'O')) highlighter({ array: [arr[2],arr[4],arr[6]], letter: "O" })
 
-      if ([arr[2],arr[4],arr[6]].every(e => e.value === 'X')) {
-        highlighter({ array: [arr[2],arr[4],arr[6]], letter: "X" })
-        actionPoints = actionPoints + 100
-      }
-      if ([arr[2],arr[4],arr[6]].every(e => e.value === 'O')) {
-       
-        highlighter({ array: [arr[2],arr[4],arr[6]], letter: "O" })
-        actionPoints = actionPoints + 100
+    if (arr.filter(e => e.value === '').length === 0 || gameEnd.current) {
+      setGameEndState(true)
+      setTimeout(() => {
+        Swal.fire({
+          title:
+            winner.current !== "" && winner.current === "X" ?
+            `YOU WINS !` :
+            winner.current !== "" && winner.current === "O" ?
+            `IA WINS !` :
+            `TIED GAME`,
+          text:
+            actionPoints === 100 ?
+            `+100 Points` :
+            actionPoints === 200 ?
+            `+200 Points !! Supperrrb !!!` :
+            `no winner, no points.`,
+          icon: 'success',
+          showConfirmButton: false,
+          showDenyButton: false,
+          showCancelButton: false,
+          timer: 2000,
+        })
 
-      }
-
-   
-
-    //let copyRowsAndColumns = [...rowsAndColumns]
-        if (arr.filter(e => e.value === '').length === 0 || gameEnd.current) {
-          setGameEndState(true)
-          console.log("123 GAME END")
-
-
-          setTimeout(() => {
-            Swal.fire({
-              title: winner.current !== "" && winner.current === "X" ?
-                    `YOU WINS !` :
-                    winner.current !== "" && winner.current === "O" ?
-                    `IA WINS !` :
-                    `TIED GAME`,
-              text: actionPoints === 100 ?
-                    `+100 Points` :
-                    actionPoints === 200 ?
-                    `+200 Points !! Supperrrb !!!` :
-                    `no winner, no points.`,
-              icon: 'success',
-              showConfirmButton: false,
-              showDenyButton: false,
-              showCancelButton: false,
-              timer: 2000,
-            })
-
-            setTimeout(() => {
-            if (!(winner.current !== "" && winner.current === "X") && !(winner.current !== "" && winner.current === "O")) {
-              setWinnerState("TIED")
-              //winner.current = "TIED"
-            }
-          }, 1200)
-
-
-          }, 1200)
-
-        
-          
+        setTimeout(() => {
+        if (!(winner.current !== "" && winner.current === "X") && !(winner.current !== "" && winner.current === "O")) {
+          setWinnerState("TIED")
         }
+        }, 1200)
+      }, 1200)
+    }
   }
-  
+
   const resetGame = () => {
     setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
     gameEnd.current = false;
@@ -273,7 +170,7 @@ const Main = () => {
   }
 
   return (
-    <div className={css.background}>      
+    <div className={css.background}>
       <Button
         className={css.button}
         variant="outlined"
@@ -287,14 +184,14 @@ const Main = () => {
           <div className={css.pointsTitle}>Points:</div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ youTurn && !gameEndState ? `TURN ` : ` ` }</div>
+          <div className={css.turn}>{ youTurn && !gameEndState ? `TURN ` : null }</div>
           <div className={css.participantName}>You:</div>
-          <div className={css.points}> {points.X}</div>
+          <div className={css.points}><div className={css.innerPoints}> {points.X} </div></div>
         </div>
         <div className={css.participant}>
-        <div className={css.turn}>{ !youTurn && !gameEndState ? `TURN ` : ` ` }</div>
+          <div className={css.turn}>{ !youTurn && !gameEndState ? `TURN ` : null }</div>
           <div className={css.participantName}>IA:</div>
-          <div className={css.points}> {points.O}</div>
+          <div className={css.points}><div className={css.innerPoints}> {points.O} </div></div>
         </div>
         <div className={css.finalWinner}>
           {
@@ -308,7 +205,7 @@ const Main = () => {
           }
         </div>
       </div>
-      
+
       <div className={css.rowsAndColumns}>
         {
           rowsAndColumns.map((e, index) => {
@@ -325,9 +222,6 @@ const Main = () => {
           })
         }
       </div>
-
-
-
     </div>
   );
 }

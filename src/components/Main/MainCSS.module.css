@@ -21,7 +21,10 @@
   height: 200px;
   flex-direction: column;
   font-size: 40px;
-  background: gray; /* DEV */
+  /* box-shadow: 0 0 0 2px blue inset; */
+  /* border: 2px solid blue; */
+  /* background: gray; */ /* DEV */
+  border-top: 2px solid blue;
 }
 
 .participant {
@@ -30,13 +33,18 @@
   align-items: center;
   height: 50px;
   background: orange; /* DEV */
-  box-shadow: 0 0 0 2px blue inset;
-  
+  /* box-shadow: 0 0 0 2px blue inset; */
+  justify-content: flex-end;
+  border-left: 2px solid blue;
+  border-right: 2px solid blue;
+  border-bottom: 2px solid blue;
+  /* border-bottom: 2px solid blue; */
 }
 
 .turn {
   background: lightgreen; /* DEV */
-  width: 180px;
+  /* width: 180px; */
+  width: 60px;
   color: red;
   font-size: 20px;
   animation: blink 1s linear infinite;
@@ -50,7 +58,7 @@
   height: 50px;
   width: 80px;
   background: orange; /* DEV */
-  box-shadow: 0 0 0 2px blue inset;
+  /* box-shadow: 0 0 0 2px blue inset; */
   justify-content: center;
 }
 
@@ -59,14 +67,26 @@
   height: 50px;
   font-size: 32px;
   text-align: center;
+  padding-top: 4px;
 }
 
 .points {
-  background: lightgreen; /* DEV */
+  /* background: lightgreen; */ /* DEV */
   width: 180px;
   height: 50px;
-  box-shadow: 0 0 0 2px blue inset;
+  /* box-shadow: 0 0 0 2px blue inset; */
 }
+
+.innerPoints {
+  background: lightgreen; /* DEV */
+ /*  width: 180px;
+  height: 50px; */
+  height: 50px;
+  /* box-shadow: 0 0 0 2px blue inset; */
+  width: fit-content;
+}
+
+
 
 .finalWinner {
   display: flex;
@@ -95,6 +115,10 @@
   width: 150px;
   height: 150px;
   flex-wrap: wrap;
+  /* box-shadow: 0 0 0 2px blue inset; */
+  border: 2px solid blue;
+
+
 }
 
 .crossCircle {
