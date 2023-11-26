@@ -10,6 +10,7 @@
   align-items: center;
 }
 
+
 .button {
   margin-bottom: 10px !important;
   /* animation-name: none;
@@ -19,6 +20,12 @@
   /* animation-name: shakeLTR;
   animation-duration: .2s;
   animation-iteration-count: infinite; */
+}
+
+.noAnimation {
+  animation-name: onone;
+  animation-duration: 0s;
+  animation-iteration-count: none;
 }
 
 .shakeAnimation {
@@ -34,13 +41,53 @@
   6% { transform: translate(0px, 0px) }
   8% { transform: translate(-2px, 0px) }
   10% { transform: translate(0px, 0px) }
+  12% { transform: translate(-2px, 0px) }
+  14% { transform: translate(0px, 0px) }
+  16% { transform: translate(-2px, 0px) }
+  18% { transform: translate(0px, 0px) }
+  20% { transform: translate(-2px, 0px) }
+  22% { transform: translate(0px, 0px) }
   100% { transform: translate(0px, 0px) }
 }
     
+.timer {
+  /* background: lightgreen; */ /* DEV */
+  display: flex;
+  position: absolute;
+  width: 150px;
+  height: 50px;
+  line-height: 50px;
+  /* right: 10px; */
+  top: -54px;
+  right: 1px;
+  font-size: 16px;
+  align-items: baseline;
+  font-weight: 500;
+  justify-content: center;
+}
 
+.eachTime {
+  display: flex;
+  /* box-shadow: 0 0 0 2px blue inset; */ /* DEV */
+  width: 19px;
+  justify-content: center;
+}
+
+.eachTimeMini {
+  display: flex;
+  /* box-shadow: 0 0 0 2px blue inset; */ /* DEV */
+  width: 23px;
+  justify-content: center;
+}
+
+.smallerMili {
+  font-size: 12px;
+}
 
 .participants {
   /* margin-left: 70px; */
+  display: flex;
+  position: relative;
   display: flex;
   width: 440px;
   height: 200px;

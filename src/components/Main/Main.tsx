@@ -78,7 +78,7 @@ const Main = () => {
     // } else {
     //   IAResponse()
     // }
-      
+
 
 
 
@@ -87,6 +87,7 @@ const Main = () => {
   const highlighter = async ({ array, letter }: highlighterI) => {
     actionPoints = actionPoints + 100
     gameEnd.current = true
+    //stopTimer()
     setGameEndState(true)
     setTimeout(() => {
       $(`#${array[0].id}`)
@@ -136,6 +137,9 @@ const Main = () => {
 
     if (arr.filter(e => e.value === '').length === 0 || gameEnd.current) {
       setGameEndState(true)
+      stopTimer()
+      //stopTimer()
+      //stopTimer()
       setTimeout(() => {
         Swal.fire({
           title:
@@ -183,6 +187,17 @@ const Main = () => {
   }
 
   const selectOptions = () => {
+
+    $(`#buttonStart`)
+      .removeClass(`${css.shakeAnimation}`);
+      // .attr("class", "noAnimation")
+      // .attr("class", "button")
+        //.stop()
+        //.css(`animationName`,`none`)
+        // .css(`animationDuration`,`0s`)
+        // .css(`animationIterationCount`,`none`)
+
+
     Swal.fire({
       title: `WELCOME TO TIC-TAC-TOE !`,
       text: 'Please, select who start first..',
@@ -194,19 +209,50 @@ const Main = () => {
       denyButtonColor: '#008000', // RIGHT OPTION
     })
     .then((result) => {
+
+
+
       if (result.isConfirmed) {
         console.log("CONFIRMED")
         setStartUser(true)
         setNewGameStarted(true)
+        startTimer()
+        $(`#buttonStart`)
+          .removeClass(`${css.shakeAnimation}`);
       }
-      if (result.isDenied) {
+      else if (result.isDenied) {
         console.log("REJECTED")
         setStartUser(false)
         setNewGameStarted(true)
+        startTimer()
+        $(`#buttonStart`)
+          .removeClass(`${css.shakeAnimation}`);
       }
-      
+      else {
+        console.log("OTHER")
+
+        //$(function() {
+          //if (!newGameStarted) {
+            $(`#buttonStart`)
+              .addClass(`${css.shakeAnimation}`)
+          //}
+        //})
+
+
+        //if (!newGameStarted) {
+          // $(`#buttonStart`)
+          //   .addClass(`${css.shakeAnimation}`)
+          //   .css(`animationName`,`shakeAnimation`)
+          //   .css(`animationDuration`,`2.5s`)
+          //   .css(`animationIterationCount`,`infinite`)
+
+        //}
+
+
+      }
+
       //else { console.log("REJECTED") }
-    })  
+    })
   }
 
   useEffect(() => {
@@ -217,37 +263,98 @@ const Main = () => {
     }
   },[newGameStarted, !startUser])
 
-  // $.keyframe.define([{
-  //   name: 'myfirst',
-  //   '0%':   {top:"0px"},
-  //   '50%': {top:$("#testcontainer").innerHeight() + "px"},
-  //   '100%': {top:"0px"}
-  // }]);
-
   $(function() {
-    $(`#rowsAndColumns`)
-      .on("mouseenter", function() {
-        $(`#buttonStart`)
-          //.addClass(`${css.animation}`);
-          .addClass(`${css.shakeAnimation}`);
-          // .css(`animation-name`,`shakeLTR`)
-          // .css(`animation-duration`,`2.5s`)
-          // .css(`animation-iteration-count`,`infinite`)
-          console.log("hover")
-      })
-      .on("mouseleave", function() {
-        $(`#buttonStart`)
-          .removeClass(`${css.shakeAnimation}`);
-          // .stop()
-          // .css(`animationName`,`none`)
-          // .css(`animationDuration`,`0s`)
-          // .css(`animationIterationCount`,`none`)
-          console.log("leave")
-      })
+    if (!newGameStarted) {
+      $(`#buttonStart`)
+        .addClass(`${css.shakeAnimation}`)
+      // $(`#rowsAndColumns`)
+      //   .on("mouseenter", function() {
+      //     $(`#buttonStart`)
+      //       .addClass(`${css.shakeAnimation}`)
+      //   })
+      //   .on("mouseleave", function() {
+      //     $(`#buttonStart`)
+      //       .removeClass(`${css.shakeAnimation}`)
+      //   })
 
+    } else {
+      $(`#buttonStart`)
+          .removeClass(`${css.shakeAnimation}`);
+    }
   })
+
+  //let offset = 0;
+  let offset = useRef(0);
+  //const [ offset, setOffset ] = useState(0)
+  //let paused = true;
+  let paused = useRef(true);
+  //const [ paused, setPaused ] = useState(true)
+
+  render();
     
-  
+  function startTimer() {
+    if (paused.current) {
+      //paused = false;
+      //paused = false;
+      paused.current = false;
+      //setPaused(false);
+      offset.current -= Date.now();
+      //setOffset(offset - Date.now());
+      render();
+    }
+  }
+
+  function stopTimer() {
+    console.log("PAUSED VALUE", paused.current)
+    if (!paused.current) {
+      //paused = true;
+      paused.current = true;
+      //setPaused(true);
+      offset.current += Date.now();
+      //setOffset(offset + Date.now())
+      render()
+    }
+  }
+
+  function resetTimer() {
+    if (paused.current) {
+      offset.current = 0;
+      //setOffset(0)
+      render();
+    } else {
+      offset.current =- Date.now();
+      //setOffset(offset - Date.now());
+    }
+  }
+
+  function format(value: any, scale: any, modulo: any, padding: any) {
+    value = Math.floor(value / scale) % modulo;
+    return value.toString().padStart(padding, 0);
+  }
+
+  function render() {
+
+    
+
+
+    var value = paused.current ? offset.current : Date.now() + offset.current;
+
+    let qq = document.getElementById('s_ms')
+    if (qq !== null) qq.textContent = format(value, 1, 1000, 3);
+    let qq2 = document.getElementById('s_seconds')
+    if (qq2 !== null) qq2.textContent = format(value, 1000, 60, 2);
+    let qq3 = document.getElementById('s_minutes')
+    if (qq3 !== null) qq3.textContent = format(value, 60000, 60, 2);
+
+    if(!paused.current) {
+      requestAnimationFrame(render);
+    }
+  }
+
+  // startTimer() //
+  // stopTimer() //
+  // resetTimer() //
+
 
   return (
     <div className={css.background}>
@@ -257,7 +364,7 @@ const Main = () => {
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
         //onClick={() => resetGame() }
-        onClick={() => selectOptions() }
+        onClick={() => { selectOptions() } }
       >
         NEW GAME
       </Button>
@@ -286,7 +393,21 @@ const Main = () => {
             null
           }
         </div>
-      </div>
+        <div
+          style={{
+            display: newGameStarted ? 'flex' : 'none'
+          }}
+          className={css.timer}
+        >
+          <div>TIME:  </div>
+          <div id={`s_minutes`} className={css.eachTime}>00</div>:
+          <div id={`s_seconds`} className={css.eachTime}>00</div>
+          <div className={css.smallerMili}>:</div>
+          <div id={`s_ms`} className={`${css.smallerMili} ${css.eachTimeMini}`}>000</div>
+        </div>
+      </div >
+
+      
 
       <div id={`rowsAndColumns`} className={css.rowsAndColumns}>
         {
@@ -295,11 +416,11 @@ const Main = () => {
               <div
                 key={index}
                 id={`${index}`}
-                onClick={(e) => { 
+                onClick={(e) => {
                   if (newGameStarted) {
                     handleClick({ target: index })
                   }
-                  
+
                 }}
                 className={css.eachBox}
               >
@@ -309,6 +430,17 @@ const Main = () => {
           })
         }
       </div>
+
+      <Button
+        id={`buttonStart`}
+        className={css.button}
+        variant="outlined"       
+        onClick={() => { console.log("clicked") } }
+      >
+        TEST
+      </Button>
+
+
     </div>
   );
 }
