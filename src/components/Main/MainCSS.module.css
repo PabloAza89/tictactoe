@@ -7,29 +7,81 @@
   width: 100vw;
   height: 100vh;
   justify-content: center;
-    align-items: center;
+  align-items: center;
 }
 
-.points {
+.button {
+  margin-bottom: 10px !important;
+}
+
+.participants {
+  /* margin-left: 70px; */
   display: flex;
+  width: 440px;
+  height: 200px;
   flex-direction: column;
-  width: 150px;
-  height: 150px;
+  font-size: 40px;
   background: gray; /* DEV */
 }
 
 .participant {
   display: flex;
   flex-direction: row;
-  background: lightcoral; /* DEV */
   align-items: center;
+  height: 50px;
+  background: orange; /* DEV */
+  box-shadow: 0 0 0 2px blue inset;
+  
 }
 
 .turn {
+  background: lightgreen; /* DEV */
+  width: 180px;
   color: red;
   font-size: 20px;
-  animation: blink 1s linear infinite
+  animation: blink 1s linear infinite;
+  text-align: end;
 }
+
+.participantName {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 50px;
+  width: 80px;
+  background: orange; /* DEV */
+  box-shadow: 0 0 0 2px blue inset;
+  justify-content: center;
+}
+
+.pointsTitle {
+  width: 440px;
+  height: 50px;
+  font-size: 32px;
+  text-align: center;
+}
+
+.points {
+  background: lightgreen; /* DEV */
+  width: 180px;
+  height: 50px;
+  box-shadow: 0 0 0 2px blue inset;
+}
+
+.finalWinner {
+  display: flex;
+  /* width: 250px; */
+  height: 50px;
+  flex-direction: column;
+  font-size: 24px;
+  background: lightpink; /* DEV */
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  /* margin-left: -70px; */
+}
+
+
 
 
 @keyframes blink {
@@ -72,11 +124,7 @@
   height: 30px;
 }
 
-.participants {
-  display: flex;
-  flex-direction: column;
-  font-size: 40px;
-}
+
 
 .eachRow {
   background: gray;

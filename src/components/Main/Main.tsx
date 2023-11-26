@@ -220,6 +220,8 @@ const Main = () => {
         if (arr.filter(e => e.value === '').length === 0 || gameEnd.current) {
           setGameEndState(true)
           console.log("123 GAME END")
+
+
           setTimeout(() => {
             Swal.fire({
               title: winner.current !== "" && winner.current === "X" ?
@@ -238,7 +240,18 @@ const Main = () => {
               showCancelButton: false,
               timer: 2000,
             })
+
+            setTimeout(() => {
+            if (!(winner.current !== "" && winner.current === "X") && !(winner.current !== "" && winner.current === "O")) {
+              setWinnerState("TIED")
+              //winner.current = "TIED"
+            }
           }, 1200)
+
+
+          }, 1200)
+
+        
           
         }
   }
@@ -247,6 +260,7 @@ const Main = () => {
     setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
     gameEnd.current = false;
     setGameEndState(false)
+    setYouTurn(true)
     winner.current = "";
     setWinnerState("")
     actionPoints = 0;
@@ -258,26 +272,10 @@ const Main = () => {
     })
   }
 
-  const returnWinnerX = () => {
-    setTimeout(() => { return `WINNER: YOU !` }, 3000);
-    // setTimeout(() => {  }, 0);
-    
-    //return `WINNER: YOU !`
-     //setTimeout(() => { `WINNER: YOU !`}, 1300)
-  }
-
-  const returnWinnerO = () => {
-
-  }
-
   return (
-    <div className={css.background}>
-      <div className={css.points}>
-        <div>Points:</div>
-        <div>You: {points.X}</div>
-        <div>IA: {points.O}</div>
-      </div>
+    <div className={css.background}>      
       <Button
+        className={css.button}
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
         onClick={() => resetGame() }
@@ -286,23 +284,31 @@ const Main = () => {
       </Button>
       <div className={css.participants}>
         <div className={css.participant}>
-          <div className={css.turn}>{ youTurn && !gameEndState ? `TURN ` : `     ` }</div>
-          You: X
+          <div className={css.pointsTitle}>Points:</div>
         </div>
         <div className={css.participant}>
-        <div className={css.turn}>{ !youTurn && !gameEndState ? `TURN ` : `     ` }</div>
-          IA: O
+          <div className={css.turn}>{ youTurn && !gameEndState ? `TURN ` : ` ` }</div>
+          <div className={css.participantName}>You:</div>
+          <div className={css.points}> {points.X}</div>
+        </div>
+        <div className={css.participant}>
+        <div className={css.turn}>{ !youTurn && !gameEndState ? `TURN ` : ` ` }</div>
+          <div className={css.participantName}>IA:</div>
+          <div className={css.points}> {points.O}</div>
+        </div>
+        <div className={css.finalWinner}>
+          {
+            winner.current !== "" && winnerState === "X" ?
+            `WINNER: YOU !` :
+            winner.current !== "" && winnerState === "O" ?
+            `WINNER: IA !` :
+            winner.current === "" && winnerState === "TIED" ?
+            `TIED GAME !` :
+            null
+          }
         </div>
       </div>
-      <div className={css.participants}>
-        {
-          winner.current !== "" && winnerState === "X" ?
-          `WINNER: YOU !` :
-          winner.current !== "" && winnerState === "O" ?
-          `WINNER: IA !` :
-          null
-        }
-      </div>
+      
       <div className={css.rowsAndColumns}>
         {
           rowsAndColumns.map((e, index) => {
