@@ -138,6 +138,10 @@ const Main = () => {
     if (arr.filter(e => e.value === '').length === 0 || gameEnd.current) {
       setGameEndState(true)
       stopTimer()
+
+      // $(`#timerBox`)
+      //   .addClass(`${css.changeColor}`)
+
       //stopTimer()
       //stopTimer()
       setTimeout(() => {
@@ -162,11 +166,18 @@ const Main = () => {
         })
 
         setTimeout(() => {
-        if (!(winner.current !== "" && winner.current === "X") && !(winner.current !== "" && winner.current === "O")) {
-          setWinnerState("TIED")
-        }
+          if (!(winner.current !== "" && winner.current === "X") && !(winner.current !== "" && winner.current === "O")) {
+            setWinnerState("TIED")
+          }
         }, 1200)
+
       }, 1200)
+
+      setTimeout(() => {
+        $(`#timerBox`)
+          .addClass(`${css.changeColor}`)
+      }, 3200)
+
     }
   }
 
@@ -213,20 +224,28 @@ const Main = () => {
 
 
       if (result.isConfirmed) {
+        startsIn()
         console.log("CONFIRMED")
         setStartUser(true)
         setNewGameStarted(true)
-        startTimer()
+        //startTimer()
         $(`#buttonStart`)
           .removeClass(`${css.shakeAnimation}`);
+        setTimeout(() => {
+          startTimer()
+        }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else if (result.isDenied) {
+        startsIn()
         console.log("REJECTED")
         setStartUser(false)
         setNewGameStarted(true)
-        startTimer()
+        //startTimer()
         $(`#buttonStart`)
           .removeClass(`${css.shakeAnimation}`);
+        setTimeout(() => {
+          startTimer()
+        }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else {
         console.log("OTHER")
@@ -355,6 +374,49 @@ const Main = () => {
   // stopTimer() //
   // resetTimer() //
 
+  const startsIn = () => {
+    setTimeout(() => {
+      Swal.fire({
+        title: `STARTS IN\n3..`,
+        showConfirmButton: false,
+        showDenyButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        timer: 1000,
+      })
+    }, 0)
+    setTimeout(() => {
+      Swal.fire({
+        title: `STARTS IN\n2..`,
+        showConfirmButton: false,
+        showDenyButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        timer: 1000,
+      })
+    }, 1000)
+    setTimeout(() => {
+      Swal.fire({
+        title: `STARTS IN\n1..`,
+        showConfirmButton: false,
+        showDenyButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        timer: 1000,
+      })
+    }, 2000)
+    setTimeout(() => {
+      Swal.fire({
+        title: `GO !!!`,
+        showConfirmButton: false,
+        showDenyButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        timer: 1300,
+      })
+    }, 3000)
+  }
+
 
   return (
     <div className={css.background}>
@@ -397,6 +459,7 @@ const Main = () => {
           style={{
             display: newGameStarted ? 'flex' : 'none'
           }}
+          id={`timerBox`}
           className={css.timer}
         >
           <div>TIME:  </div>
@@ -434,7 +497,7 @@ const Main = () => {
       <Button
         id={`buttonStart`}
         className={css.button}
-        variant="outlined"       
+        variant="outlined"
         onClick={() => { console.log("clicked") } }
       >
         TEST
