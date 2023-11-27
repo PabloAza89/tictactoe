@@ -1,4 +1,5 @@
 import css from './MainCSS.module.css';
+import com from '../../commons/commonsCSS.module.css';
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Button } from '@mui/material/';
@@ -10,7 +11,7 @@ import { pointsI, highlighterI, handleClickI } from '../../interfaces/interfaces
 const Main = () => {
 
   const [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
-  const [ clickBlocked, setClickBlocked ] = useState(false)
+  let clickBlocked = useRef(false)
   const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
   let gameEnd = useRef(false)
   const [ gameEndState, setGameEndState ] = useState(false)
@@ -18,22 +19,26 @@ const Main = () => {
   const [ winnerState, setWinnerState ] = useState("")
   const [ userTurn, setUserTurn ] = useState(true)
   let shouldAIstart = useRef(false)
-  //const [ startUser, setStartUser ] = useState(true)
-  const [ startUser, setStartUser ] = useState(false)
-  const [ newGameStarted, setNewGameStarted ] = useState(false)
-  //const [ newGameStartedRecently, setNewGameStartedRecently ] = useState(false)
+  const [ shouldAIstartState, setShouldAIstartState ] = useState(false)
+  //const [ startUser, setStartUser ] = useState(false)
+  const [ newGameStarted, setNewGameStarted ] = useState(false) 
+  //const [ newGameStarted, setNewGameStarted ] = useState(true) // START IMMEDIATELY
   let newGameStartedRecently = useRef(false)
   let IAvalue = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
   const handleClick = async ({ target }: handleClickI) => {
 
-    console.log("123 TARGET", target)
+    //console.log("123 TARGET", target)
 
     const userAction = async () => {
       let copyRowsAndColumns = [...rowsAndColumns]
+      console.log("123", copyRowsAndColumns)
 
-      if (target !== undefined && copyRowsAndColumns[target].value === "" && !clickBlocked && !gameEnd.current && userTurn) {
-        setClickBlocked(true)
+      if (target !== undefined && copyRowsAndColumns[target].value === "" && !clickBlocked.current && !gameEnd.current && userTurn) {
+        console.log("123 USUARIO EJECUTO NORMALMENTE")
+        //setClickBlocked(true)
+        clickBlocked.current = true
+        
         rowsAndColumns[target].value = "X"
         setRowsAndColumns(copyRowsAndColumns)
         setUserTurn(false)
@@ -44,53 +49,67 @@ const Main = () => {
       let copyRowsAndColumns = [...rowsAndColumns]
 
       if (copyRowsAndColumns.filter(e => e.value === '').length > 1) {
+        console.log("123 entro AI 1")
+        // if (copyRowsAndColumns[IAvalue.current].value === "") {
+        //   copyRowsAndColumns[IAvalue.current].value = "O"
+        //   setRowsAndColumns(copyRowsAndColumns)
+        //   clickBlocked.current = false
+        //   //setClickBlocked(false)
+          
+        //   setUserTurn(true)
+        //   shouldAIstart.current = false
+        //   setShouldAIstartState(false)
 
-        if (copyRowsAndColumns[IAvalue.current].value === "") {
-          copyRowsAndColumns[IAvalue.current].value = "O"
-          setRowsAndColumns(copyRowsAndColumns)
-          setClickBlocked(false)
-          setUserTurn(true)
-          shouldAIstart.current = false
-        } else {
+        // } else {
+          console.log("123 entro AI 2")
           let success = false
           do {
             IAvalue.current = Math.floor(Math.random() * 9)
             if (copyRowsAndColumns[IAvalue.current].value === "") {
               copyRowsAndColumns[IAvalue.current].value = "O"
               setRowsAndColumns(copyRowsAndColumns)
-              setClickBlocked(false)
+              //setClickBlocked(false)
+              clickBlocked.current = false
               success = true
               shouldAIstart.current = false
+              setShouldAIstartState(false)
               setUserTurn(true)
             }
           } while (copyRowsAndColumns[IAvalue.current].value !== "" && success === false)
         }
-      checkWinner()
-      }
+      if (!gameEnd.current) checkWinner()
+      //}
     }
 
     //if (startUser) {
+    if (!clickBlocked.current || shouldAIstart.current) {
       userAction()
       .then(() => {
-        if (!clickBlocked && !gameEnd.current) checkWinner()
+        console.log("123 valor de clickBlocked antes", clickBlocked)
+        if (!clickBlocked.current && !gameEnd.current) checkWinner()
       })
       .then(() => {
-
-        if (!clickBlocked && !gameEnd.current) {
+        if (!gameEnd.current) checkWinner()
+        console.log("123 valor de clickBlocked", clickBlocked)
+        if (clickBlocked.current && !gameEnd.current) {
           //console.log("123 entro aca 1?")
+          console.log("123 SE EJECUTO IA")
           if (shouldAIstart.current) {
-            console.log("123 entro aca 2?")
+            console.log("123 entro aca 2")
             setTimeout(() => {
               let randomTimes = [ 700, 800, 900, 1000, 1100 ]
               setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
             }, 4300)
           } else {
+            console.log("123 entro aca 3")
             let randomTimes = [ 700, 800, 900, 1000, 1100 ]
             setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
           }
           
         }
       })
+    }
+
     // } else {
     //   IAResponse()
     // }
@@ -102,10 +121,18 @@ const Main = () => {
 
   const highlighter = async ({ array, letter }: highlighterI) => {
     actionPoints = actionPoints + 100
-    gameEnd.current = true
+    clickBlocked.current = true
     //stopTimer()
+    gameEnd.current = true
     setGameEndState(true)
+    //setGameEndState(true)
+    // setGameEndState(true)
+
+
+    
     setTimeout(() => {
+      //gameEnd.current = true
+      //setGameEndState(true)
       $(`#${array[0].id}`)
         .css("background", "yellow")
     }, 300)
@@ -116,6 +143,7 @@ const Main = () => {
     setTimeout(() => {
       $(`#${array[2].id}`)
         .css("background", "yellow")
+        
     }, 900)
 
     setTimeout(() => {
@@ -213,7 +241,8 @@ const Main = () => {
     winner.current = "";
     setWinnerState("")
     actionPoints = 0;
-    setClickBlocked(false)
+    //setClickBlocked(false)
+    //clickBlocked.current = false
     IAvalue.current = Math.floor(Math.random() * 9) // BETWEEN 0 & 8
     rowsAndColumns.forEach(e => {
       $(`#${e.id}`)
@@ -239,9 +268,13 @@ const Main = () => {
       if (result.isConfirmed) { // START USER
         startsIn()
         console.log("CONFIRMED")
-        setStartUser(true)
+        //setStartUser(true)
         setNewGameStarted(true)
         shouldAIstart.current = false
+        setShouldAIstartState(false)
+        clickBlocked.current = false
+        //clickBlocked.current = false
+        //setClickBlocked(false)
         //newGameStartedRecently.current = true
         //startTimer()
         $(`#buttonStart`)
@@ -253,9 +286,13 @@ const Main = () => {
       else if (result.isDenied) { // START AI
         startsIn()
         console.log("REJECTED")
-        setStartUser(false)
+        //setStartUser(false)
         setNewGameStarted(true)
         shouldAIstart.current = true
+        clickBlocked.current = true
+        setShouldAIstartState(true)
+        //clickBlocked.current = true
+        //setClickBlocked(true)
         //newGameStartedRecently.current = true
         //startTimer()
         $(`#buttonStart`)
@@ -306,11 +343,13 @@ const Main = () => {
 
   useEffect(() => {
     console.log("EXECUTED IA")
-    if (!startUser && newGameStarted) {
-      console.log("EXECUTED INNER IA")
+    if (shouldAIstart.current && newGameStarted) {
+      console.log("123 EXECUTED INNER IA")
       handleClick({})
+      //clickBlocked.current = true
     }
-  },[newGameStarted, !startUser])
+  //},[newGameStarted,shouldAIstart.current])
+  },[newGameStarted])
 
   $(function() {
     if (!newGameStarted && !newGameStartedRecently.current) {
@@ -382,7 +421,7 @@ const Main = () => {
         showDenyButton: false,
         allowOutsideClick: false,
         allowEscapeKey: false,
-        timer: 1000,
+        timer: 1000
       })
     }, 0)
     setTimeout(() => {
@@ -392,7 +431,7 @@ const Main = () => {
         showDenyButton: false,
         allowOutsideClick: false,
         allowEscapeKey: false,
-        timer: 1000,
+        timer: 1000
       })
     }, 1000)
     setTimeout(() => {
@@ -402,7 +441,7 @@ const Main = () => {
         showDenyButton: false,
         allowOutsideClick: false,
         allowEscapeKey: false,
-        timer: 1000,
+        timer: 1000
       })
     }, 2000)
     setTimeout(() => {
@@ -419,7 +458,7 @@ const Main = () => {
 
 
   return (
-    <div className={css.background}>
+    <div className={`${css.background} ${com.noSelect}`}>
       <Button
         id={`buttonStart`}
         className={css.button}
@@ -435,12 +474,12 @@ const Main = () => {
           <div className={css.pointsTitle}>Points:</div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ newGameStarted && userTurn && !gameEndState ? `TURN ` : null }</div>
+          <div className={css.turn}>{ shouldAIstartState ? null : newGameStarted && userTurn && !gameEndState ? `TURN ` : null }</div>
           <div className={css.participantName}>You:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.X} </div></div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ newGameStarted && !userTurn && !gameEndState ? `TURN ` : null }</div>
+          <div className={css.turn}>{ shouldAIstartState ? `TURN ` : newGameStarted && !userTurn && !gameEndState ? `TURN ` : null }</div>
           <div className={css.participantName}>IA:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.O} </div></div>
         </div>
