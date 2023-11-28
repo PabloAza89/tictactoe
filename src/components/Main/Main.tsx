@@ -48,7 +48,7 @@ const Main = () => {
     const IAResponse = async () => {
       let copyRowsAndColumns = [...rowsAndColumns]
 
-      if (copyRowsAndColumns.filter(e => e.value === '').length > 1) {
+      if (copyRowsAndColumns.filter(e => e.value === '').length >= 1) {
         console.log("123 entro AI 1")
         // if (copyRowsAndColumns[IAvalue.current].value === "") {
         //   copyRowsAndColumns[IAvalue.current].value = "O"
@@ -75,44 +75,49 @@ const Main = () => {
               setShouldAIstartState(false)
               setUserTurn(true)
             }
-          } while (copyRowsAndColumns[IAvalue.current].value !== "" && success === false)
+          } while (success === false)
+          checkWinner()
         }
-      if (!gameEnd.current) checkWinner()
+      //if (!gameEnd.current) checkWinner()
       //}
     }
 
     //if (startUser) {
-    if (!clickBlocked.current || shouldAIstart.current) {
+
+    if (shouldAIstart.current) {
+      let randomTimes = [ 700, 800, 900, 1000, 1100 ]
+        setTimeout(() => {
+          //let randomTimes = [ 700, 800, 900, 1000, 1100 ]
+          //setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
+          IAResponse()
+        }, 4300 + randomTimes[Math.floor(Math.random() * 5)])
+    } else if (!clickBlocked.current) {
+      shouldAIstart.current = false
       userAction()
       .then(() => {
-        console.log("123 valor de clickBlocked antes", clickBlocked)
-        if (!clickBlocked.current && !gameEnd.current) checkWinner()
+        //console.log("123 valor de clickBlocked antes", clickBlocked)
+        //if (!clickBlocked.current && !gameEnd.current) checkWinner()
+        //if (!clickBlocked.current && !gameEnd.current) checkWinner()
+        checkWinner()
       })
       .then(() => {
-        if (!gameEnd.current) checkWinner()
+        //if (!gameEnd.current) checkWinner()
         console.log("123 valor de clickBlocked", clickBlocked)
         if (clickBlocked.current && !gameEnd.current) {
           //console.log("123 entro aca 1?")
           console.log("123 SE EJECUTO IA")
-          if (shouldAIstart.current) {
-            console.log("123 entro aca 2")
-            setTimeout(() => {
-              let randomTimes = [ 700, 800, 900, 1000, 1100 ]
-              setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
-            }, 4300)
-          } else {
+         
             console.log("123 entro aca 3")
             let randomTimes = [ 700, 800, 900, 1000, 1100 ]
             setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
-          }
           
+          // checkWinner()
         }
+       // if (!gameEnd.current) checkWinner()
       })
+
     }
 
-    // } else {
-    //   IAResponse()
-    // }
 
 
 
