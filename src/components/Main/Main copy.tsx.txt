@@ -10,8 +10,7 @@ import { pointsI, highlighterI, handleClickI } from '../../interfaces/interfaces
 
 const Main = () => {
 
-  //const [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
-  let rowsAndColumns = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
+  const [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
   let clickBlocked = useRef(true)
   const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
   let gameEnd = useRef(false)
@@ -32,30 +31,30 @@ const Main = () => {
     //console.log("123 TARGET", target)
 
     const userAction = async () => {
-      //let copyRowsAndColumns = [...rowsAndColumns.current]
+      let copyRowsAndColumns = [...rowsAndColumns]
       //console.log("123", copyRowsAndColumns)
 
-      if (target !== undefined && rowsAndColumns.current[target].value === "" && !clickBlocked.current && !gameEnd.current && userTurn) {
+      if (target !== undefined && copyRowsAndColumns[target].value === "" && !clickBlocked.current && !gameEnd.current && userTurn) {
         //console.log("123 USUARIO EJECUTO NORMALMENTE")
         //setClickBlocked(true)
         clickBlocked.current = true
-        rowsAndColumns.current[target].value = "X"
-        //setRowsAndColumns(copyRowsAndColumns)
+        rowsAndColumns[target].value = "X"
+        setRowsAndColumns(copyRowsAndColumns)
         setUserTurn(false)
       }
     }
 
     const IAResponse = async () => {
-      //let copyRowsAndColumns = [...rowsAndColumns]
+      let copyRowsAndColumns = [...rowsAndColumns]
 
-      if (rowsAndColumns.current.filter(e => e.value === '').length >= 1) {
+      if (copyRowsAndColumns.filter(e => e.value === '').length >= 1) {
           //console.log("123 entro AI 2")
           let success = false
           do {
             IAvalue.current = Math.floor(Math.random() * 9)
-            if (rowsAndColumns.current[IAvalue.current].value === "") {
-              rowsAndColumns.current[IAvalue.current].value = "O"
-              //setRowsAndColumns(copyRowsAndColumns)
+            if (copyRowsAndColumns[IAvalue.current].value === "") {
+              copyRowsAndColumns[IAvalue.current].value = "O"
+              setRowsAndColumns(copyRowsAndColumns)
               //setClickBlocked(false)
               success = true
               shouldAIstart.current = false
@@ -133,9 +132,7 @@ const Main = () => {
   let actionPoints: number = 0
 
   const checkWinner = async () => {
-    //let arr = [...rowsAndColumns]
-    let arr =rowsAndColumns.current
-    
+    let arr = [...rowsAndColumns]
     let rowTargets = [0,3,6]
     let columnsTargets = [0,1,2]
     //let diagonalTargets = [0,2]
@@ -202,8 +199,7 @@ const Main = () => {
   const resetGame = () => {
 
     resetTimer()
-    //setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
-    rowsAndColumns.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
+    setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 })
     gameEnd.current = false;
@@ -226,7 +222,7 @@ const Main = () => {
     
     actionPoints = 0;
     IAvalue.current = Math.floor(Math.random() * 9) // BETWEEN 0 & 8
-    rowsAndColumns.current.forEach(e => {
+    rowsAndColumns.forEach(e => {
       $(`#${e.id}`)
       .css("background", "red")
     })
@@ -423,7 +419,7 @@ const Main = () => {
     }, 3000)
   }
 
-  console.log("rowsAndColumns", rowsAndColumns.current)
+  console.log("rowsAndColumns", rowsAndColumns)
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -481,7 +477,7 @@ const Main = () => {
 
       <div id={`rowsAndColumns`} className={css.rowsAndColumns}>
         {
-          rowsAndColumns.current.map((e, index) => {
+          rowsAndColumns.map((e, index) => {
             return (
               <div
                 key={index}
@@ -494,7 +490,7 @@ const Main = () => {
                 }}
                 className={css.eachBox}
               >
-                { rowsAndColumns.current[index].value }
+                { rowsAndColumns[index].value }
               </div>
             )
           })
