@@ -9,6 +9,6 @@ export interface highlighterI {
   letter: string
 }
 
-export interface handleClickI {
+export interface handleSequenceI {
   target?: number | undefined
 }

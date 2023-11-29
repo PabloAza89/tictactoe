@@ -6,13 +6,14 @@ import { Button } from '@mui/material/';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
-import { pointsI, highlighterI, handleClickI } from '../../interfaces/interfaces';
+import { pointsI, highlighterI, handleSequenceI } from '../../interfaces/interfaces';
 
 const Main = () => {
 
-  //const [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
-  let rowsAndColumns = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
+  const [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
+  //let rowsAndColumns = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
   let clickBlocked = useRef(true)
+  let gridBlocked = useRef(true)
   const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
   let gameEnd = useRef(false)
   const [ gameEndState, setGameEndState ] = useState(false)
@@ -27,34 +28,16 @@ const Main = () => {
   let newGameStartedRecently = useRef(false)
   let IAvalue = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
-  const handleClick = async ({ target }: handleClickI) => {
+  const IAResponse = async () => {
+      let copyRowsAndColumns = [...rowsAndColumns]
 
-    //console.log("123 TARGET", target)
-
-    const userAction = async () => {
-      //let copyRowsAndColumns = [...rowsAndColumns.current]
-      //console.log("123", copyRowsAndColumns)
-
-      if (target !== undefined && rowsAndColumns.current[target].value === "" && !clickBlocked.current && !gameEnd.current && userTurn) {
-        //console.log("123 USUARIO EJECUTO NORMALMENTE")
-        //setClickBlocked(true)
-        clickBlocked.current = true
-        rowsAndColumns.current[target].value = "X"
-        //setRowsAndColumns(copyRowsAndColumns)
-        setUserTurn(false)
-      }
-    }
-
-    const IAResponse = async () => {
-      //let copyRowsAndColumns = [...rowsAndColumns]
-
-      if (rowsAndColumns.current.filter(e => e.value === '').length >= 1) {
+      if (copyRowsAndColumns.filter((e: any) => e.value === '').length >= 1) {
           //console.log("123 entro AI 2")
           let success = false
           do {
             IAvalue.current = Math.floor(Math.random() * 9)
-            if (rowsAndColumns.current[IAvalue.current].value === "") {
-              rowsAndColumns.current[IAvalue.current].value = "O"
+            if (copyRowsAndColumns[IAvalue.current].value === "") {
+              copyRowsAndColumns[IAvalue.current].value = "O"
               //setRowsAndColumns(copyRowsAndColumns)
               //setClickBlocked(false)
               success = true
@@ -63,96 +46,134 @@ const Main = () => {
               setUserTurn(true)
             }
           } while (success === false)
-          checkWinner()
+          //checkWinner()
         }
     }
 
-    if (shouldAIstart.current) {
-      //console.log("123 ENTRO EN AI")
-      let randomTimes = [ 700, 800, 900, 1000, 1100 ]
-        setTimeout(() => {
-          IAResponse()
-          //console.log("123 ejecutado 1")
-        }, /* 4300 + */ randomTimes[Math.floor(Math.random() * 5)])
-        setTimeout(() => {
-          clickBlocked.current = false
-          //console.log("123 ejecutado 2")
-        },0)
-        
-    } else if (!clickBlocked.current) {
+    const userAction = ( target: any) => {
+      //let copyRowsAndColumns = [...rowsAndColumns.current]
+      let copyRowsAndColumns = [...rowsAndColumns]
+      //console.log("123", copyRowsAndColumns)
+
+      if (target !== undefined && copyRowsAndColumns[target].value === "" && !clickBlocked.current && !gameEnd.current && userTurn) {
+        //console.log("123 USUARIO EJECUTO NORMALMENTE")
+        //setClickBlocked(true)
+        clickBlocked.current = true
+        copyRowsAndColumns[target].value = "X"
+        setRowsAndColumns(copyRowsAndColumns)
+        setUserTurn(false)
+      }
+    }
+
+  const handleSequence = ({ target }: handleSequenceI) => {
+
+    //else if (!clickBlocked.current) {
       shouldAIstart.current = false
-      userAction()
-      .then(() => { checkWinner() })
+      userAction(target)
+      .then(() => { 
+        checkWinner()
+      })
       .then(() => {
+        //console.log("noWinner", noWinner)
         //console.log("123 valor de clickBlocked", clickBlocked)
-        if (clickBlocked.current && !gameEnd.current) {
-          //console.log("123 entro aca 1?")
+        if (winner.current === '' && clickBlocked.current && !gameEnd.current) {
           //console.log("123 SE EJECUTO IA")
             let randomTimes = [ 700, 800, 900, 1000, 1100 ]
-            setTimeout(() => IAResponse(), randomTimes[Math.floor(Math.random() * 5)])
+            setTimeout(() => IAResponse().then(() => { 
+              checkWinner()
+            })
+            , randomTimes[Math.floor(Math.random() * 5)])
         }
       })
       .then(() => {
-        if (!gameEnd.current) {
+        if (winner.current === '' && !gameEnd.current) {
           clickBlocked.current = false
+          gridBlocked.current = false
         }
       })
       
-    }
+   // }
   }
 
-  const highlighter = async ({ array, letter }: highlighterI) => {
-    actionPoints = actionPoints + 100
-    clickBlocked.current = true
-    gameEnd.current = true
-    setGameEndState(true)
-    setTimeout(() => {
-      $(`#${array[0].id}`)
-        .css("background", "yellow")
-    }, 300)
-    setTimeout(() => {
-      $(`#${array[1].id}`)
-        .css("background", "yellow")
-    }, 600)
-    setTimeout(() => {
-      $(`#${array[2].id}`)
-        .css("background", "yellow")
-    }, 900)
-
-    setTimeout(() => {
-      let copyPoints: pointsI = {...points}
-      copyPoints[letter] = copyPoints[letter] + actionPoints
-      setPoints(copyPoints)
-      winner.current = `${letter}`
-      setTimeout(() => {
-        setWinnerState(`${letter}`) // APPEARS WHEN POP-UP
-      }, 300)
-    }, 1200)
-  }
 
   let actionPoints: number = 0
 
   const checkWinner = async () => {
+
+    const highlighter = async ({ array, letter }: highlighterI) => {
+      actionPoints = actionPoints + 100
+      clickBlocked.current = true
+      gameEnd.current = true
+      setGameEndState(true)
+      setTimeout(() => {
+        $(`#${array[0].id}`)
+          .css("background", "yellow")
+      }, 300)
+      setTimeout(() => {
+        $(`#${array[1].id}`)
+          .css("background", "yellow")
+      }, 600)
+      setTimeout(() => {
+        $(`#${array[2].id}`)
+          .css("background", "yellow")
+      }, 900)
+  
+      setTimeout(() => {
+        let copyPoints: pointsI = {...points}
+        copyPoints[letter] = copyPoints[letter] + actionPoints
+        setPoints(copyPoints)
+        winner.current = `${letter}`
+        setTimeout(() => {
+          setWinnerState(`${letter}`) // APPEARS WHEN POP-UP
+        }, 300)
+      }, 1200)
+    }
+
+
     //let arr = [...rowsAndColumns]
-    let arr =rowsAndColumns.current
+    let arr = rowsAndColumns
     
     let rowTargets = [0,3,6]
     let columnsTargets = [0,1,2]
     //let diagonalTargets = [0,2]
-    rowTargets.forEach(e => {
-      if (arr.slice(e,e+3).every(e => e.value === 'X')) highlighter({ array: arr.slice(e,e+3), letter: "X" })
-      if (arr.slice(e,e+3).every(e => e.value === 'O')) highlighter({ array: arr.slice(e,e+3), letter: "O" })
+    rowTargets.forEach(e => { // ROW
+      if (arr.slice(e,e+3).every(e => e.value === 'X')) {
+        highlighter({ array: arr.slice(e,e+3), letter: "X" })
+        console.log("winner here 1")
+      }
+      if (arr.slice(e,e+3).every(e => e.value === 'O')) {
+        highlighter({ array: arr.slice(e,e+3), letter: "O" })
+        console.log("winner here 2")
+      }
     })
 
-    columnsTargets.forEach((e, index) => {
-      if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'X')) highlighter({ array: [arr[e],arr[e+3],arr[e+6]], letter: "X" })
-      if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'O')) highlighter({ array: [arr[e],arr[e+3],arr[e+6]], letter: "O" })
+    columnsTargets.forEach((e, index) => { // COLUMN
+      if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'X')) {
+        highlighter({ array: [arr[e],arr[e+3],arr[e+6]], letter: "X" })
+        console.log("winner here 3")
+      }
+      if ([arr[e],arr[e+3],arr[e+6]].every(e => e.value === 'O')) {
+        highlighter({ array: [arr[e],arr[e+3],arr[e+6]], letter: "O" })
+        console.log("winner here 4")
+      }
     })
 
-    if ([arr[0],arr[4],arr[8]].every(e => e.value === 'X')) highlighter({ array: [arr[0],arr[4],arr[8]], letter: "X" })
-    if ([arr[0],arr[4],arr[8]].every(e => e.value === 'O')) highlighter({ array: [arr[0],arr[4],arr[8]], letter: "O" })
-    if ([arr[2],arr[4],arr[6]].every(e => e.value === 'X')) highlighter({ array: [arr[2],arr[4],arr[6]], letter: "X" })
-    if ([arr[2],arr[4],arr[6]].every(e => e.value === 'O')) highlighter({ array: [arr[2],arr[4],arr[6]], letter: "O" })
+    if ([arr[0],arr[4],arr[8]].every(e => e.value === 'X')) { // DIAGONAL
+      highlighter({ array: [arr[0],arr[4],arr[8]], letter: "X" })
+      console.log("winner here 5")
+    }
+    if ([arr[0],arr[4],arr[8]].every(e => e.value === 'O')) {
+      highlighter({ array: [arr[0],arr[4],arr[8]], letter: "O" })
+      console.log("winner here 6")
+    }
+    if ([arr[2],arr[4],arr[6]].every(e => e.value === 'X')) {
+      highlighter({ array: [arr[2],arr[4],arr[6]], letter: "X" })
+      console.log("winner here 7")
+    }
+    if ([arr[2],arr[4],arr[6]].every(e => e.value === 'O')) {
+      highlighter({ array: [arr[2],arr[4],arr[6]], letter: "O" })
+      console.log("winner here 8")
+    }
 
     if (arr.filter(e => e.value === '').length === 0 || gameEnd.current) {
       setGameEndState(true)
@@ -161,9 +182,9 @@ const Main = () => {
       setTimeout(() => {
         Swal.fire({
           title:
-            winner.current !== "" && winner.current === "X" ?
+            winner.current === "X" ?
             `YOU WIN !` :
-            winner.current !== "" && winner.current === "O" ?
+            winner.current === "O" ?
             `IA WIN !` :
             `TIED GAME`,
           text:
@@ -172,7 +193,10 @@ const Main = () => {
             actionPoints === 200 ?
             `+200 Points !! Supperrrb !!!` :
             `no winner, no points.`,
-          icon: 'success',
+          icon:
+            winner.current === "" ?
+            'info' :
+            'success',
           showConfirmButton: false,
           showDenyButton: false,
           showCancelButton: false,
@@ -189,34 +213,38 @@ const Main = () => {
       }, 1200)
 
       setTimeout(() => {
-        $(`#timerBox`)
-          .addClass(`${css.changeColor}`)
+        //if (gameEnd.current) {
+          $(`#timerBox`)
+            .addClass(`${css.changeColor}`)
+        //}
+          
+
       }, 3200)
 
-    } 
-    // else {
-    //   clickBlocked.current = false
-    // }
+    }
+
   }
 
   const resetGame = () => {
 
+    stopTimer()
     resetTimer()
-    //setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
-    rowsAndColumns.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
+    setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
+    //rowsAndColumns.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
     clickBlocked.current = true
-    setPoints({ "X": 0, "O": 0 })
+    setPoints({ "X": 0, "O": 0 });
+    actionPoints = 0;
     gameEnd.current = false;
     setGameEndState(false)
     winner.current = ""
     setWinnerState("")
     setUserTurn(true)
-    shouldAIstart.current = false
+    shouldAIstart.current = false;
 
     $(`#buttonStart`)
       .removeClass(`${css.shakeAnimation}`);
     $(`#timerBox`)
-      .removeClass(`${css.changeColor}`)
+      .removeClass(`${css.changeColor}`);
     //setNewGameStarted(false)
     
     
@@ -226,7 +254,7 @@ const Main = () => {
     
     actionPoints = 0;
     IAvalue.current = Math.floor(Math.random() * 9) // BETWEEN 0 & 8
-    rowsAndColumns.current.forEach(e => {
+    rowsAndColumns.forEach(e => {
       $(`#${e.id}`)
       .css("background", "red")
     })
@@ -259,10 +287,11 @@ const Main = () => {
         setTimeout(() => {
           startTimer()
           clickBlocked.current = false
+          gridBlocked.current = false
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else if (result.isDenied) { // START AI
-        //handleClick({})
+        //handleSequence({})
         //resetGame()
         startsIn()
         //console.log("REJECTED")
@@ -274,7 +303,7 @@ const Main = () => {
           .removeClass(`${css.shakeAnimation}`);
         setTimeout(() => {
           startTimer()
-          handleClick({})
+          handleSequence({})
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else {
@@ -286,7 +315,7 @@ const Main = () => {
 
   }
 
-  const buttonHandler = () => {
+  const buttonNewGameHandler = () => {
 
     if (newGameStarted) {
       Swal.fire({
@@ -310,17 +339,6 @@ const Main = () => {
       selectOptions()
     }
   }
-
-  // useEffect(() => {
-  //   //console.log("EXECUTED IA")
-  //   console.log("USEEFFECT FIRST STEP")
-  //   if (shouldAIstart.current && newGameStarted) {
-  //     //console.log("123 EXECUTED INNER IA")
-  //     console.log("EJECUTADO USEEFFECT IA")
-  //     handleClick({})
-  //   }
-  // //},[newGameStarted,shouldAIstart.current])
-  // },[])
 
   $(function() {
     if (!newGameStarted && !newGameStartedRecently.current) {
@@ -423,7 +441,9 @@ const Main = () => {
     }, 3000)
   }
 
-  console.log("rowsAndColumns", rowsAndColumns.current)
+  //console.log("rowsAndColumns", rowsAndColumns.current)
+  console.log("rowsAndColumns", rowsAndColumns)
+  //console.log(JSON.stringify(rowsAndColumns.current, null, 4))
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -433,7 +453,12 @@ const Main = () => {
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
         //onClick={() => resetGame() }
-        onClick={() => { buttonHandler() } }
+        onClick={() => { 
+          //if (!gridBlocked.current) {
+            buttonNewGameHandler()
+          //}
+            
+        } }
       >
         NEW GAME
       </Button>
@@ -481,20 +506,20 @@ const Main = () => {
 
       <div id={`rowsAndColumns`} className={css.rowsAndColumns}>
         {
-          rowsAndColumns.current.map((e, index) => {
+          rowsAndColumns.map((e, index) => {
             return (
               <div
                 key={index}
                 id={`${index}`}
                 onClick={(e) => {
-                  if (newGameStarted) {
-                    handleClick({ target: index })
+                  if (newGameStarted && !clickBlocked.current) {
+                    handleSequence({ target: index })
                   }
 
                 }}
                 className={css.eachBox}
               >
-                { rowsAndColumns.current[index].value }
+                { rowsAndColumns[index].value }
               </div>
             )
           })
