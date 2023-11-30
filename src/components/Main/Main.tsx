@@ -61,6 +61,53 @@ const Main = () => {
     .then(() => { if (!gameEnd.current && validClick.current) AIAction() })
   }
 
+  const countdownHandler = () => {
+    setTimeout(() => { // START COUNTDOWN ROUND
+      setShowCountdownRound(true)
+    }, 3000)
+    setTimeout(() => {
+      setCountdownRound(2)
+    }, 4000)
+    setTimeout(() => {
+      setCountdownRound(1)
+    }, 5000)
+    setTimeout(() => {
+      setCountdownRound(0)
+    }, 6000)
+    setTimeout(() => {
+      setShowCountdownRound(false)
+      setCountdownRound(3)
+      userHasStartedThisRound.current = !userHasStartedThisRound.current
+      if (userHasStartedThisRound.current) {
+        softResetGame()
+
+        //basicOptions()
+        userHasStartedThisRound.current = true
+        setShouldAIstartState(false)
+        //setTimeout(() => {
+          startTimer()
+          clickBlocked.current = false
+        //}, 1000) // SYNC WITH POP-UP CLOSES
+
+
+      } else {
+        //softResetGame()
+        //AIAction()
+        softResetGame()
+        //basicOptions()
+        userHasStartedThisRound.current = false
+        clickBlocked.current = true
+        setShouldAIstartState(true)
+        //setTimeout(() => {
+          startTimer()
+          AIAction()
+        //}, 1000) // SYNC WITH POP-UP CLOSES
+
+
+      }
+    }, 7000)
+  }
+
   const highlighter = async ({ array, letter }: highlighterI) => { // GAME END WITH A WINNER
     actionPoints = actionPoints + 100
     clickBlocked.current = true
@@ -87,26 +134,8 @@ const Main = () => {
         setWinnerState(`${letter}`) // SYNC WITH POP-UP
       }, 300)
     }, 1200)
-
-    setTimeout(() => { // START COUNTDOWN ROUND
-      setShowCountdownRound(true)
-    }, 3000)
-    setTimeout(() => { // START COUNTDOWN ROUND
-      setCountdownRound(2)
-    }, 4000)
-    setTimeout(() => { // START COUNTDOWN ROUND
-      setCountdownRound(1)
-    }, 5000)
-    setTimeout(() => { // START COUNTDOWN ROUND
-      setCountdownRound(0)
-    }, 6000)
-    setTimeout(() => { // START COUNTDOWN ROUND
-      setShowCountdownRound(false)
-      setCountdownRound(3)
-    }, 7000)
-
-
-
+ 
+    countdownHandler() // START COUNTDOWN FOR NEXT ROUND
   }
 
   let actionPoints: number = 0
@@ -181,6 +210,7 @@ const Main = () => {
             if (winner.current === "") {
               setWinnerState("TIED") // SYNC WITH POP-UP
               clickBlocked.current = true
+              countdownHandler() // START COUNTDOWN FOR NEXT ROUND
             }
           }, 1200)
         }
@@ -208,7 +238,28 @@ const Main = () => {
     setNewGameStarted(true) // ADD TIMER IN SCREEN
   }
 
-  const resetGame = () => {
+  const softResetGame = () => {
+    addFlowPopUp()
+    stopTimer()
+    resetTimer()
+    rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
+    clickBlocked.current = true
+    actionPoints = 0;
+    gameEnd.current = false;
+    winner.current = ""
+    setWinnerState("")
+    setUserPlaying(true);
+    removeButtonAnimation()
+    removeTimerChangeColor()
+    actionPoints = 0;
+    AIRandomGridIndex.current = Math.floor(Math.random() * 9) // BETWEEN 0 & 8
+    rC.current.forEach(e => {
+      $(`#${e.id}`)
+      .css("background", "red")
+    })
+  }
+
+  const hardResetGame = () => {
     addFlowPopUp()
     stopTimer()
     resetTimer()
@@ -231,7 +282,7 @@ const Main = () => {
   }
 
   const selectOptions = () => {
-    resetGame();
+    hardResetGame();
     removeButtonAnimation()
     setNewGameStarted(false) // REMOVE TIMER FROM SCREEN
     Swal.fire({
