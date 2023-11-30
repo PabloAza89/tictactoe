@@ -10,12 +10,11 @@ import { pointsI, highlighterI, handleSequenceI } from '../../interfaces/interfa
 
 const Main = () => {
 
-  //let [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
-
   let rowsAndColumns = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let gridBlocked = useRef(true)
+  let continueFlowPopUp = useRef(true)
   const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
   let gameEnd = useRef(false)
   const [ gameEndState, setGameEndState ] = useState(false)
@@ -24,40 +23,30 @@ const Main = () => {
   const [ userTurn, setUserTurn ] = useState(true)
   let shouldAIstart = useRef(false)
   const [ shouldAIstartState, setShouldAIstartState ] = useState(false)
-  //const [ startUser, setStartUser ] = useState(false)
-  const [ newGameStarted, setNewGameStarted ] = useState(false) 
-  //const [ newGameStarted, setNewGameStarted ] = useState(true) // START IMMEDIATELY
+  const [ newGameStarted, setNewGameStarted ] = useState(false)
   let newGameStartedRecently = useRef(false)
   let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
   const AIAction = async () => {
 
     let randomTimes = [ 700, 800, 900, 1000, 1100 ]
-      setTimeout(() => {
-        if (rowsAndColumns.current.filter((e: any) => e.value === '').length >= 1) {
-          let success = false
-          do {
-            AIRandomGridIndex.current = Math.floor(Math.random() * 9)
-            if (rowsAndColumns.current[AIRandomGridIndex.current].value === "") {
-              rowsAndColumns.current[AIRandomGridIndex.current].value = "O"
-              console.log("delay", AIRandomGridIndex.current)
-              success = true
-              shouldAIstart.current = false
-              setShouldAIstartState(false)
-              setUserTurn(true)
-              console.log("while 1ro")
-            }
-          } while (success === false)
-        }
-        console.log("while 2do")
-        checkWinner()
-        .then(() => {
-          console.log("while 3ro")
-          if (!gameEnd.current) {
-            clickBlocked.current = false
+    setTimeout(() => {
+      if (rowsAndColumns.current.filter((e: any) => e.value === '').length >= 1) {
+        let success = false
+        do {
+          AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+          if (rowsAndColumns.current[AIRandomGridIndex.current].value === "") {
+            rowsAndColumns.current[AIRandomGridIndex.current].value = "O"
+            success = true
+            shouldAIstart.current = false
+            setShouldAIstartState(false)
+            setUserTurn(true)
           }
-        })
-      }, randomTimes[Math.floor(Math.random() * 5)])
+        } while (success === false)
+      }
+      checkWinner()
+      .then(() => { if (!gameEnd.current) clickBlocked.current = false })
+    }, randomTimes[Math.floor(Math.random() * 5)])
   }
 
   const userAction = async ( target: any) => {
@@ -67,26 +56,14 @@ const Main = () => {
       setUserTurn(false)
       validClick.current = true
       clickBlocked.current = true
-    } else {
-      validClick.current = false
-    }
+    } else validClick.current = false // CLICK IS NOT VALID
   }
 
   const handleSequence = async ({ target }: handleSequenceI) => {
     shouldAIstart.current = false
     userAction(target)
-    .then(() => {
-      if (validClick.current) {
-        checkWinner()
-      }
-      
-    })
-    .then(() => {
-      console.log("se ejecuta then de AIAction")
-      if (!gameEnd.current && validClick.current) {
-          AIAction()
-      }
-    })
+    .then(() => { if (validClick.current) checkWinner() })
+    .then(() => { if (!gameEnd.current && validClick.current) AIAction() })
   }
 
   const highlighter = async ({ array, letter }: highlighterI) => { // GAME END WITH A WINNER
@@ -121,124 +98,79 @@ const Main = () => {
   let actionPoints: number = 0
 
   const checkWinner = async () => {
-    console.log("arr inner", rowsAndColumns.current)
-
     let rowTargets = [0,3,6]
     let columnsTargets = [0,1,2]
     //let diagonalTargets = [0,2]
     rowTargets.forEach(e => { // ROW
-      if (rowsAndColumns.current.slice(e,e+3).every(e => e.value === 'X')) {
-        console.log("winner here 1")
-        highlighter({ array: rowsAndColumns.current.slice(e,e+3), letter: "X" })
-        
-      }
-      if (rowsAndColumns.current.slice(e,e+3).every(e => e.value === 'O')) {
-        console.log("winner here 2")
-        highlighter({ array: rowsAndColumns.current.slice(e,e+3), letter: "O" })
-        
-      }
+      if (rowsAndColumns.current.slice(e, e + 3).every(e => e.value === 'X')) highlighter({ array: rowsAndColumns.current.slice(e, e + 3), letter: "X" })
+      if (rowsAndColumns.current.slice(e, e + 3).every(e => e.value === 'O')) highlighter({ array: rowsAndColumns.current.slice(e, e + 3), letter: "O" })
     })
 
     columnsTargets.forEach((e, index) => { // COLUMN
-      if ([rowsAndColumns.current[e],rowsAndColumns.current[e+3],rowsAndColumns.current[e+6]].every(e => e.value === 'X')) {
-        console.log("winner here 3")
-        highlighter({ array: [rowsAndColumns.current[e],rowsAndColumns.current[e+3],rowsAndColumns.current[e+6]], letter: "X" })
-        
-      }
-      if ([rowsAndColumns.current[e],rowsAndColumns.current[e+3],rowsAndColumns.current[e+6]].every(e => e.value === 'O')) {
-        console.log("winner here 4")
-        highlighter({ array: [rowsAndColumns.current[e],rowsAndColumns.current[e+3],rowsAndColumns.current[e+6]], letter: "O" })
-        
-      }
+      if ([rowsAndColumns.current[e],rowsAndColumns.current[e + 3],rowsAndColumns.current[e + 6]].every(e => e.value === 'X')) highlighter({ array: [rowsAndColumns.current[e],rowsAndColumns.current[e + 3],rowsAndColumns.current[e + 6]], letter: "X" })
+      if ([rowsAndColumns.current[e],rowsAndColumns.current[e + 3],rowsAndColumns.current[e + 6]].every(e => e.value === 'O')) highlighter({ array: [rowsAndColumns.current[e],rowsAndColumns.current[e + 3],rowsAndColumns.current[e + 6]], letter: "O" })
     })
 
-    if ([rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]].every(e => e.value === 'X')) { // DIAGONAL
-      console.log("winner here 5")
-      highlighter({ array: [rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]], letter: "X" })
-      
-    }
-    if ([rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]].every(e => e.value === 'O')) {
-      console.log("winner here 6")
-      highlighter({ array: [rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]], letter: "O" })
-      
-    }
-    if ([rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]].every(e => e.value === 'X')) {
-      console.log("winner here 7")
-      highlighter({ array: [rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]], letter: "X" })
-      
-    }
-    if ([rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]].every(e => e.value === 'O')) {
-      console.log("winner here 8")
-      highlighter({ array: [rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]], letter: "O" })
-      
-    }
+    // DIAGONAL
+    if ([rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]].every(e => e.value === 'X')) highlighter({ array: [rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]], letter: "X" })
+    if ([rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]].every(e => e.value === 'O')) highlighter({ array: [rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]], letter: "O" })
+    if ([rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]].every(e => e.value === 'X')) highlighter({ array: [rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]], letter: "X" })
+    if ([rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]].every(e => e.value === 'O')) highlighter({ array: [rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]], letter: "O" })
 
     if (rowsAndColumns.current.filter(e => e.value === '').length === 0) gameEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
-
-    //if (rowsAndColumns.current.filter(e => e.value === '').length === 0 || gameEnd.current) {
+    
     if (gameEnd.current) {
       setGameEndState(true)
       stopTimer()
 
       setTimeout(() => {
-        Swal.fire({
-          title:
-            winner.current === "X" ?
-            `YOU WIN !` :
-            winner.current === "O" ?
-            `AI WIN !` :
-            `TIED GAME`,
-          text:
-            actionPoints === 100 ?
-            `+100 Points` :
-            actionPoints === 200 ?
-            `+200 Points !! Supperrrb !!!` :
-            `no winner, no points.`,
-          icon:
-            winner.current === "" ?
-            'info' :
-            'success',
-          showConfirmButton: false,
-          showDenyButton: false,
-          showCancelButton: false,
-          timer: 2000,
-        })
+        if (continueFlowPopUp.current) {
+          Swal.fire({
+            title:
+              winner.current === "X" ?
+              `YOU WIN !` :
+              winner.current === "O" ?
+              `AI WIN !` :
+              `TIED GAME`,
+            text:
+              actionPoints === 100 ?
+              `+100 Points` :
+              actionPoints === 200 ?
+              `+200 Points !! Supperrrb !!!` :
+              `no winner, no points.`,
+            icon:
+              winner.current === "" ?
+              'info' :
+              'success',
+            showConfirmButton: false,
+            showDenyButton: false,
+            showCancelButton: false,
+            timer: 2000,
+          })
 
-        setTimeout(() => {
-          if (!(winner.current !== "" && winner.current === "X") && !(winner.current !== "" && winner.current === "O")) {
-            setWinnerState("TIED")
-            clickBlocked.current = true
-          }
-        }, 1200)
-
+          setTimeout(() => {
+            if (!(winner.current !== "" && winner.current === "X") && !(winner.current !== "" && winner.current === "O")) {
+              setWinnerState("TIED")
+              clickBlocked.current = true
+            }
+          }, 1200)
+        }
       }, 1200)
 
       setTimeout(() => {
-        //if (gameEnd.current) {
+        if (gameEnd.current) { // MAKE SURE THERE ISN'T A NEW GAME TO MAKE THE ANIMATION
           $(`#timerBox`)
             .addClass(`${css.changeColor}`)
-        //}
-          
-
+        }
       }, 3200)
-
-    } 
-    // else {
-    //   clickBlocked.current = false
-    // }
+    }
   }
 
-  function resetGame() {
+  const resetGame = () => {
 
+    continueFlowPopUp.current = true
     stopTimer()
     resetTimer()
-    //let qq = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
-    // setRowsAndColumns([
-    //   { id: 0, value: '' }, { id: 1, value: '' }, { id: 2, value: '' },
-    //   { id: 3, value: '' }, { id: 4, value: '' }, { id: 5, value: '' },
-    //   { id: 6, value: '' }, { id: 7, value: '' }, { id: 8, value: '' }
-    // ])
-    //setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
     rowsAndColumns.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 });
@@ -247,21 +179,11 @@ const Main = () => {
     setGameEndState(false)
     winner.current = ""
     setWinnerState("")
-    setUserTurn(true)
-    //shouldAIstart.current = false;
-    
-
+    setUserTurn(true);
     $(`#buttonStart`)
       .removeClass(`${css.shakeAnimation}`);
     $(`#timerBox`)
       .removeClass(`${css.changeColor}`);
-    //setNewGameStarted(false)
-    
-    
-    
-    
-    
-    
     actionPoints = 0;
     AIRandomGridIndex.current = Math.floor(Math.random() * 9) // BETWEEN 0 & 8
     rowsAndColumns.current.forEach(e => {
@@ -271,13 +193,12 @@ const Main = () => {
   }
 
   const selectOptions = () => {
+    resetGame();
     $(`#buttonStart`)
       .removeClass(`${css.shakeAnimation}`);
-
     Swal.fire({
       title: `WELCOME TO TIC-TAC-TOE !`,
       text: 'Please, select who start first..',
-      //icon: 'info',
       showDenyButton: true,
       confirmButtonText: 'LET ME START !',
       denyButtonText: `    AI STARTS !   `,
@@ -285,13 +206,8 @@ const Main = () => {
       denyButtonColor: '#008000', // RIGHT OPTION
     })
     .then((result) => {
-      //setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
-      //resetGame()
       if (result.isConfirmed) { // START USER
-        //resetGame()
         startsIn()
-        //setRowsAndColumns(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
-        //console.log("CONFIRMED")
         setNewGameStarted(true)
         setShouldAIstartState(false)
         shouldAIstart.current = false
@@ -305,8 +221,6 @@ const Main = () => {
       }
       else if (result.isDenied) { // START AI
         startsIn()
-        
-        //console.log("REJECTED")
         setNewGameStarted(true)
         shouldAIstart.current = true
         clickBlocked.current = true
@@ -319,16 +233,14 @@ const Main = () => {
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else {
-        //console.log("OTHER")
         $(`#buttonStart`)
           .addClass(`${css.shakeAnimation}`)
       }
     })
-
   }
 
   const buttonNewGameHandler = () => {
-
+    continueFlowPopUp.current = false // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
     if (newGameStarted) {
       Swal.fire({
         title: `DO YOU WANT TO START A NEW GAME ?`,
@@ -340,17 +252,13 @@ const Main = () => {
         confirmButtonColor: '#800080', // LEFT OPTION
         denyButtonColor: '#008000', // RIGHT OPTION
       })
-      .then((result) => {
-        if (result.isConfirmed) {
-          resetGame()
+      .then((result) => { 
+        if (result.isConfirmed) { // CONFIRM NEW GAME
           selectOptions()
-        }
+        } // ELSE CONTINUE GAME === DO NOTHING
       })
 
-    } else {
-      resetGame()
-      selectOptions()
-    }
+    } else selectOptions() // WHEN NO CURRENT GAME
   }
 
   $(function() {
@@ -367,7 +275,7 @@ const Main = () => {
   let paused = useRef(true);
 
   render();
-    
+
   function startTimer() {
     if (paused.current) {
       paused.current = false;
@@ -377,7 +285,6 @@ const Main = () => {
   }
 
   function stopTimer() {
-    //console.log("PAUSED VALUE", paused.current)
     if (!paused.current) {
       paused.current = true;
       offset.current += Date.now();
@@ -454,9 +361,7 @@ const Main = () => {
     }, 3000)
   }
 
-  //console.log("rowsAndColumns", rowsAndColumns.current)
   console.log("rowsAndColumns", rowsAndColumns.current)
-  //console.log(JSON.stringify(rowsAndColumns.current, null, 4))
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -465,7 +370,6 @@ const Main = () => {
         className={css.button}
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
-        //onClick={() => resetGame() }
         onClick={() => { 
           //if (!gridBlocked.current) {
             buttonNewGameHandler()
@@ -538,17 +442,6 @@ const Main = () => {
           })
         }
       </div>
-
-      <Button
-        id={`buttonStart`}
-        className={css.button}
-        variant="outlined"
-        //onClick={() => { console.log("clicked") } }
-      >
-        TEST
-      </Button>
-
-
     </div>
   );
 }
