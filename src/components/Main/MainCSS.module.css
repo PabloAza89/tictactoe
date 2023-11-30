@@ -28,6 +28,12 @@
   animation-iteration-count: none;
 }
 
+/* #buttonStart {
+  animation-name: shake;
+  animation-duration: 2.5s;
+  animation-iteration-count: infinite;
+} */
+
 .shakeAnimation {
   animation-name: shake;
   animation-duration: 2.5s;

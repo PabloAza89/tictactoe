@@ -1,9 +1,7 @@
 import css from './MainCSS.module.css';
 import com from '../../commons/commonsCSS.module.css';
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from "react-router-dom";
 import { Button } from '@mui/material/';
-import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
 import { pointsI, highlighterI, handleSequenceI } from '../../interfaces/interfaces';
@@ -13,18 +11,15 @@ const Main = () => {
   let rowsAndColumns = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
-  let gridBlocked = useRef(true)
   let continueFlowPopUp = useRef(true)
   const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
   let gameEnd = useRef(false)
-  const [ gameEndState, setGameEndState ] = useState(false)
   let winner = useRef("")
-  const [ winnerState, setWinnerState ] = useState("")
+  const [ winnerState, setWinnerState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
   const [ userTurn, setUserTurn ] = useState(true)
   let shouldAIstart = useRef(false)
-  const [ shouldAIstartState, setShouldAIstartState ] = useState(false)
+  const [ shouldAIstartState, setShouldAIstartState ] = useState(false) // ONLY FOR GAME UI DISPLAY REASONS..
   const [ newGameStarted, setNewGameStarted ] = useState(false)
-  let newGameStartedRecently = useRef(false)
   let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
   const AIAction = async () => {
@@ -70,7 +65,6 @@ const Main = () => {
     actionPoints = actionPoints + 100
     clickBlocked.current = true
     gameEnd.current = true
-    setGameEndState(true)
     setTimeout(() => {
       $(`#${array[0].id}`)
         .css("background", "yellow")
@@ -90,7 +84,7 @@ const Main = () => {
       setPoints(copyPoints)
       winner.current = `${letter}`
       setTimeout(() => {
-        setWinnerState(`${letter}`) // APPEARS WHEN POP-UP
+        setWinnerState(`${letter}`) // SYNC WITH POP-UP
       }, 300)
     }, 1200)
   }
@@ -118,11 +112,9 @@ const Main = () => {
     if ([rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]].every(e => e.value === 'O')) highlighter({ array: [rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]], letter: "O" })
 
     if (rowsAndColumns.current.filter(e => e.value === '').length === 0) gameEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
-    
-    if (gameEnd.current) {
-      setGameEndState(true)
-      stopTimer()
 
+    if (gameEnd.current) {
+      stopTimer()
       setTimeout(() => {
         if (continueFlowPopUp.current) {
           Swal.fire({
@@ -147,10 +139,9 @@ const Main = () => {
             showCancelButton: false,
             timer: 2000,
           })
-
           setTimeout(() => {
-            if (!(winner.current !== "" && winner.current === "X") && !(winner.current !== "" && winner.current === "O")) {
-              setWinnerState("TIED")
+            if (winner.current === "") {
+              setWinnerState("TIED") // SYNC WITH POP-UP
               clickBlocked.current = true
             }
           }, 1200)
@@ -158,16 +149,26 @@ const Main = () => {
       }, 1200)
 
       setTimeout(() => {
-        if (gameEnd.current) { // MAKE SURE THERE ISN'T A NEW GAME TO MAKE THE ANIMATION
-          $(`#timerBox`)
-            .addClass(`${css.changeColor}`)
-        }
+        if (gameEnd.current) addTimerChangeColor() // MAKE SURE THERE ISN'T A NEW GAME TO MAKE THE ANIMATION
       }, 3200)
     }
   }
 
-  const resetGame = () => {
+  const addButtonAnimation = () => $(`#buttonStart`).addClass(`${css.shakeAnimation}`);
+  const removeButtonAnimation = () => $(`#buttonStart`).removeClass(`${css.shakeAnimation}`);
+  const addTimerChangeColor = () => $(`#timerBox`).addClass(`${css.changeColor}`);
+  const removeTimerChangeColor = () => $(`#timerBox`).removeClass(`${css.changeColor}`);
 
+  useEffect(() => { // BUTTON SHAKE ANIMATION AT VERY FIRST TIME
+    addButtonAnimation()
+  },[])
+
+  const basicOptions = () => {
+    startsIn()
+    setNewGameStarted(true) // ADD TIMER IN SCREEN
+  }
+
+  const resetGame = () => {
     continueFlowPopUp.current = true
     stopTimer()
     resetTimer()
@@ -176,14 +177,11 @@ const Main = () => {
     setPoints({ "X": 0, "O": 0 });
     actionPoints = 0;
     gameEnd.current = false;
-    setGameEndState(false)
     winner.current = ""
     setWinnerState("")
     setUserTurn(true);
-    $(`#buttonStart`)
-      .removeClass(`${css.shakeAnimation}`);
-    $(`#timerBox`)
-      .removeClass(`${css.changeColor}`);
+    removeButtonAnimation()
+    removeTimerChangeColor()
     actionPoints = 0;
     AIRandomGridIndex.current = Math.floor(Math.random() * 9) // BETWEEN 0 & 8
     rowsAndColumns.current.forEach(e => {
@@ -194,8 +192,8 @@ const Main = () => {
 
   const selectOptions = () => {
     resetGame();
-    $(`#buttonStart`)
-      .removeClass(`${css.shakeAnimation}`);
+    removeButtonAnimation()
+    setNewGameStarted(false) // REMOVE TIMER FROM SCREEN
     Swal.fire({
       title: `WELCOME TO TIC-TAC-TOE !`,
       text: 'Please, select who start first..',
@@ -207,40 +205,31 @@ const Main = () => {
     })
     .then((result) => {
       if (result.isConfirmed) { // START USER
-        startsIn()
-        setNewGameStarted(true)
-        setShouldAIstartState(false)
+        basicOptions()
         shouldAIstart.current = false
-        $(`#buttonStart`)
-          .removeClass(`${css.shakeAnimation}`);
+        setShouldAIstartState(false)
         setTimeout(() => {
           startTimer()
           clickBlocked.current = false
-          gridBlocked.current = false
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else if (result.isDenied) { // START AI
-        startsIn()
-        setNewGameStarted(true)
-        shouldAIstart.current = true
+        basicOptions()
         clickBlocked.current = true
+        shouldAIstart.current = true
         setShouldAIstartState(true)
-        $(`#buttonStart`)
-          .removeClass(`${css.shakeAnimation}`);
         setTimeout(() => {
           startTimer()
           AIAction()
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
-      else {
-        $(`#buttonStart`)
-          .addClass(`${css.shakeAnimation}`)
-      }
+      else addButtonAnimation()
     })
   }
 
   const buttonNewGameHandler = () => {
     continueFlowPopUp.current = false // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
+    removeButtonAnimation()
     if (newGameStarted) {
       Swal.fire({
         title: `DO YOU WANT TO START A NEW GAME ?`,
@@ -252,24 +241,13 @@ const Main = () => {
         confirmButtonColor: '#800080', // LEFT OPTION
         denyButtonColor: '#008000', // RIGHT OPTION
       })
-      .then((result) => { 
-        if (result.isConfirmed) { // CONFIRM NEW GAME
-          selectOptions()
-        } // ELSE CONTINUE GAME === DO NOTHING
+      .then((result) => {
+        if (result.isConfirmed) selectOptions() // CONFIRM NEW GAME
+        // ELSE CONTINUE GAME === DO NOTHING
       })
 
     } else selectOptions() // WHEN NO CURRENT GAME
   }
-
-  $(function() {
-    if (!newGameStarted && !newGameStartedRecently.current) {
-      $(`#buttonStart`)
-        .addClass(`${css.shakeAnimation}`)
-    } else {
-      $(`#buttonStart`)
-        .removeClass(`${css.shakeAnimation}`);
-    }
-  })
 
   let offset = useRef(0);
   let paused = useRef(true);
@@ -308,11 +286,11 @@ const Main = () => {
 
     var value = paused.current ? offset.current : Date.now() + offset.current;
 
-    let miliseconds = document.getElementById('s_ms')
+    let miliseconds = document.getElementById('timer_ms')
     if (miliseconds !== null) miliseconds.textContent = format(value, 1, 1000, 3);
-    let seconds = document.getElementById('s_seconds')
+    let seconds = document.getElementById('timer_seconds')
     if (seconds !== null) seconds.textContent = format(value, 1000, 60, 2);
-    let minutes = document.getElementById('s_minutes')
+    let minutes = document.getElementById('timer_minutes')
     if (minutes !== null) minutes.textContent = format(value, 60000, 60, 2);
 
     if(!paused.current) requestAnimationFrame(render);
@@ -370,12 +348,9 @@ const Main = () => {
         className={css.button}
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
-        onClick={() => { 
-          //if (!gridBlocked.current) {
-            buttonNewGameHandler()
-          //}
-            
-        } }
+        onClick={() => {
+          buttonNewGameHandler()
+        }}
       >
         NEW GAME
       </Button>
@@ -384,22 +359,22 @@ const Main = () => {
           <div className={css.pointsTitle}>Points:</div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ shouldAIstartState ? null : newGameStarted && userTurn && !gameEndState ? `TURN ` : null }</div>
+          <div className={css.turn}>{ shouldAIstartState ? null : newGameStarted && userTurn && !gameEnd.current ? `TURN ` : null }</div>
           <div className={css.participantName}>You:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.X} </div></div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ shouldAIstartState ? `TURN ` : newGameStarted && !userTurn && !gameEndState ? `TURN ` : null }</div>
+          <div className={css.turn}>{ shouldAIstartState ? `TURN ` : newGameStarted && !userTurn && !gameEnd.current ? `TURN ` : null }</div>
           <div className={css.participantName}>AI:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.O} </div></div>
         </div>
         <div className={css.finalWinner}>
           {
-            winner.current !== "" && winnerState === "X" ?
+            gameEnd.current && winnerState === "X" ?
             `WINNER: YOU !` :
-            winner.current !== "" && winnerState === "O" ?
+            gameEnd.current && winnerState === "O" ?
             `WINNER: AI !` :
-            winner.current === "" && winnerState === "TIED" ?
+            gameEnd.current && winnerState === "TIED" ?
             `TIED GAME !` :
             null
           }
@@ -412,15 +387,12 @@ const Main = () => {
           className={css.timer}
         >
           <div>TIME:  </div>
-          <div id={`s_minutes`} className={css.eachTime}>00</div>:
-          <div id={`s_seconds`} className={css.eachTime}>00</div>
+          <div id={`timer_minutes`} className={css.eachTime}>00</div>:
+          <div id={`timer_seconds`} className={css.eachTime}>00</div>
           <div className={css.smallerMili}>:</div>
-          <div id={`s_ms`} className={`${css.smallerMili} ${css.eachTimeMini}`}>000</div>
+          <div id={`timer_ms`} className={`${css.smallerMili} ${css.eachTimeMini}`}>000</div>
         </div>
       </div >
-
-      
-
       <div id={`rowsAndColumns`} className={css.rowsAndColumns}>
         {
           rowsAndColumns.current.map((e, index) => {
@@ -432,7 +404,6 @@ const Main = () => {
                   if (!clickBlocked.current) {
                     handleSequence({ target: index })
                   }
-
                 }}
                 className={css.eachBox}
               >
