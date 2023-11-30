@@ -14,6 +14,7 @@ const Main = () => {
 
   let rowsAndColumns = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
   let clickBlocked = useRef(true)
+  let validClick = useRef(false)
   let gridBlocked = useRef(true)
   const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
   let gameEnd = useRef(false)
@@ -30,21 +31,15 @@ const Main = () => {
   let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
   const AIAction = async () => {
-    //clickBlocked.current = true
-    //let copyRowsAndColumns = [...rowsAndColumns]
 
     let randomTimes = [ 700, 800, 900, 1000, 1100 ]
-    //const abc = async () => {
       setTimeout(() => {
         if (rowsAndColumns.current.filter((e: any) => e.value === '').length >= 1) {
-          //console.log("123 entro AI 2")
           let success = false
           do {
             AIRandomGridIndex.current = Math.floor(Math.random() * 9)
             if (rowsAndColumns.current[AIRandomGridIndex.current].value === "") {
               rowsAndColumns.current[AIRandomGridIndex.current].value = "O"
-              //setRowsAndColumns(rowsAndColumns)
-              //setClickBlocked(false)
               console.log("delay", AIRandomGridIndex.current)
               success = true
               shouldAIstart.current = false
@@ -56,85 +51,45 @@ const Main = () => {
         }
         console.log("while 2do")
         checkWinner()
+        .then(() => {
+          console.log("while 3ro")
+          if (!gameEnd.current) {
+            clickBlocked.current = false
+          }
+        })
       }, randomTimes[Math.floor(Math.random() * 5)])
-   // }
-
-    // console.log("while 2do")
-    //           checkWinner()
-
-    //  abc().then(() => {
-    //           console.log("while 2do")
-    //           checkWinner()
-    //         })
-
-
-    // setTimeout(() => {
-    //   console.log("while 2do")
-    // }, 0)
-   
-
   }
 
-    const userAction = async ( target: any) => {
-      //let copyRowsAndColumns = [...rowsAndColumns.current]
-      //let copyRowsAndColumns = [...rowsAndColumns]
-      //console.log("123", copyRowsAndColumns)
-
-      //if (target !== undefined && copyRowsAndColumns[target].value === "" && !clickBlocked.current && !gameEnd.current && userTurn) {
-      if (target !== undefined && rowsAndColumns.current[target].value === "") {
-        //console.log("123 USUARIO EJECUTO NORMALMENTE")
-        //setClickBlocked(true)
-        
-        rowsAndColumns.current[target].value = "X"
-        //setRowsAndColumns(rowsAndColumns)
-        setUserTurn(false)
-        clickBlocked.current = true
-      }
+  const userAction = async ( target: any) => {
+    if (target !== undefined && rowsAndColumns.current[target].value === "") {
+      console.log("while se ejecuto func de user, valid click")
+      rowsAndColumns.current[target].value = "X"
+      setUserTurn(false)
+      validClick.current = true
+      clickBlocked.current = true
+    } else {
+      validClick.current = false
     }
+  }
 
   const handleSequence = async ({ target }: handleSequenceI) => {
-
-    //else if (!clickBlocked.current) {
-      shouldAIstart.current = false
-      userAction(target)
-      .then(() => {
-        //let arr = [...rowsAndColumns]
+    shouldAIstart.current = false
+    userAction(target)
+    .then(() => {
+      if (validClick.current) {
         checkWinner()
-        //.then(async() => checkWinner())
-      })
-      .then(() => {
-        console.log("se ejecuta then de AIAction")
+      }
       
-        if (!gameEnd.current) {
-          
-            AIAction()
-            
-            //console.log("123 primero este")
-          
-        }
-     
-        
-      })
-      //  .then(() => {
-      //   console.log("se ejecuta then de checkWinner")
-      //     // if (winner.current === '' && !gameEnd.current) {
-      //     //   clickBlocked.current = false
-      //     //   gridBlocked.current = false
-      //     // }
-      //     //let arr = [...rowsAndColumns]
-      //     if (!gameEnd.current) {
-      //       setTimeout(() => {
-      //         checkWinner()
-      //         console.log("123 primero este")
-      //       }, AIRandomGridIndex.current + 1000)
-      //     }
-      //   })
-     
-      
-   // }
+    })
+    .then(() => {
+      console.log("se ejecuta then de AIAction")
+      if (!gameEnd.current && validClick.current) {
+          AIAction()
+      }
+    })
   }
 
-  const highlighter = async ({ array, letter }: highlighterI) => {
+  const highlighter = async ({ array, letter }: highlighterI) => { // GAME END WITH A WINNER
     actionPoints = actionPoints + 100
     clickBlocked.current = true
     gameEnd.current = true
@@ -164,21 +119,10 @@ const Main = () => {
   }
 
   let actionPoints: number = 0
-  
 
-  const checkWinner = () => {
-    //shouldAIstart.current = false
-    //let arr = [...rowsAndColumns]
-    //let arr: any[]
-
-    // if (newGameStarted) arr =  [...rowsAndColumns]
-    // else arr =  [...rowsAndColumns]
-    
-    //console.log("arr inner", arr)
+  const checkWinner = async () => {
     console.log("arr inner", rowsAndColumns.current)
-    
-    //let arr = rowsAndColumns
-    
+
     let rowTargets = [0,3,6]
     let columnsTargets = [0,1,2]
     //let diagonalTargets = [0,2]
@@ -280,10 +224,8 @@ const Main = () => {
 
     } 
     // else {
-    //   gridBlocked.current = false
     //   clickBlocked.current = false
     // }
-
   }
 
   function resetGame() {
@@ -362,9 +304,6 @@ const Main = () => {
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else if (result.isDenied) { // START AI
-        //handleSequence({})
-        //resetGame()
-        //resetGame()
         startsIn()
         
         //console.log("REJECTED")
@@ -376,7 +315,6 @@ const Main = () => {
           .removeClass(`${css.shakeAnimation}`);
         setTimeout(() => {
           startTimer()
-          //handleSequence({})
           AIAction()
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
@@ -587,9 +525,9 @@ const Main = () => {
                 key={index}
                 id={`${index}`}
                 onClick={(e) => {
-                  //if (newGameStarted && !clickBlocked.current) {
+                  if (!clickBlocked.current) {
                     handleSequence({ target: index })
-                  //}
+                  }
 
                 }}
                 className={css.eachBox}
