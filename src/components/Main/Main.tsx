@@ -15,7 +15,7 @@ const Main = () => {
   //   { id: 0, value: '' }, { id: 1, value: '' }, { id: 2, value: '' },
   //   { id: 3, value: '' }, { id: 4, value: '' }, { id: 5, value: '' },
   //   { id: 6, value: '' }, { id: 7, value: '' }, { id: 8, value: '' }
-  // ])
+  // ]) 
   
   let rowsAndColumns = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
   let clickBlocked = useRef(true)
