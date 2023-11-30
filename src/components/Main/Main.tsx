@@ -8,7 +8,7 @@ import { pointsI, highlighterI, handleSequenceI } from '../../interfaces/interfa
 
 const Main = () => {
 
-  let rowsAndColumns = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
+  let rC = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -26,12 +26,12 @@ const Main = () => {
 
     let randomTimes = [ 700, 800, 900, 1000, 1100 ]
     setTimeout(() => {
-      if (rowsAndColumns.current.filter((e: any) => e.value === '').length >= 1) {
+      if (rC.current.filter((e: any) => e.value === '').length >= 1) {
         let success = false
         do {
           AIRandomGridIndex.current = Math.floor(Math.random() * 9)
-          if (rowsAndColumns.current[AIRandomGridIndex.current].value === "") {
-            rowsAndColumns.current[AIRandomGridIndex.current].value = "O"
+          if (rC.current[AIRandomGridIndex.current].value === "") {
+            rC.current[AIRandomGridIndex.current].value = "O"
             success = true
             shouldAIstart.current = false
             setShouldAIstartState(false)
@@ -45,9 +45,9 @@ const Main = () => {
   }
 
   const userAction = async ( target: any) => {
-    if (target !== undefined && rowsAndColumns.current[target].value === "") {
+    if (target !== undefined && rC.current[target].value === "") {
       console.log("while se ejecuto func de user, valid click")
-      rowsAndColumns.current[target].value = "X"
+      rC.current[target].value = "X"
       setUserTurn(false)
       validClick.current = true
       clickBlocked.current = true
@@ -92,26 +92,39 @@ const Main = () => {
   let actionPoints: number = 0
 
   const checkWinner = async () => {
-    let rowTargets = [0,3,6]
-    let columnsTargets = [0,1,2]
-    //let diagonalTargets = [0,2]
-    rowTargets.forEach(e => { // ROW
-      if (rowsAndColumns.current.slice(e, e + 3).every(e => e.value === 'X')) highlighter({ array: rowsAndColumns.current.slice(e, e + 3), letter: "X" })
-      if (rowsAndColumns.current.slice(e, e + 3).every(e => e.value === 'O')) highlighter({ array: rowsAndColumns.current.slice(e, e + 3), letter: "O" })
+    let rT = [0,3,6,9] // rowTargets
+    let cT = [0,1,2,3] // columnsTargets
+    rT.slice(0,-1).forEach((e, i) => { // ROW
+      //                        (6, rt[2+1])
+      //                        (3, rt[1+1])
+      //                        (0, rt[0+1])
+      let row = rC.current.slice(e, rT[i+1])
+      if (row.every(e => e.value === 'X')) highlighter({ array: row, letter: "X" })
+      if (row.every(e => e.value === 'O')) highlighter({ array: row, letter: "O" })
     })
 
-    columnsTargets.forEach((e, index) => { // COLUMN
-      if ([rowsAndColumns.current[e],rowsAndColumns.current[e + 3],rowsAndColumns.current[e + 6]].every(e => e.value === 'X')) highlighter({ array: [rowsAndColumns.current[e],rowsAndColumns.current[e + 3],rowsAndColumns.current[e + 6]], letter: "X" })
-      if ([rowsAndColumns.current[e],rowsAndColumns.current[e + 3],rowsAndColumns.current[e + 6]].every(e => e.value === 'O')) highlighter({ array: [rowsAndColumns.current[e],rowsAndColumns.current[e + 3],rowsAndColumns.current[e + 6]], letter: "O" })
+    cT.slice(0,-1).forEach((e) => { // COLUMN
+      let column: any[] = []
+      cT.slice(0,-1).forEach((_,i) => {
+        //          2 + 0 * 3                              2 + 1 * 3         2 + 2 * 3
+        //          1 + 0 * 3                              1 + 1 * 3         1 + 2 * 3
+        //          0 + 0 * 3                              0 + 1 * 3         0 + 2 * 3
+        //            0 1 2                                  3 4 5             6 7 8
+        column.push(rC.current[e + i * cT.slice(-1)[0]])
+      })
+
+      if (column.every(e => e.value === 'X')) highlighter({ array: column, letter: "X" })
+      if (column.every(e => e.value === 'O')) highlighter({ array: column, letter: "O" })
+
     })
 
     // DIAGONAL
-    if ([rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]].every(e => e.value === 'X')) highlighter({ array: [rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]], letter: "X" })
-    if ([rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]].every(e => e.value === 'O')) highlighter({ array: [rowsAndColumns.current[0],rowsAndColumns.current[4],rowsAndColumns.current[8]], letter: "O" })
-    if ([rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]].every(e => e.value === 'X')) highlighter({ array: [rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]], letter: "X" })
-    if ([rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]].every(e => e.value === 'O')) highlighter({ array: [rowsAndColumns.current[2],rowsAndColumns.current[4],rowsAndColumns.current[6]], letter: "O" })
+    if ([rC.current[0],rC.current[4],rC.current[8]].every(e => e.value === 'X')) highlighter({ array: [rC.current[0],rC.current[4],rC.current[8]], letter: "X" })
+    if ([rC.current[0],rC.current[4],rC.current[8]].every(e => e.value === 'O')) highlighter({ array: [rC.current[0],rC.current[4],rC.current[8]], letter: "O" })
+    if ([rC.current[2],rC.current[4],rC.current[6]].every(e => e.value === 'X')) highlighter({ array: [rC.current[2],rC.current[4],rC.current[6]], letter: "X" })
+    if ([rC.current[2],rC.current[4],rC.current[6]].every(e => e.value === 'O')) highlighter({ array: [rC.current[2],rC.current[4],rC.current[6]], letter: "O" })
 
-    if (rowsAndColumns.current.filter(e => e.value === '').length === 0) gameEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
+    if (rC.current.filter(e => e.value === '').length === 0) gameEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
 
     if (gameEnd.current) {
       stopTimer()
@@ -172,7 +185,7 @@ const Main = () => {
     continueFlowPopUp.current = true
     stopTimer()
     resetTimer()
-    rowsAndColumns.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
+    rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 });
     actionPoints = 0;
@@ -184,7 +197,7 @@ const Main = () => {
     removeTimerChangeColor()
     actionPoints = 0;
     AIRandomGridIndex.current = Math.floor(Math.random() * 9) // BETWEEN 0 & 8
-    rowsAndColumns.current.forEach(e => {
+    rC.current.forEach(e => {
       $(`#${e.id}`)
       .css("background", "red")
     })
@@ -339,7 +352,7 @@ const Main = () => {
     }, 3000)
   }
 
-  console.log("rowsAndColumns", rowsAndColumns.current)
+  console.log("rC", rC.current)
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -393,9 +406,9 @@ const Main = () => {
           <div id={`timer_ms`} className={`${css.smallerMili} ${css.eachTimeMini}`}>000</div>
         </div>
       </div >
-      <div id={`rowsAndColumns`} className={css.rowsAndColumns}>
+      <div className={css.rowsAndColumns}>
         {
-          rowsAndColumns.current.map((e, index) => {
+          rC.current.map((e, index) => {
             return (
               <div
                 key={index}
@@ -407,7 +420,7 @@ const Main = () => {
                 }}
                 className={css.eachBox}
               >
-                { rowsAndColumns.current[index].value }
+                { rC.current[index].value }
               </div>
             )
           })
