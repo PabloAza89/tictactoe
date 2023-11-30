@@ -10,6 +10,38 @@
   align-items: center;
 }
 
+.nextGameIn {
+  display: flex;
+  position: absolute;
+  background: orange; /* DEV */
+  width: 200px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 26px;
+  font-weight: 500;
+  padding-bottom: 4px;
+  bottom: -67px;
+  left: -20px;
+  justify-content: center;
+}
+
+.nextGameInInner {
+  width: 200px;
+  /* background: red; */ /* DEV */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.nextGameText {
+  width: 178px;
+  /* background: orange; */ /* DEV */
+}
+
+.nextGameNumber {
+  width: 22px;
+  /* background: orange; */ /* DEV */
+}
 
 .button {
   margin-bottom: 10px !important;
@@ -211,6 +243,7 @@
 
 .rowsAndColumns {
   display: flex;
+  position: relative;
   background: gray;
   width: 150px;
   height: 150px;

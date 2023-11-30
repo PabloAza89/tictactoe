@@ -16,10 +16,8 @@ const Main = () => {
   let gameEnd = useRef(false)
   let winner = useRef("")
   const [ winnerState, setWinnerState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
-  const [ userPlaying, setUserPlaying ] = useState(true)
-  let userHasStartedThisRound = useRef(true)
-  const [ countdownRound, setCountdownRound ] = useState<number>(3)
-  const [ showCountdownRound, setShowCountdownRound ] = useState<boolean>(false)
+  const [ userTurn, setUserTurn ] = useState(true)
+  let shouldAIstart = useRef(false)
   const [ shouldAIstartState, setShouldAIstartState ] = useState(false) // ONLY FOR GAME UI DISPLAY REASONS..
   const [ newGameStarted, setNewGameStarted ] = useState(false)
   let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
@@ -35,8 +33,9 @@ const Main = () => {
           if (rC.current[AIRandomGridIndex.current].value === "") {
             rC.current[AIRandomGridIndex.current].value = "O"
             success = true
+            shouldAIstart.current = false
             setShouldAIstartState(false)
-            setUserPlaying(true)
+            setUserTurn(true)
           }
         } while (success === false)
       }
@@ -49,13 +48,14 @@ const Main = () => {
     if (target !== undefined && rC.current[target].value === "") {
       console.log("while se ejecuto func de user, valid click")
       rC.current[target].value = "X"
-      setUserPlaying(false)
+      setUserTurn(false)
       validClick.current = true
       clickBlocked.current = true
     } else validClick.current = false // CLICK IS NOT VALID
   }
 
   const handleSequence = async ({ target }: handleSequenceI) => {
+    shouldAIstart.current = false
     userAction(target)
     .then(() => { if (validClick.current) checkWinner() })
     .then(() => { if (!gameEnd.current && validClick.current) AIAction() })
@@ -87,26 +87,6 @@ const Main = () => {
         setWinnerState(`${letter}`) // SYNC WITH POP-UP
       }, 300)
     }, 1200)
-
-    setTimeout(() => { // START COUNTDOWN ROUND
-      setShowCountdownRound(true)
-    }, 3000)
-    setTimeout(() => { // START COUNTDOWN ROUND
-      setCountdownRound(2)
-    }, 4000)
-    setTimeout(() => { // START COUNTDOWN ROUND
-      setCountdownRound(1)
-    }, 5000)
-    setTimeout(() => { // START COUNTDOWN ROUND
-      setCountdownRound(0)
-    }, 6000)
-    setTimeout(() => { // START COUNTDOWN ROUND
-      setShowCountdownRound(false)
-      setCountdownRound(3)
-    }, 7000)
-
-
-
   }
 
   let actionPoints: number = 0
@@ -219,7 +199,7 @@ const Main = () => {
     gameEnd.current = false;
     winner.current = ""
     setWinnerState("")
-    setUserPlaying(true);
+    setUserTurn(true);
     removeButtonAnimation()
     removeTimerChangeColor()
     actionPoints = 0;
@@ -246,7 +226,7 @@ const Main = () => {
     .then((result) => {
       if (result.isConfirmed) { // START USER
         basicOptions()
-        userHasStartedThisRound.current = true
+        shouldAIstart.current = false
         setShouldAIstartState(false)
         setTimeout(() => {
           startTimer()
@@ -255,8 +235,8 @@ const Main = () => {
       }
       else if (result.isDenied) { // START AI
         basicOptions()
-        userHasStartedThisRound.current = false
         clickBlocked.current = true
+        shouldAIstart.current = true
         setShouldAIstartState(true)
         setTimeout(() => {
           startTimer()
@@ -400,12 +380,12 @@ const Main = () => {
           <div className={css.pointsTitle}>Points:</div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ shouldAIstartState ? null : newGameStarted && userPlaying && !gameEnd.current ? `TURN ` : null }</div>
+          <div className={css.turn}>{ shouldAIstartState ? null : newGameStarted && userTurn && !gameEnd.current ? `TURN ` : null }</div>
           <div className={css.participantName}>You:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.X} </div></div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ shouldAIstartState ? `TURN ` : newGameStarted && !userPlaying && !gameEnd.current ? `TURN ` : null }</div>
+          <div className={css.turn}>{ shouldAIstartState ? `TURN ` : newGameStarted && !userTurn && !gameEnd.current ? `TURN ` : null }</div>
           <div className={css.participantName}>AI:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.O} </div></div>
         </div>
@@ -453,23 +433,7 @@ const Main = () => {
             )
           })
         }
-        <div
-          style={{
-            display: showCountdownRound ? 'flex' : 'none'
-          }}
-          className={css.nextGameIn}
-        >
-          {
-            countdownRound === 0 ?
-            <div className={css.nextGameInInner}>Go !!!</div> :
-            <div className={css.nextGameInInner}>
-              <div className={css.nextGameText}> Next round in</div>
-              <div className={css.nextGameNumber}>{countdownRound} </div>
-            </div>
-          }
-        </div>
       </div>
-      
     </div>
   );
 }
