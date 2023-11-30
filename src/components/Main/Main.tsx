@@ -94,6 +94,7 @@ const Main = () => {
   const checkWinner = async () => {
     let rT = [0,3,6,9] // rowTargets
     let cT = [0,1,2,3] // columnsTargets
+    let dT = [0,2,4]   // diagonalTargets
     rT.slice(0,-1).forEach((e, i) => { // ROW
       //                        (6, rt[2+1])
       //                        (3, rt[1+1])
@@ -106,23 +107,27 @@ const Main = () => {
     cT.slice(0,-1).forEach((e) => { // COLUMN
       let column: any[] = []
       cT.slice(0,-1).forEach((_,i) => {
-        //          2 + 0 * 3                              2 + 1 * 3         2 + 2 * 3
-        //          1 + 0 * 3                              1 + 1 * 3         1 + 2 * 3
-        //          0 + 0 * 3                              0 + 1 * 3         0 + 2 * 3
-        //            0 1 2                                  3 4 5             6 7 8
+        //                    [2 + 0 * 3] --> [2 + 1 * 3] --> [2 + 2 * 3]
+        //                    [1 + 0 * 3] --> [1 + 1 * 3] --> [1 + 2 * 3]
+        //                    [0 + 0 * 3] --> [0 + 1 * 3] --> [0 + 2 * 3]
         column.push(rC.current[e + i * cT.slice(-1)[0]])
       })
-
       if (column.every(e => e.value === 'X')) highlighter({ array: column, letter: "X" })
       if (column.every(e => e.value === 'O')) highlighter({ array: column, letter: "O" })
-
     })
 
-    // DIAGONAL
-    if ([rC.current[0],rC.current[4],rC.current[8]].every(e => e.value === 'X')) highlighter({ array: [rC.current[0],rC.current[4],rC.current[8]], letter: "X" })
-    if ([rC.current[0],rC.current[4],rC.current[8]].every(e => e.value === 'O')) highlighter({ array: [rC.current[0],rC.current[4],rC.current[8]], letter: "O" })
-    if ([rC.current[2],rC.current[4],rC.current[6]].every(e => e.value === 'X')) highlighter({ array: [rC.current[2],rC.current[4],rC.current[6]], letter: "X" })
-    if ([rC.current[2],rC.current[4],rC.current[6]].every(e => e.value === 'O')) highlighter({ array: [rC.current[2],rC.current[4],rC.current[6]], letter: "O" })
+    let diagonal: any[] = [[],[]]
+    dT.forEach((e) => {  // DIAGONAL
+      //                         [0*2] --> [2*2] --> [4*2]
+      //                         [0+2] --> [2+2] --> [4+2]
+      diagonal[0].push(rC.current[e*2]) // DIAGONAL --> \ <--
+      diagonal[1].push(rC.current[e+2]) // DIAGONAL --> / <--
+    })
+
+    diagonal.forEach(e => {
+      if (e.every((e: any) => e.value === 'X')) highlighter({ array: e, letter: "X" })
+      if (e.every((e: any) => e.value === 'O')) highlighter({ array: e, letter: "O" })
+    })
 
     if (rC.current.filter(e => e.value === '').length === 0) gameEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
 
