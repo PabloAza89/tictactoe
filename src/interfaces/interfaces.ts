@@ -12,3 +12,8 @@ export interface highlighterI {
 export interface handleSequenceI {
   target?: number | undefined
 }
+
+export interface eachBoxI {
+  id: number,
+  value: string
+}

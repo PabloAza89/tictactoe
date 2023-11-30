@@ -4,11 +4,11 @@ import { useEffect, useState, useRef } from 'react';
 import { Button } from '@mui/material/';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
-import { pointsI, highlighterI, handleSequenceI } from '../../interfaces/interfaces';
+import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
 
 const Main = () => {
 
-  let rC = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
+  let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -100,33 +100,33 @@ const Main = () => {
       //                        (3, rt[1+1])
       //                        (0, rt[0+1])
       let row = rC.current.slice(e, rT[i+1])
-      if (row.every(e => e.value === 'X')) highlighter({ array: row, letter: "X" })
-      if (row.every(e => e.value === 'O')) highlighter({ array: row, letter: "O" })
+      if (row.every((e: eachBoxI) => e.value === 'X')) highlighter({ array: row, letter: "X" })
+      if (row.every((e: eachBoxI) => e.value === 'O')) highlighter({ array: row, letter: "O" })
     })
 
     cT.slice(0,-1).forEach((e) => { // COLUMN
-      let column: any[] = []
+      let column: eachBoxI[] = []
       cT.slice(0,-1).forEach((_,i) => {
         //                    [2 + 0 * 3] --> [2 + 1 * 3] --> [2 + 2 * 3]
         //                    [1 + 0 * 3] --> [1 + 1 * 3] --> [1 + 2 * 3]
         //                    [0 + 0 * 3] --> [0 + 1 * 3] --> [0 + 2 * 3]
         column.push(rC.current[e + i * cT.slice(-1)[0]])
       })
-      if (column.every(e => e.value === 'X')) highlighter({ array: column, letter: "X" })
-      if (column.every(e => e.value === 'O')) highlighter({ array: column, letter: "O" })
+      if (column.every((e: eachBoxI) => e.value === 'X')) highlighter({ array: column, letter: "X" })
+      if (column.every((e: eachBoxI) => e.value === 'O')) highlighter({ array: column, letter: "O" })
     })
 
-    let diagonal: any[] = [[],[]]
-    dT.forEach((e) => {  // DIAGONAL
+    let diagonal: eachBoxI[][] = [[],[]]
+    dT.forEach((e) => { // DIAGONAL
       //                         [0*2] --> [2*2] --> [4*2]
       //                         [0+2] --> [2+2] --> [4+2]
-      diagonal[0].push(rC.current[e*2]) // DIAGONAL --> \ <--
-      diagonal[1].push(rC.current[e+2]) // DIAGONAL --> / <--
+      diagonal[0].push(rC.current[e*2]) // --> \ <--
+      diagonal[1].push(rC.current[e+2]) // --> / <--
     })
 
     diagonal.forEach(e => {
-      if (e.every((e: any) => e.value === 'X')) highlighter({ array: e, letter: "X" })
-      if (e.every((e: any) => e.value === 'O')) highlighter({ array: e, letter: "O" })
+      if (e.every((e: eachBoxI) => e.value === 'X')) highlighter({ array: e, letter: "X" })
+      if (e.every((e: eachBoxI) => e.value === 'O')) highlighter({ array: e, letter: "O" })
     })
 
     if (rC.current.filter(e => e.value === '').length === 0) gameEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
@@ -176,6 +176,8 @@ const Main = () => {
   const removeButtonAnimation = () => $(`#buttonStart`).removeClass(`${css.shakeAnimation}`);
   const addTimerChangeColor = () => $(`#timerBox`).addClass(`${css.changeColor}`);
   const removeTimerChangeColor = () => $(`#timerBox`).removeClass(`${css.changeColor}`);
+  const addFlowPopUp = () => continueFlowPopUp.current = true;
+  const removeFlowPopUp = () => continueFlowPopUp.current = false;
 
   useEffect(() => { // BUTTON SHAKE ANIMATION AT VERY FIRST TIME
     addButtonAnimation()
@@ -187,7 +189,7 @@ const Main = () => {
   }
 
   const resetGame = () => {
-    continueFlowPopUp.current = true
+    addFlowPopUp()
     stopTimer()
     resetTimer()
     rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
@@ -246,7 +248,7 @@ const Main = () => {
   }
 
   const buttonNewGameHandler = () => {
-    continueFlowPopUp.current = false // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
+    removeFlowPopUp() // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
     removeButtonAnimation()
     if (newGameStarted) {
       Swal.fire({
@@ -261,6 +263,7 @@ const Main = () => {
       })
       .then((result) => {
         if (result.isConfirmed) selectOptions() // CONFIRM NEW GAME
+        else addFlowPopUp()
         // ELSE CONTINUE GAME === DO NOTHING
       })
 
