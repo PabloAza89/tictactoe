@@ -11,12 +11,7 @@ import { pointsI, highlighterI, handleSequenceI } from '../../interfaces/interfa
 const Main = () => {
 
   //let [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
-  // let [ rowsAndColumns, setRowsAndColumns ] = useState<any[]>([
-  //   { id: 0, value: '' }, { id: 1, value: '' }, { id: 2, value: '' },
-  //   { id: 3, value: '' }, { id: 4, value: '' }, { id: 5, value: '' },
-  //   { id: 6, value: '' }, { id: 7, value: '' }, { id: 8, value: '' }
-  // ]) 
-  
+
   let rowsAndColumns = useRef<any[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' })))
   let clickBlocked = useRef(true)
   let gridBlocked = useRef(true)
@@ -32,53 +27,51 @@ const Main = () => {
   const [ newGameStarted, setNewGameStarted ] = useState(false) 
   //const [ newGameStarted, setNewGameStarted ] = useState(true) // START IMMEDIATELY
   let newGameStartedRecently = useRef(false)
-  let AIvalue = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
+  let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
   const AIAction = async () => {
     //clickBlocked.current = true
-
     //let copyRowsAndColumns = [...rowsAndColumns]
-    // let copyRowsAndColumns = [
-    //   { id: 0, value: '' }, { id: 1, value: '' }, { id: 2, value: '' },
-    //   { id: 3, value: '' }, { id: 4, value: '' }, { id: 5, value: '' },
-    //   { id: 6, value: '' }, { id: 7, value: '' }, { id: 8, value: '' }
-    // ]
 
     let randomTimes = [ 700, 800, 900, 1000, 1100 ]
-    setTimeout(() => {
-      
-
-      if (rowsAndColumns.current.filter((e: any) => e.value === '').length >= 1) {
+    //const abc = async () => {
+      setTimeout(() => {
+        if (rowsAndColumns.current.filter((e: any) => e.value === '').length >= 1) {
           //console.log("123 entro AI 2")
           let success = false
           do {
-            AIvalue.current = Math.floor(Math.random() * 9)
-            if (rowsAndColumns.current[AIvalue.current].value === "") {
-              rowsAndColumns.current[AIvalue.current].value = "O"
+            AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+            if (rowsAndColumns.current[AIRandomGridIndex.current].value === "") {
+              rowsAndColumns.current[AIRandomGridIndex.current].value = "O"
               //setRowsAndColumns(rowsAndColumns)
               //setClickBlocked(false)
+              console.log("delay", AIRandomGridIndex.current)
               success = true
               shouldAIstart.current = false
               setShouldAIstartState(false)
               setUserTurn(true)
-              console.log("se ejecuta primero este")
+              console.log("while 1ro")
             }
           } while (success === false)
         }
+        console.log("while 2do")
+        checkWinner()
+      }, randomTimes[Math.floor(Math.random() * 5)])
+   // }
 
-        //console.log("se ejecuta despues este")
-        //checkWinner() // ACA
+    // console.log("while 2do")
+    //           checkWinner()
 
-        // if (shouldAIstart.current) {
-        //   checkWinner()
-        //   .then(() => {
-        //     clickBlocked.current = false
-        //     gridBlocked.current = false
-        //   })
+    //  abc().then(() => {
+    //           console.log("while 2do")
+    //           checkWinner()
+    //         })
 
-        // }
 
-    }, randomTimes[Math.floor(Math.random() * 5)])
+    // setTimeout(() => {
+    //   console.log("while 2do")
+    // }, 0)
+   
 
   }
 
@@ -111,30 +104,31 @@ const Main = () => {
       })
       .then(() => {
         console.log("se ejecuta then de AIAction")
-        //console.log("noWinner", noWinner)
-        //console.log("123 valor de clickBlocked", clickBlocked)
-        //if (winner.current === '' && clickBlocked.current && !gameEnd.current) {
+      
         if (!gameEnd.current) {
-          //console.log("123 SE EJECUTO IA")
-          AIAction()
-          console.log("123 primero este")
+          
+            AIAction()
+            
+            //console.log("123 primero este")
           
         }
+     
+        
       })
-       .then(() => {
-        console.log("se ejecuta then de checkWinner")
-          // if (winner.current === '' && !gameEnd.current) {
-          //   clickBlocked.current = false
-          //   gridBlocked.current = false
-          // }
-          //let arr = [...rowsAndColumns]
-          if (!gameEnd.current) {
-            setTimeout(() => {
-              checkWinner()
-              console.log("123 primero este")
-            }, 1200)
-          }
-        })
+      //  .then(() => {
+      //   console.log("se ejecuta then de checkWinner")
+      //     // if (winner.current === '' && !gameEnd.current) {
+      //     //   clickBlocked.current = false
+      //     //   gridBlocked.current = false
+      //     // }
+      //     //let arr = [...rowsAndColumns]
+      //     if (!gameEnd.current) {
+      //       setTimeout(() => {
+      //         checkWinner()
+      //         console.log("123 primero este")
+      //       }, AIRandomGridIndex.current + 1000)
+      //     }
+      //   })
      
       
    // }
@@ -235,7 +229,10 @@ const Main = () => {
       
     }
 
-    if (rowsAndColumns.current.filter(e => e.value === '').length === 0 || gameEnd.current) {
+    if (rowsAndColumns.current.filter(e => e.value === '').length === 0) gameEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
+
+    //if (rowsAndColumns.current.filter(e => e.value === '').length === 0 || gameEnd.current) {
+    if (gameEnd.current) {
       setGameEndState(true)
       stopTimer()
 
@@ -324,7 +321,7 @@ const Main = () => {
     
     
     actionPoints = 0;
-    AIvalue.current = Math.floor(Math.random() * 9) // BETWEEN 0 & 8
+    AIRandomGridIndex.current = Math.floor(Math.random() * 9) // BETWEEN 0 & 8
     rowsAndColumns.current.forEach(e => {
       $(`#${e.id}`)
       .css("background", "red")
