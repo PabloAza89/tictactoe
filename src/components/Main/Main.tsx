@@ -19,7 +19,9 @@ const Main = () => {
   const [ userPlaying, setUserPlaying ] = useState(true)
   let userHasStartedThisRound = useRef(true)
   const [ countdownRound, setCountdownRound ] = useState<number>(3)
-  const [ showCountdownRound, setShowCountdownRound ] = useState<boolean>(false)
+  //let countdownRound = useRef<number>(3)
+  let showCountdownRound = useRef<boolean>(false)
+  const [ showCountdownRoundState, setShowCountdownRoundState ] = useState<boolean>(false)
   const [ shouldAIstartState, setShouldAIstartState ] = useState(false) // ONLY FOR GAME UI DISPLAY REASONS..
   const [ newGameStarted, setNewGameStarted ] = useState(false)
   let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
@@ -63,47 +65,41 @@ const Main = () => {
 
   const countdownHandler = () => {
     setTimeout(() => { // START COUNTDOWN ROUND
-      setShowCountdownRound(true)
+      if (showCountdownRound.current) { // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
+        setShowCountdownRoundState(true)
+        setCountdownRound(3)
+      }
     }, 3000)
     setTimeout(() => {
-      setCountdownRound(2)
+      if (showCountdownRound.current) setCountdownRound(2) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
     }, 4000)
     setTimeout(() => {
-      setCountdownRound(1)
+      if (showCountdownRound.current) setCountdownRound(1) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
     }, 5000)
     setTimeout(() => {
-      setCountdownRound(0)
+      if (showCountdownRound.current) setCountdownRound(0) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
     }, 6000)
     setTimeout(() => {
-      setShowCountdownRound(false)
-      setCountdownRound(3)
-      userHasStartedThisRound.current = !userHasStartedThisRound.current
-      if (userHasStartedThisRound.current) {
+      if (showCountdownRound.current) { // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
+        setShowCountdownRoundState(false)
+        setCountdownRound(3)
+        userHasStartedThisRound.current = !userHasStartedThisRound.current
+      }
+      if (userHasStartedThisRound.current && showCountdownRound.current) { // AUTO-START USER // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
         softResetGame()
-
-        //basicOptions()
         userHasStartedThisRound.current = true
         setShouldAIstartState(false)
-        //setTimeout(() => {
-          startTimer()
-          clickBlocked.current = false
-        //}, 1000) // SYNC WITH POP-UP CLOSES
-
-
-      } else {
-        //softResetGame()
-        //AIAction()
+        startTimer()
+        clickBlocked.current = false
+        showCountdownRound.current = false // TEST
+      } else if (showCountdownRound.current) { // AUTO-START AI // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
         softResetGame()
-        //basicOptions()
         userHasStartedThisRound.current = false
         clickBlocked.current = true
         setShouldAIstartState(true)
-        //setTimeout(() => {
-          startTimer()
-          AIAction()
-        //}, 1000) // SYNC WITH POP-UP CLOSES
-
-
+        startTimer()
+        AIAction()
+        showCountdownRound.current = false // TEST
       }
     }, 7000)
   }
@@ -134,8 +130,6 @@ const Main = () => {
         setWinnerState(`${letter}`) // SYNC WITH POP-UP
       }, 300)
     }, 1200)
- 
-    countdownHandler() // START COUNTDOWN FOR NEXT ROUND
   }
 
   let actionPoints: number = 0
@@ -210,11 +204,13 @@ const Main = () => {
             if (winner.current === "") {
               setWinnerState("TIED") // SYNC WITH POP-UP
               clickBlocked.current = true
-              countdownHandler() // START COUNTDOWN FOR NEXT ROUND
             }
           }, 1200)
         }
       }, 1200)
+
+      showCountdownRound.current = true // ENABLES COUNTDOWN VISUALIZATION
+      countdownHandler() // START COUNTDOWN FOR NEXT ROUND
 
       setTimeout(() => {
         if (gameEnd.current) addTimerChangeColor() // MAKE SURE THERE ISN'T A NEW GAME TO MAKE THE ANIMATION
@@ -255,7 +251,7 @@ const Main = () => {
     AIRandomGridIndex.current = Math.floor(Math.random() * 9) // BETWEEN 0 & 8
     rC.current.forEach(e => {
       $(`#${e.id}`)
-      .css("background", "red")
+        .css("background", "red")
     })
   }
 
@@ -282,6 +278,8 @@ const Main = () => {
   }
 
   const selectOptions = () => {
+    showCountdownRound.current = false
+    setShowCountdownRoundState(false)
     hardResetGame();
     removeButtonAnimation()
     setNewGameStarted(false) // REMOVE TIMER FROM SCREEN
@@ -334,8 +332,7 @@ const Main = () => {
       })
       .then((result) => {
         if (result.isConfirmed) selectOptions() // CONFIRM NEW GAME
-        else addFlowPopUp()
-        // ELSE CONTINUE GAME === DO NOTHING
+        else addFlowPopUp() // ELSE CONTINUE GAME
       })
 
     } else selectOptions() // WHEN NO CURRENT GAME
@@ -506,7 +503,12 @@ const Main = () => {
         }
         <div
           style={{
-            display: showCountdownRound ? 'flex' : 'none'
+            display:
+              showCountdownRoundState && showCountdownRound.current ?
+              //showCountdownRoundState ?
+              //showCountdownRound.current ?
+              'flex' :
+              'none'
           }}
           className={css.nextGameIn}
         >
