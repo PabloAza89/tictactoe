@@ -9,6 +9,8 @@ import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfac
 const Main = () => {
 
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
+  //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
+  let score = useRef<any[]>([])
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -129,6 +131,29 @@ const Main = () => {
       setTimeout(() => {
         setWinnerState(`${letter}`) // SYNC WITH POP-UP
       }, 300)
+      // TEST
+
+      let min // MINUTES
+      let sec // SECONDS
+      let mss // MILLISECONDS
+      let mn = document.getElementById('timer_minutes')
+      if (mn !== null) min = mn.innerHTML
+      let sc = document.getElementById('timer_seconds')
+      if (sc !== null) sec = sc.innerHTML
+      let ms = document.getElementById('timer_ms')
+      if (ms !== null) mss = ms.innerHTML
+
+      score.current.push({
+        id: score.current.length,
+        scoreX: letter === "X" ? actionPoints : 0,
+        X: letter === "X" ? "✔️" : "❌",
+        O: letter === "O" ? "✔️" : "❌",
+        scoreO: letter === "O" ? actionPoints : 0,
+        time: `${min}:${sec}:${mss}`
+      })
+
+
+      //
     }, 1200)
   }
 
@@ -428,7 +453,7 @@ const Main = () => {
     }, 3000)
   }
 
-  console.log("rC", rC.current)
+  //console.log("rC", rC.current)
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -521,6 +546,35 @@ const Main = () => {
             </div>
           }
         </div>
+      </div>
+      <div className={css.scoreTable}>
+        <div className={css.scoreTableTitlesContainer}>
+          <div className={css.scoreTableNumeral}>#</div>
+          <div className={css.scoreTableScore}>SCORE</div>
+          <div className={css.scoreTableYou}>YOU</div>
+          <div className={css.scoreTableAI}>AI</div>
+          <div className={css.scoreTableScore}>SCORE</div>
+          <div className={css.scoreTableTime}>TIME</div>
+        </div>
+        
+        {
+          score.current.map((e,i)=> {
+            return (
+              <div key={i} className={css.scoreTableEachScore}>
+                <div className={css.scoreTableNumeral}>{e.id}</div>
+                {/* <div className={css.scoreTableScore}>{e.scoreX}</div> */}
+                <div className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
+                <div className={css.scoreTableYou}>{e.X}</div>
+                <div className={css.scoreTableAI}>{e.O}</div>
+                <div className={css.scoreTableScore}>{ e.scoreO === 0 ? "➖" : e.scoreO }</div>
+                <div className={css.scoreTableTime}>{e.time}</div>
+              </div>
+            )
+          })
+
+        }
+          
+       
       </div>
       
     </div>
