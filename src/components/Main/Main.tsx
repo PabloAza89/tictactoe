@@ -10,7 +10,81 @@ const Main = () => {
 
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
-  let score = useRef<any[]>([])
+  //let score = useRef<any[]>([])
+  let score = useRef<any[]>([
+    {
+      id: 0,
+      timeX: `10:34:112`,
+      scoreX: 100,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 1,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 100,
+      timeO: `00:00:124`
+    },
+    {
+      id: 2,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 100,
+      timeO: `00:02:356`
+    },
+    {
+      id: 3,
+      timeX: `53:45:544`,
+      scoreX: 200,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 4,
+      timeX: `03:15:821`,
+      scoreX: 100,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 5,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 200,
+      timeO: `00:00:231`
+    },
+    {
+      id: 6,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 100,
+      timeO: `00:02:339`
+    },
+    {
+      id: 7,
+      timeX: `00:02:234`,
+      scoreX: 200,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+  ])
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -455,6 +529,50 @@ const Main = () => {
 
   //console.log("rC", rC.current)
 
+  const sumTime = () => {
+    let min = score.current.reduce((partial, el) => partial + parseInt(el.timeX.split(":")[0], 10), 0)
+    let sec = score.current.reduce((partial, el) => partial + parseInt(el.timeX.split(":")[1], 10), 0)
+    let ms = score.current.reduce((partial, el) => partial + parseInt(el.timeX.split(":")[2], 10), 0)
+    //console.log("min", min)
+    //console.log("sec", sec)
+    //console.log("ms", ms)
+
+
+    let finalMs = 0
+    let secondsToAdd = 0
+    let finalSec = 0
+    let minutesToAdd = 0
+    let finalMin = 0
+
+    if (ms.toString().length>3) {
+      finalMs = ms.toString().slice(-3)
+      secondsToAdd = parseInt(ms.toString().slice(0, -3), 10)
+    } else {
+      finalMs = parseInt(ms.toString(), 10)
+    }
+
+    if (sec > 59) {
+      minutesToAdd = Math.floor(sec / 60)
+      let remainingSec = sec - (minutesToAdd * 60)
+      finalSec = remainingSec + secondsToAdd
+    } else {
+      finalSec = sec
+    }
+
+    finalMin = minutesToAdd + min
+
+
+    console.log("finalMin", finalMin)
+    console.log("finalSec", finalSec)
+    //console.log("minutesToAdd", minutesToAdd)
+    console.log("finalMs", finalMs)
+    // console.log("secondsToAdd", secondsToAdd)
+    
+
+  }
+
+  sumTime()
+
   return (
     <div className={`${css.background} ${com.noSelect}`}>
       <Button
@@ -550,6 +668,7 @@ const Main = () => {
       <div className={css.scoreTable}>
         <div className={css.scoreTableTitlesContainer}>
           <div className={css.scoreTableNumeral}>#</div>
+          <div className={css.scoreTableTime}>TIME</div>
           <div className={css.scoreTableScore}>SCORE</div>
           <div className={css.scoreTableYou}>YOU</div>
           <div className={css.scoreTableAI}>AI</div>
@@ -562,17 +681,24 @@ const Main = () => {
             return (
               <div key={i} className={css.scoreTableEachScore}>
                 <div className={css.scoreTableNumeral}>{e.id}</div>
-                {/* <div className={css.scoreTableScore}>{e.scoreX}</div> */}
+                <div className={css.scoreTableTime}>{ e.timeX === '00:00:000' ? "➖" : e.timeX }</div>
                 <div className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
                 <div className={css.scoreTableYou}>{e.X}</div>
                 <div className={css.scoreTableAI}>{e.O}</div>
                 <div className={css.scoreTableScore}>{ e.scoreO === 0 ? "➖" : e.scoreO }</div>
-                <div className={css.scoreTableTime}>{e.time}</div>
+                <div className={css.scoreTableTime}>{ e.timeO === '00:00:000' ? "➖" : e.timeO }</div>
               </div>
             )
           })
-
         }
+        <div className={css.scoreTableTitlesContainerLower}>
+          <div className={css.scoreTableNumeral}>#</div>
+          <div className={css.scoreTableTime}>{ `00:00:000` }</div>
+          <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreX, 0) }</div>
+          <div className={css.scoreTableTotal}>TOTAL</div>
+          <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
+          <div className={css.scoreTableTime}>{ `00:00:000` }</div>
+        </div>
           
        
       </div>

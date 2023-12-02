@@ -311,7 +311,7 @@
   position: absolute;
   flex-direction: column;
   background: darkorange;
-  width: 300px;
+  width: 400px;
   height: 600px;
   right: 0px;
   font-size: 16px;
@@ -325,6 +325,14 @@
   line-height: 24px;
   text-align: center;
   
+}
+
+.scoreTableTotal {
+  box-shadow: 0 0 0 2px blue inset;
+  width: 80px;
+  height: 25px;
+  line-height: 24px;
+  text-align: center;
 }
 
 .scoreTableYou {
@@ -353,13 +361,18 @@
 
 .scoreTableTime {
   box-shadow: 0 0 0 2px blue inset;
-  width: 60px;
+  width: 80px;
   height: 25px;
   line-height: 24px;
   text-align: center;
 }
 
 .scoreTableTitlesContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.scoreTableTitlesContainerLower {
   display: flex;
   flex-direction: row;
 }
