@@ -132,8 +132,11 @@ const Main = () => {
       setTimeout(() => {
         setWinnerState(`${letter}`) // SYNC WITH POP-UP
       }, 300)
-      // TEST
+    }, 1200)
+  }
 
+  const updateScore = () => {
+    setTimeout(() => {
       let min // MINUTES
       let sec // SECONDS
       let mss // MILLISECONDS
@@ -146,17 +149,14 @@ const Main = () => {
 
       score.current.push({
         id: score.current.length,
-        timeX: letter === "X" ? `${min}:${sec}:${mss}` : `00:00:000`,
-        scoreX: letter === "X" ? actionPoints : 0,
-        X: letter === "X" ? "✔️" : "❌",
-        O: letter === "O" ? "✔️" : "❌",
-        scoreO: letter === "O" ? actionPoints : 0,
-        timeO: letter === "O" ? `${min}:${sec}:${mss}` : `00:00:000`,
+        timeX: winner.current === "X" ? `${min}:${sec}:${mss}` : `00:00:000`,
+        scoreX: winner.current === "X" ? actionPoints : 0,
+        X: winner.current === "X" ? "✔️" : "❌",
+        O: winner.current === "O" ? "✔️" : "❌",
+        scoreO: winner.current === "O" ? actionPoints : 0,
+        timeO: winner.current === "O" ? `${min}:${sec}:${mss}` : `00:00:000`,
       })
-
-
-      //
-    }, 1200)
+    }, 1200) // SYNC WITH HIGHLIGHTER FUNC UPDATE
   }
 
   let actionPoints: number = 0
@@ -203,6 +203,7 @@ const Main = () => {
 
     if (gameEnd.current) {
       stopTimer()
+      updateScore()
       setTimeout(() => {
         if (continueFlowPopUp.current) {
           Swal.fire({
@@ -242,6 +243,10 @@ const Main = () => {
       setTimeout(() => {
         if (gameEnd.current) addTimerChangeColor() // MAKE SURE THERE ISN'T A NEW GAME TO MAKE THE ANIMATION
       }, 3200)
+
+
+
+
     }
   }
 
@@ -604,31 +609,33 @@ const Main = () => {
         </div>
       </div>
       <div className={css.scoreTable}>
-        <div className={css.scoreTableTitlesContainer}>
-          <div className={css.scoreTableNumeral}>#</div>
-          <div className={css.scoreTableTime}>TIME</div>
-          <div className={css.scoreTableScore}>SCORE</div>
-          <div className={css.scoreTableYou}>YOU</div>
-          <div className={css.scoreTableAI}>AI</div>
-          <div className={css.scoreTableScore}>SCORE</div>
-          <div className={css.scoreTableTime}>TIME</div>
+        <div>
+          <div className={css.scoreTableTitlesContainer}>
+            <div className={css.scoreTableNumeral}>#</div>
+            <div className={css.scoreTableTime}>TIME</div>
+            <div className={css.scoreTableScore}>SCORE</div>
+            <div className={css.scoreTableYou}>YOU</div>
+            <div className={css.scoreTableAI}>AI</div>
+            <div className={css.scoreTableScore}>SCORE</div>
+            <div className={css.scoreTableTime}>TIME</div>
+          </div>
+          
+          {
+            score.current.map((e,i)=> {
+              return (
+                <div key={i} className={css.scoreTableEachScore}>
+                  <div className={css.scoreTableNumeral}>{e.id}</div>
+                  <div className={css.scoreTableTime}>{ e.timeX === '00:00:000' ? "➖" : e.timeX }</div>
+                  <div className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
+                  <div className={css.scoreTableYou}>{e.X}</div>
+                  <div className={css.scoreTableAI}>{e.O}</div>
+                  <div className={css.scoreTableScore}>{ e.scoreO === 0 ? "➖" : e.scoreO }</div>
+                  <div className={css.scoreTableTime}>{ e.timeO === '00:00:000' ? "➖" : e.timeO }</div>
+                </div>
+              )
+            })
+          }
         </div>
-        
-        {
-          score.current.map((e,i)=> {
-            return (
-              <div key={i} className={css.scoreTableEachScore}>
-                <div className={css.scoreTableNumeral}>{e.id}</div>
-                <div className={css.scoreTableTime}>{ e.timeX === '00:00:000' ? "➖" : e.timeX }</div>
-                <div className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
-                <div className={css.scoreTableYou}>{e.X}</div>
-                <div className={css.scoreTableAI}>{e.O}</div>
-                <div className={css.scoreTableScore}>{ e.scoreO === 0 ? "➖" : e.scoreO }</div>
-                <div className={css.scoreTableTime}>{ e.timeO === '00:00:000' ? "➖" : e.timeO }</div>
-              </div>
-            )
-          })
-        }
         <div className={css.scoreTableTitlesContainerLower}>
           <div className={css.scoreTableNumeral}>#</div>
           <div className={css.scoreTableTime}>{ `${XfinalMin.toString().padStart(2,'0')}:${XfinalSec.toString().padStart(2,'0')}:${XfinalMs.toString().padStart(3,'0')}` }</div>
