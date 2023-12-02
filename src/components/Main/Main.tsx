@@ -10,81 +10,8 @@ const Main = () => {
 
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
-  //let score = useRef<any[]>([])
-  let score = useRef<any[]>([
-    {
-      id: 0,
-      timeX: `10:34:112`,
-      scoreX: 100,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 1,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 100,
-      timeO: `00:00:124`
-    },
-    {
-      id: 2,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 100,
-      timeO: `00:02:356`
-    },
-    {
-      id: 3,
-      timeX: `53:45:544`,
-      scoreX: 200,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 4,
-      timeX: `03:15:821`,
-      scoreX: 100,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 5,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 200,
-      timeO: `00:00:231`
-    },
-    {
-      id: 6,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 100,
-      timeO: `00:02:339`
-    },
-    {
-      id: 7,
-      timeX: `00:02:234`,
-      scoreX: 200,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-  ])
+  let score = useRef<any[]>([])
+  
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -219,11 +146,12 @@ const Main = () => {
 
       score.current.push({
         id: score.current.length,
+        timeX: letter === "X" ? `${min}:${sec}:${mss}` : `00:00:000`,
         scoreX: letter === "X" ? actionPoints : 0,
         X: letter === "X" ? "✔️" : "❌",
         O: letter === "O" ? "✔️" : "❌",
         scoreO: letter === "O" ? actionPoints : 0,
-        time: `${min}:${sec}:${mss}`
+        timeO: letter === "O" ? `${min}:${sec}:${mss}` : `00:00:000`,
       })
 
 
@@ -334,6 +262,12 @@ const Main = () => {
   }
 
   const softResetGame = () => {
+    XfinalMin = 0
+    XfinalSec = 0
+    XfinalMs = 0
+    OfinalMin = 0
+    OfinalSec = 0
+    OfinalMs = 0
     addFlowPopUp()
     stopTimer()
     resetTimer()
@@ -355,6 +289,7 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
+    score.current = []
     addFlowPopUp()
     stopTimer()
     resetTimer()
@@ -527,48 +462,51 @@ const Main = () => {
     }, 3000)
   }
 
-  //console.log("rC", rC.current)
+  let XfinalMin = 0
+  let XfinalSec = 0
+  let XfinalMs = 0
+  let OfinalMin = 0
+  let OfinalSec = 0
+  let OfinalMs = 0
 
   const sumTime = () => {
-    let min = score.current.reduce((partial, el) => partial + parseInt(el.timeX.split(":")[0], 10), 0)
-    let sec = score.current.reduce((partial, el) => partial + parseInt(el.timeX.split(":")[1], 10), 0)
-    let ms = score.current.reduce((partial, el) => partial + parseInt(el.timeX.split(":")[2], 10), 0)
-    //console.log("min", min)
-    //console.log("sec", sec)
-    //console.log("ms", ms)
+    let Xmin = score.current.reduce((partial, el) => partial + parseInt(el.timeX.split(":")[0], 10), 0)
+    let Xsec = score.current.reduce((partial, el) => partial + parseInt(el.timeX.split(":")[1], 10), 0)
+    let Xms = score.current.reduce((partial, el) => partial + parseInt(el.timeX.split(":")[2], 10), 0)
+    let Omin = score.current.reduce((partial, el) => partial + parseInt(el.timeO.split(":")[0], 10), 0)
+    let Osec = score.current.reduce((partial, el) => partial + parseInt(el.timeO.split(":")[1], 10), 0)
+    let Oms = score.current.reduce((partial, el) => partial + parseInt(el.timeO.split(":")[2], 10), 0)
 
+    let XsecondsToAdd = 0
+    let XminutesToAdd = 0
 
-    let finalMs = 0
-    let secondsToAdd = 0
-    let finalSec = 0
-    let minutesToAdd = 0
-    let finalMin = 0
+    if (Xms.toString().length>3) {
+      XfinalMs = Xms.toString().slice(-3)
+      XsecondsToAdd = parseInt(Xms.toString().slice(0, -3), 10)
+    } else XfinalMs = parseInt(Xms.toString(), 10)
 
-    if (ms.toString().length>3) {
-      finalMs = ms.toString().slice(-3)
-      secondsToAdd = parseInt(ms.toString().slice(0, -3), 10)
-    } else {
-      finalMs = parseInt(ms.toString(), 10)
-    }
+    if (Xsec > 59) {
+      XminutesToAdd = Math.floor(Xsec / 60)
+      let XremainingSec = Xsec - (XminutesToAdd * 60)
+      XfinalSec = XremainingSec + XsecondsToAdd
+    } else XfinalSec = Xsec + XsecondsToAdd
 
-    if (sec > 59) {
-      minutesToAdd = Math.floor(sec / 60)
-      let remainingSec = sec - (minutesToAdd * 60)
-      finalSec = remainingSec + secondsToAdd
-    } else {
-      finalSec = sec
-    }
+    let OsecondsToAdd = 0
+    let OminutesToAdd = 0
 
-    finalMin = minutesToAdd + min
+    if (Oms.toString().length>3) {
+      OfinalMs = Oms.toString().slice(-3)
+      OsecondsToAdd = parseInt(Oms.toString().slice(0, -3), 10)
+    } else OfinalMs = parseInt(Oms.toString(), 10)
 
+    if (Osec > 59) {
+      OminutesToAdd = Math.floor(Osec / 60)
+      let OremainingSec = Osec - (OminutesToAdd * 60)
+      OfinalSec = OremainingSec + OsecondsToAdd
+    } else OfinalSec = Osec + OsecondsToAdd
 
-    console.log("finalMin", finalMin)
-    console.log("finalSec", finalSec)
-    //console.log("minutesToAdd", minutesToAdd)
-    console.log("finalMs", finalMs)
-    // console.log("secondsToAdd", secondsToAdd)
-    
-
+    XfinalMin = XminutesToAdd + Xmin
+    OfinalMin = OminutesToAdd + Omin
   }
 
   sumTime()
@@ -693,11 +631,11 @@ const Main = () => {
         }
         <div className={css.scoreTableTitlesContainerLower}>
           <div className={css.scoreTableNumeral}>#</div>
-          <div className={css.scoreTableTime}>{ `00:00:000` }</div>
+          <div className={css.scoreTableTime}>{ `${XfinalMin.toString().padStart(2,'0')}:${XfinalSec.toString().padStart(2,'0')}:${XfinalMs.toString().padStart(3,'0')}` }</div>
           <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreX, 0) }</div>
           <div className={css.scoreTableTotal}>TOTAL</div>
           <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
-          <div className={css.scoreTableTime}>{ `00:00:000` }</div>
+          <div className={css.scoreTableTime}>{ `${OfinalMin.toString().padStart(2,'0')}:${OfinalSec.toString().padStart(2,'0')}:${OfinalMs.toString().padStart(3,'0')}` }</div>
         </div>
           
        
