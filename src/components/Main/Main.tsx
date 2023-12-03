@@ -11,12 +11,15 @@ const Main = () => {
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
   let score = useRef<any[]>([])
+
   
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
   const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
   let gameEnd = useRef(false)
+  let gameEndRoundsNumber = useRef(9)
+  let gameEndRoundsBoolean = useRef(false)
   let winner = useRef("")
   const [ winnerState, setWinnerState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
   const [ userPlaying, setUserPlaying ] = useState(true)
@@ -136,6 +139,46 @@ const Main = () => {
   }
 
   const updateScore = () => {
+
+    // if (score.current[score.current.length - 1].id === 9) {
+    //   //qq[qq.length - 1].id
+    //   gameEndRoundsBoolean.current = true
+    //   Swal.fire({
+    //     title:
+    //       `GAME END !!`,
+    //     text:
+    //       `no winner, no points.`,
+    //     icon:
+    //       'success',
+    //     showConfirmButton: true,
+    //     showDenyButton: false,
+    //     showCancelButton: false,
+    //     //timer: 2000,
+    //   })
+    // }
+
+    // console.log("score.current.length", score.current)
+
+    // if (gameEndRoundsNumber.current === score.current.length ) {
+    // //if (score.current.length === 9) {
+    //   //qq[qq.length - 1].id
+    //   gameEndRoundsBoolean.current = true
+    //   setTimeout(() => {
+    //     Swal.fire({
+    //       title:
+    //         `GAME END !!`,
+    //       text:
+    //         `no winner, no points.`,
+    //       icon:
+    //         'success',
+    //       showConfirmButton: true,
+    //       showDenyButton: false,
+    //       showCancelButton: false,
+    //       //timer: 2000,
+    //     })
+    //   }, 1200) // SYNC WITH HIGHLIGHTER FUNC UPDATE
+    // }
+
     setTimeout(() => {
       let min // MINUTES
       let sec // SECONDS
@@ -204,8 +247,9 @@ const Main = () => {
     if (gameEnd.current) {
       stopTimer()
       updateScore()
+      checkGameEndByRounds()
       setTimeout(() => {
-        if (continueFlowPopUp.current) {
+        if (continueFlowPopUp.current && !gameEndRoundsBoolean.current) {
           Swal.fire({
             title:
               winner.current === "X" ?
@@ -294,7 +338,94 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
-    score.current = []
+    //score.current = []
+
+    score.current = [
+      {
+        id: 0,
+        timeX: `10:34:112`,
+        scoreX: 100,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 1,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 100,
+        timeO: `00:39:124`
+      },
+      {
+        id: 2,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 100,
+        timeO: `00:52:356`
+      },
+      {
+        id: 3,
+        timeX: `53:45:544`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 4,
+        timeX: `03:15:821`,
+        scoreX: 100,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 5,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:15:231`
+      },
+      {
+        id: 6,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 100,
+        timeO: `03:52:339`
+      },
+      {
+        id: 7,
+        timeX: `00:02:234`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 8,
+        timeX: `00:02:234`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      }
+    ]
+
+
+
     addFlowPopUp()
     stopTimer()
     resetTimer()
@@ -516,6 +647,40 @@ const Main = () => {
 
   sumTime()
 
+  // const gameEndBecauseOfRoundsChecker = () => {
+
+  // }
+
+
+
+  
+  const checkGameEndByRounds = () => { // GAME END BY ROUNDS HANDLER
+    console.log("score.current.length", score.current)
+
+    if (gameEndRoundsNumber.current === score.current.length ) {
+    //if (score.current.length === 9) {
+      //qq[qq.length - 1].id
+      gameEndRoundsBoolean.current = true
+      setTimeout(() => {
+        Swal.fire({
+          title:
+            `GAME END !!`,
+          text:
+            `no winner, no points.`,
+          icon:
+            'success',
+          showConfirmButton: true,
+          showDenyButton: false,
+          showCancelButton: false,
+          //timer: 2000,
+        })
+      }, 1200) // SYNC WITH HIGHLIGHTER FUNC UPDATE
+    }
+  }
+
+
+  console.log("score.current", score.current)
+
   return (
     <div className={`${css.background} ${com.noSelect}`}>
       <Button
@@ -624,7 +789,7 @@ const Main = () => {
             score.current.map((e,i)=> {
               return (
                 <div key={i} className={css.scoreTableEachScore}>
-                  <div className={css.scoreTableNumeral}>{e.id}</div>
+                  <div className={css.scoreTableNumeral}>{e.id + 1}</div>
                   <div className={css.scoreTableTime}>{ e.timeX === '00:00:000' ? "➖" : e.timeX }</div>
                   <div className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
                   <div className={css.scoreTableYou}>{e.X}</div>

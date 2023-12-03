@@ -1,5 +1,6 @@
+// TO START WITH A FAKE SCORE, IN HARDRESET:
 // eslint-disable-next-line
-let score = /* useRef<any[]> */([
+/* score.current =  */[
   {
     id: 0,
     timeX: `10:34:112`,
@@ -72,4 +73,13 @@ let score = /* useRef<any[]> */([
     scoreO: 0,
     timeO: `00:00:000`
   },
-])
+  {
+    id: 8,
+    timeX: `00:03:264`,
+    scoreX: 100,
+    X: "✔️",
+    O: "❌",
+    scoreO: 0,
+    timeO: `00:00:000`
+  },
+]
