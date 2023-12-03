@@ -12,13 +12,14 @@ const Main = () => {
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
   let score = useRef<any[]>([])
 
-  
+
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
   const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
-  let gameEnd = useRef(false)
-  let gameEndRoundsNumber = useRef(9)
+  let roundEnd = useRef(false)
+  //let gameEndRoundsNumber = useRef(9) // 10 ROUNDS
+  let gameEndRoundsNumber = useRef(1) // 2 ROUNDS
   let gameEndRoundsBoolean = useRef(false)
   let winner = useRef("")
   const [ winnerState, setWinnerState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
@@ -49,7 +50,7 @@ const Main = () => {
         } while (success === false)
       }
       checkWinner()
-      .then(() => { if (!gameEnd.current) clickBlocked.current = false })
+      .then(() => { if (!roundEnd.current) clickBlocked.current = false })
     }, randomTimes[Math.floor(Math.random() * 5)])
   }
 
@@ -66,7 +67,7 @@ const Main = () => {
   const handleSequence = async ({ target }: handleSequenceI) => {
     userAction(target)
     .then(() => { if (validClick.current) checkWinner() })
-    .then(() => { if (!gameEnd.current && validClick.current) AIAction() })
+    .then(() => { if (!roundEnd.current && validClick.current) AIAction() })
   }
 
   const countdownHandler = () => {
@@ -113,7 +114,7 @@ const Main = () => {
   const highlighter = async ({ array, letter }: highlighterI) => { // GAME END WITH A WINNER
     actionPoints = actionPoints + 100
     clickBlocked.current = true
-    gameEnd.current = true
+    roundEnd.current = true
     setTimeout(() => {
       $(`#${array[0].id}`)
         .css("background", "yellow")
@@ -153,12 +154,12 @@ const Main = () => {
 
       score.current.push({
         id: score.current.length,
-        timeX: winner.current === "X" ? `${min}:${sec}:${mss}` : `00:00:000`,
+        timeX: winner.current === "X" || winner.current === "" ? `${min}:${sec}:${mss}` : `00:00:000`, // FAKE MS FOR TEST (TIED BY POINTS & TIME)
         scoreX: winner.current === "X" ? actionPoints : 0,
-        X: winner.current === "X" ? "✔️" : "❌",
-        O: winner.current === "O" ? "✔️" : "❌",
+        X: winner.current === "" ? "➖" : winner.current === "X" ? "✔️" : "❌",
+        O: winner.current === "" ? "➖" : winner.current === "O" ? "✔️" : "❌",
         scoreO: winner.current === "O" ? actionPoints : 0,
-        timeO: winner.current === "O" ? `${min}:${sec}:${mss}` : `00:00:000`,
+        timeO: winner.current === "O" || winner.current === "" ? `${min}:${sec}:${mss}` : `00:00:000`,
       })
     }, 1200) // SYNC WITH HIGHLIGHTER FUNC UPDATE
   }
@@ -203,9 +204,9 @@ const Main = () => {
       if (e.every((e: eachBoxI) => e.value === 'O')) highlighter({ array: e, letter: "O" })
     })
 
-    if (rC.current.filter(e => e.value === '').length === 0) gameEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
+    if (rC.current.filter(e => e.value === '').length === 0) roundEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
 
-    if (gameEnd.current) {
+    if (roundEnd.current) {
       stopTimer()
       updateScore()
       checkGameEndByRounds()
@@ -242,11 +243,11 @@ const Main = () => {
         }
       }, 1200)
 
-      showCountdownRound.current = true // ENABLES COUNTDOWN VISUALIZATION
+      //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
       countdownHandler() // START COUNTDOWN FOR NEXT ROUND
 
       setTimeout(() => {
-        if (gameEnd.current) addTimerChangeColor() // MAKE SURE THERE ISN'T A NEW GAME TO MAKE THE ANIMATION
+        if (roundEnd.current) addTimerChangeColor() // MAKE SURE THERE ISN'T A NEW GAME TO MAKE THE ANIMATION
       }, 3200)
 
 
@@ -272,19 +273,19 @@ const Main = () => {
   }
 
   const softResetGame = () => {
-    XfinalMin = 0
-    XfinalSec = 0
-    XfinalMs = 0
-    OfinalMin = 0
-    OfinalSec = 0
-    OfinalMs = 0
+    // XfinalMin = 0
+    // XfinalSec = 0
+    // XfinalMs = 0
+    // OfinalMin = 0
+    // OfinalSec = 0
+    // OfinalMs = 0
     addFlowPopUp()
     stopTimer()
     resetTimer()
     rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
     clickBlocked.current = true
     actionPoints = 0;
-    gameEnd.current = false;
+    roundEnd.current = false;
     winner.current = ""
     setWinnerState("")
     setUserPlaying(true);
@@ -299,102 +300,113 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
-    //score.current = []
+    score.current = []
 
-    score.current = [
-      {
-        id: 0,
-        timeX: `10:34:112`,
-        scoreX: 100,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 1,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 100,
-        timeO: `00:39:124`
-      },
-      {
-        id: 2,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 100,
-        timeO: `00:52:356`
-      },
-      {
-        id: 3,
-        timeX: `53:45:544`,
-        scoreX: 200,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 4,
-        timeX: `03:15:821`,
-        scoreX: 100,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 5,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 200,
-        timeO: `00:15:231`
-      },
-      {
-        id: 6,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 100,
-        timeO: `03:52:339`
-      },
-      {
-        id: 7,
-        timeX: `00:02:234`,
-        scoreX: 200,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 8,
-        timeX: `00:02:234`,
-        scoreX: 200,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      }
-    ]
-
+    
+    // score.current = [
+    //     {
+    //       id: 0,
+    //       timeX: `10:34:112`,
+    //       scoreX: 100,
+    //       X: "✔️",
+    //       O: "❌",
+    //       scoreO: 0,
+    //       timeO: `00:00:000`
+    //     },
+    //     {
+    //       id: 1,
+    //       timeX: `00:00:000`,
+    //       scoreX: 0,
+    //       X: "❌",
+    //       O: "✔️",
+    //       scoreO: 100,
+    //       timeO: `00:39:124`
+    //     },
+    //     {
+    //       id: 2,
+    //       timeX: `00:00:000`,
+    //       scoreX: 0,
+    //       X: "❌",
+    //       O: "✔️",
+    //       scoreO: 100,
+    //       timeO: `00:52:356`
+    //     },
+    //     {
+    //       id: 3,
+    //       timeX: `53:45:544`,
+    //       scoreX: 200,
+    //       X: "✔️",
+    //       O: "❌",
+    //       scoreO: 0,
+    //       timeO: `00:00:000`
+    //     },
+    //     {
+    //       id: 4,
+    //       timeX: `03:15:821`,
+    //       scoreX: 100,
+    //       X: "✔️",
+    //       O: "❌",
+    //       scoreO: 0,
+    //       timeO: `00:00:000`
+    //     },
+    //     {
+    //       id: 5,
+    //       timeX: `00:00:000`,
+    //       scoreX: 0,
+    //       X: "❌",
+    //       O: "✔️",
+    //       scoreO: 200,
+    //       timeO: `00:15:231`
+    //     },
+    //     {
+    //       id: 6,
+    //       timeX: `00:00:000`,
+    //       scoreX: 0,
+    //       X: "❌",
+    //       O: "✔️",
+    //       scoreO: 100,
+    //       timeO: `03:52:339`
+    //     },
+    //     {
+    //       id: 7,
+    //       timeX: `00:02:234`,
+    //       scoreX: 200,
+    //       X: "✔️",
+    //       O: "❌",
+    //       scoreO: 0,
+    //       timeO: `00:00:000`
+    //     },
+    //     {
+    //       id: 8,
+    //       timeX: `00:02:234`,
+    //       scoreX: 200,
+    //       X: "✔️",
+    //       O: "❌",
+    //       scoreO: 0,
+    //       timeO: `00:00:000`
+    //     }
+    //   ]
 
 
     addFlowPopUp()
     stopTimer()
     resetTimer()
-    rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
+    rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
+    // rC.current = [ // rowsAndColumns
+    //   { id: 0, value: 'X' },
+    //   { id: 1, value: 'O' },
+    //   { id: 2, value: 'X' },
+    //   { id: 3, value: 'X' },
+    //   { id: 4, value: 'O' },
+    //   { id: 5, value: 'X' },
+    //   { id: 6, value: 'O' },
+    //   { id: 7, value: '' },
+    //   { id: 8, value: 'O' }
+    // ]
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 });
     actionPoints = 0;
-    gameEnd.current = false;
+    roundEnd.current = false;
     winner.current = ""
     setWinnerState("")
     setUserPlaying(true);
@@ -425,15 +437,18 @@ const Main = () => {
     })
     .then((result) => {
       if (result.isConfirmed) { // START USER
+        //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
         basicOptions()
         userHasStartedThisRound.current = true
         setShouldAIstartState(false)
         setTimeout(() => {
           startTimer()
           clickBlocked.current = false
+          showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else if (result.isDenied) { // START AI
+        //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
         basicOptions()
         userHasStartedThisRound.current = false
         clickBlocked.current = true
@@ -441,6 +456,7 @@ const Main = () => {
         setTimeout(() => {
           startTimer()
           AIAction()
+          showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else addButtonAnimation()
@@ -462,11 +478,20 @@ const Main = () => {
         denyButtonColor: '#008000', // RIGHT OPTION
       })
       .then((result) => {
-        if (result.isConfirmed) selectOptions() // CONFIRM NEW GAME
-        else addFlowPopUp() // ELSE CONTINUE GAME
+        if (result.isConfirmed) {
+          selectOptions() // CONFIRM NEW GAME
+          //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
+        }
+        else {
+          addFlowPopUp() // ELSE CONTINUE GAME
+          //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
+        }
       })
 
-    } else selectOptions() // WHEN NO CURRENT GAME
+    } else {
+      selectOptions() // WHEN NO CURRENT GAME
+      //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
+    }
   }
 
   let offset = useRef(0);
@@ -614,51 +639,72 @@ const Main = () => {
 
   sumTime()
 
-  // const gameEndBecauseOfRoundsChecker = () => {
-
-  // }
-
-
-
-  
   const checkGameEndByRounds = () => { // GAME END BY ROUNDS HANDLER
     console.log("score.current.length", score.current)
 
     if (gameEndRoundsNumber.current === score.current.length ) {
-    //if (score.current.length === 9) {
-      //qq[qq.length - 1].id
-      
-      gameEndRoundsBoolean.current = true
+      gameEndRoundsBoolean.current = true;
+      showCountdownRound.current = false // PREVENT DEFAULT NEXT ROUND COUNTDOWN
+      //setShowCountdownRoundState(false)
 
-      //console.log("123123", XfinalMin.toString().concat(XfinalSec.toString(), XfinalMs.toString()))
-      //XfinalMin.toString().concat(XfinalSec.toString(), XfinalMs.toString())
-      console.log("123123 333", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
+      //console.log("123123 333", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
       setTimeout(() => {
         console.log("123123", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
-        let Xres = parseInt(XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()), 10)
-        let Ores = parseInt(OfinalMin.current.toString().concat(OfinalSec.current.toString(), OfinalMs.current.toString()), 10)
-        let finalWinner =
-          winner.current === "X" ?
-          `GAME END !\nYOU WIN !` :
-          winner.current === "O" ?
-          `GAME END !\nAI WIN !` :
-          `GAME END !`;
+        let XSumScore = score.current.reduce((partial, el) => partial + el.scoreX, 0)
+        let OSumScore = score.current.reduce((partial, el) => partial + el.scoreO, 0)
+        let XSumTime = parseInt(XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()), 10)
+        let OSumTime = parseInt(OfinalMin.current.toString().concat(OfinalSec.current.toString(), OfinalMs.current.toString()), 10)
 
+        let finalWinner =
+          XSumScore === OSumScore && XSumTime === OSumTime ?
+          "TIED" :
+          XSumScore === OSumScore && XSumTime > OSumTime ?
+          "OByTime" :
+          XSumScore === OSumScore && XSumTime < OSumTime ?
+          "XByTime" :
+          XSumScore > OSumScore ?
+          "X" :
+          "O"
 
         Swal.fire({
           title:
-            finalWinner,
+            finalWinner === "XByTime" || finalWinner === "X" ?
+            `GAME END !\nYOU WIN !` :
+            finalWinner === "OByTime" || finalWinner === "O" ?
+            `GAME END !\nAI WIN !` :
+            `GAME END !\nTIED, INCREDIBLE !!`
+            ,
           html:
-            
-              `Points`
-              
-                // Xres === Ores ?
-                // `Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}` :
-                // Xres > Ores ?
-                // `Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}` :
-                // `Time: ${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}`
-              
-            
+            finalWinner === `XByTime` ? // CHECKED
+              `<div>
+                <div>You have tied in points, but you won by time !</div>
+                <div>Points: ${XSumScore}</div>
+                <div>Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}</div>
+              </div>` :
+            finalWinner === `OByTime` ? // CHECKED
+              `<div>
+                <div>You have tied in points, but AI won by time !</div>
+                <div>Points: ${OSumScore}</div>
+                <div>Time: ${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}</div>
+              </div>` :
+            finalWinner === `X` ? // CHECKED
+              `<div>
+                <div>You have won by points !</div>
+                <div>Points: ${XSumScore}</div>
+                <div>Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}</div>
+              </div>` :
+            finalWinner === `O` ? // CHECKED
+              `<div>
+                <div>AI have won by points !</div>
+                <div>Points: ${OSumScore}</div>
+                <div>Time: ${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}</div>
+              </div>` : // ↓↓↓ CHECKED ↓↓↓
+              `<div>
+                <div>The game is tied, this is really incredible !!</div>
+                <div>Tied by points & time !!!</div>
+                <div>Points: ${XSumScore}</div>
+                <div>Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}</div>
+              </div>`
           ,
           icon:
             'success',
@@ -672,7 +718,9 @@ const Main = () => {
   }
 
 
-  console.log("score.current", score.current)
+  //console.log("score.current", score.current)
+  console.log("rC", rC) // rowsAndColumns
+  
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -692,22 +740,22 @@ const Main = () => {
           <div className={css.pointsTitle}>Points:</div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ shouldAIstartState ? null : newGameStarted && userPlaying && !gameEnd.current ? `TURN ` : null }</div>
+          <div className={css.turn}>{ shouldAIstartState ? null : newGameStarted && userPlaying && !roundEnd.current ? `TURN ` : null }</div>
           <div className={css.participantName}>You:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.X} </div></div>
         </div>
         <div className={css.participant}>
-          <div className={css.turn}>{ shouldAIstartState ? `TURN ` : newGameStarted && !userPlaying && !gameEnd.current ? `TURN ` : null }</div>
+          <div className={css.turn}>{ shouldAIstartState ? `TURN ` : newGameStarted && !userPlaying && !roundEnd.current ? `TURN ` : null }</div>
           <div className={css.participantName}>AI:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.O} </div></div>
         </div>
         <div className={css.finalWinner}>
           {
-            gameEnd.current && winnerState === "X" ?
+            roundEnd.current && winnerState === "X" ?
             `WINNER: YOU !` :
-            gameEnd.current && winnerState === "O" ?
+            roundEnd.current && winnerState === "O" ?
             `WINNER: AI !` :
-            gameEnd.current && winnerState === "TIED" ?
+            roundEnd.current && winnerState === "TIED" ?
             `TIED GAME !` :
             null
           }
@@ -777,7 +825,7 @@ const Main = () => {
             <div className={css.scoreTableScore}>SCORE</div>
             <div className={css.scoreTableTime}>TIME</div>
           </div>
-          
+
           {
             score.current.map((e,i)=> {
               return (
@@ -785,8 +833,8 @@ const Main = () => {
                   <div className={css.scoreTableNumeral}>{e.id + 1}</div>
                   <div className={css.scoreTableTime}>{ e.timeX === '00:00:000' ? "➖" : e.timeX }</div>
                   <div className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
-                  <div className={css.scoreTableYou}>{e.X}</div>
-                  <div className={css.scoreTableAI}>{e.O}</div>
+                  <div className={css.scoreTableYou}>{ e.X }</div>
+                  <div className={css.scoreTableAI}>{ e.O }</div>
                   <div className={css.scoreTableScore}>{ e.scoreO === 0 ? "➖" : e.scoreO }</div>
                   <div className={css.scoreTableTime}>{ e.timeO === '00:00:000' ? "➖" : e.timeO }</div>
                 </div>
@@ -802,10 +850,10 @@ const Main = () => {
           <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
           <div className={css.scoreTableTime}>{ `${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}` }</div>
         </div>
-          
-       
+
+
       </div>
-      
+
     </div>
   );
 }
