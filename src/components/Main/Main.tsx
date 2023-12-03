@@ -140,45 +140,6 @@ const Main = () => {
 
   const updateScore = () => {
 
-    // if (score.current[score.current.length - 1].id === 9) {
-    //   //qq[qq.length - 1].id
-    //   gameEndRoundsBoolean.current = true
-    //   Swal.fire({
-    //     title:
-    //       `GAME END !!`,
-    //     text:
-    //       `no winner, no points.`,
-    //     icon:
-    //       'success',
-    //     showConfirmButton: true,
-    //     showDenyButton: false,
-    //     showCancelButton: false,
-    //     //timer: 2000,
-    //   })
-    // }
-
-    // console.log("score.current.length", score.current)
-
-    // if (gameEndRoundsNumber.current === score.current.length ) {
-    // //if (score.current.length === 9) {
-    //   //qq[qq.length - 1].id
-    //   gameEndRoundsBoolean.current = true
-    //   setTimeout(() => {
-    //     Swal.fire({
-    //       title:
-    //         `GAME END !!`,
-    //       text:
-    //         `no winner, no points.`,
-    //       icon:
-    //         'success',
-    //       showConfirmButton: true,
-    //       showDenyButton: false,
-    //       showCancelButton: false,
-    //       //timer: 2000,
-    //     })
-    //   }, 1200) // SYNC WITH HIGHLIGHTER FUNC UPDATE
-    // }
-
     setTimeout(() => {
       let min // MINUTES
       let sec // SECONDS
@@ -598,12 +559,18 @@ const Main = () => {
     }, 3000)
   }
 
-  let XfinalMin = 0
-  let XfinalSec = 0
-  let XfinalMs = 0
-  let OfinalMin = 0
-  let OfinalSec = 0
-  let OfinalMs = 0
+  // let XfinalMin = 0
+  // let XfinalSec = 0
+  // let XfinalMs = 0
+  // let OfinalMin = 0
+  // let OfinalSec = 0
+  // let OfinalMs = 0
+  let XfinalMin = useRef(0)
+  let XfinalSec = useRef(0)
+  let XfinalMs = useRef(0)
+  let OfinalMin = useRef(0)
+  let OfinalSec = useRef(0)
+  let OfinalMs = useRef(0)
 
   const sumTime = () => {
     let Xmin = score.current.reduce((partial, el) => partial + parseInt(el.timeX.split(":")[0], 10), 0)
@@ -617,32 +584,32 @@ const Main = () => {
     let XminutesToAdd = 0
 
     if (Xms.toString().length>3) {
-      XfinalMs = Xms.toString().slice(-3)
+      XfinalMs.current = Xms.toString().slice(-3)
       XsecondsToAdd = parseInt(Xms.toString().slice(0, -3), 10)
-    } else XfinalMs = parseInt(Xms.toString(), 10)
+    } else XfinalMs.current = parseInt(Xms.toString(), 10)
 
     if (Xsec > 59) {
       XminutesToAdd = Math.floor(Xsec / 60)
       let XremainingSec = Xsec - (XminutesToAdd * 60)
-      XfinalSec = XremainingSec + XsecondsToAdd
-    } else XfinalSec = Xsec + XsecondsToAdd
+      XfinalSec.current = XremainingSec + XsecondsToAdd
+    } else XfinalSec.current = Xsec + XsecondsToAdd
 
     let OsecondsToAdd = 0
     let OminutesToAdd = 0
 
     if (Oms.toString().length>3) {
-      OfinalMs = Oms.toString().slice(-3)
+      OfinalMs.current = Oms.toString().slice(-3)
       OsecondsToAdd = parseInt(Oms.toString().slice(0, -3), 10)
-    } else OfinalMs = parseInt(Oms.toString(), 10)
+    } else OfinalMs.current = parseInt(Oms.toString(), 10)
 
     if (Osec > 59) {
       OminutesToAdd = Math.floor(Osec / 60)
       let OremainingSec = Osec - (OminutesToAdd * 60)
-      OfinalSec = OremainingSec + OsecondsToAdd
-    } else OfinalSec = Osec + OsecondsToAdd
+      OfinalSec.current = OremainingSec + OsecondsToAdd
+    } else OfinalSec.current = Osec + OsecondsToAdd
 
-    XfinalMin = XminutesToAdd + Xmin
-    OfinalMin = OminutesToAdd + Omin
+    XfinalMin.current = XminutesToAdd + Xmin
+    OfinalMin.current = OminutesToAdd + Omin
   }
 
   sumTime()
@@ -660,13 +627,39 @@ const Main = () => {
     if (gameEndRoundsNumber.current === score.current.length ) {
     //if (score.current.length === 9) {
       //qq[qq.length - 1].id
+      
       gameEndRoundsBoolean.current = true
+
+      //console.log("123123", XfinalMin.toString().concat(XfinalSec.toString(), XfinalMs.toString()))
+      //XfinalMin.toString().concat(XfinalSec.toString(), XfinalMs.toString())
+      console.log("123123 333", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
       setTimeout(() => {
+        console.log("123123", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
+        let Xres = parseInt(XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()), 10)
+        let Ores = parseInt(OfinalMin.current.toString().concat(OfinalSec.current.toString(), OfinalMs.current.toString()), 10)
+        let finalWinner =
+          winner.current === "X" ?
+          `GAME END !\nYOU WIN !` :
+          winner.current === "O" ?
+          `GAME END !\nAI WIN !` :
+          `GAME END !`;
+
+
         Swal.fire({
           title:
-            `GAME END !!`,
-          text:
-            `no winner, no points.`,
+            finalWinner,
+          html:
+            
+              `Points`
+              
+                // Xres === Ores ?
+                // `Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}` :
+                // Xres > Ores ?
+                // `Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}` :
+                // `Time: ${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}`
+              
+            
+          ,
           icon:
             'success',
           showConfirmButton: true,
@@ -674,7 +667,7 @@ const Main = () => {
           showCancelButton: false,
           //timer: 2000,
         })
-      }, 1200) // SYNC WITH HIGHLIGHTER FUNC UPDATE
+      }, 1700) // WAITS FINAL TIME & POINTS TO UPDATE
     }
   }
 
@@ -803,11 +796,11 @@ const Main = () => {
         </div>
         <div className={css.scoreTableTitlesContainerLower}>
           <div className={css.scoreTableNumeral}>#</div>
-          <div className={css.scoreTableTime}>{ `${XfinalMin.toString().padStart(2,'0')}:${XfinalSec.toString().padStart(2,'0')}:${XfinalMs.toString().padStart(3,'0')}` }</div>
+          <div className={css.scoreTableTime}>{ `${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}` }</div>
           <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreX, 0) }</div>
           <div className={css.scoreTableTotal}>TOTAL</div>
           <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
-          <div className={css.scoreTableTime}>{ `${OfinalMin.toString().padStart(2,'0')}:${OfinalSec.toString().padStart(2,'0')}:${OfinalMs.toString().padStart(3,'0')}` }</div>
+          <div className={css.scoreTableTime}>{ `${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}` }</div>
         </div>
           
        
