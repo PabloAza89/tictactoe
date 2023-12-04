@@ -8,10 +8,12 @@ import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfac
 
 const Main = () => {
 
+  
+
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
   let score = useRef<any[]>([])
-
+  //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
 
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
@@ -20,9 +22,9 @@ const Main = () => {
   let roundEnd = useRef(false)
   //let gameEndRoundsNumber = useRef(9) // 10 ROUNDS
   //let gameEndRoundsNumber = useRef(1) // 2 ROUNDS
-  //let gameEndRoundsNumber = useRef(0) // 1 ROUNDS
+  let gameEndRoundsNumber = useRef(0) // 1 ROUNDS
   //let gameEndRoundsNumber = useRef(2) // 3 ROUNDS
-  let gameEndRoundsNumber = useRef(1) // 2 ROUNDS
+  //let gameEndRoundsNumber = useRef(1) // 2 ROUNDS
   let gameEndRoundsBoolean = useRef(false)
   let winnerRound = useRef("")
   const [ winnerRoundState, setWinnerRoundState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
@@ -308,7 +310,7 @@ const Main = () => {
     }
   }
 
-  const addButtonAnimation = () => $(`#buttonStart`).addClass(`${css.shakeAnimation}`);
+  const addButtonAnimation = () => $(`#buttonStart`).addClass(`${css.shakeAnimation}`)
   const removeButtonAnimation = () => $(`#buttonStart`).removeClass(`${css.shakeAnimation}`);
   const addTimerChangeColor = () => $(`#timerBox`).addClass(`${css.changeColor}`);
   const removeTimerChangeColor = () => $(`#timerBox`).removeClass(`${css.changeColor}`);
@@ -316,9 +318,10 @@ const Main = () => {
   const removeFlowPopUp = () => continueFlowPopUp.current = false;
 
   useEffect(() => { // BUTTON SHAKE ANIMATION AT VERY FIRST TIME
-    addButtonAnimation()
+    setTimeout(function() {
+      addButtonAnimation()
+    },300);
   },[])
-
   const basicOptions = () => {
     startsIn()
     setNewGameStarted(true) // ADD TIMER IN SCREEN
@@ -352,47 +355,47 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
-    //score.current = []
+    score.current = []
 
     
 
-         score.current = [
-              {
-                id: 0,
-                timeX: `10:34:112`,
-                scoreX: 100,
-                X: "✔️",
-                O: "❌",
-                scoreO: 0,
-                timeO: `00:00:000`
-              },
-              {
-                id: 1,
-                timeX: `00:00:000`,
-                scoreX: 0,
-                X: "❌",
-                O: "✔️",
-                scoreO: 100,
-                timeO: `10:34:112`
-              }
-            ]
+        //  score.current = [
+        //       {
+        //         id: 0,
+        //         timeX: `10:34:112`,
+        //         scoreX: 100,
+        //         X: "✔️",
+        //         O: "❌",
+        //         scoreO: 0,
+        //         timeO: `00:00:000`
+        //       },
+        //       {
+        //         id: 1,
+        //         timeX: `00:00:000`,
+        //         scoreX: 0,
+        //         X: "❌",
+        //         O: "✔️",
+        //         scoreO: 100,
+        //         timeO: `10:34:112`
+        //       }
+        //     ]
 
 
     addFlowPopUp()
     stopTimer()
     resetTimer()
-    //rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
-    rC.current = [ // rowsAndColumns
-      { id: 0, value: 'X' },
-      { id: 1, value: 'O' },
-      { id: 2, value: 'X' },
-      { id: 3, value: 'X' },
-      { id: 4, value: 'O' },
-      { id: 5, value: 'X' },
-      { id: 6, value: 'O' },
-      { id: 7, value: '' },
-      { id: 8, value: 'O' }
-    ]
+    rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
+    // rC.current = [ // rowsAndColumns
+    //   { id: 0, value: 'X' },
+    //   { id: 1, value: 'O' },
+    //   { id: 2, value: 'X' },
+    //   { id: 3, value: 'X' },
+    //   { id: 4, value: 'O' },
+    //   { id: 5, value: 'X' },
+    //   { id: 6, value: 'O' },
+    //   { id: 7, value: '' },
+    //   { id: 8, value: 'O' }
+    // ]
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 });
     actionPoints = 0;
@@ -426,30 +429,98 @@ const Main = () => {
       denyButtonColor: '#008000', // RIGHT OPTION
     })
     .then((result) => {
+      console.log("123123 result", result)
       if (result.isConfirmed) { // START USER
-        //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
-        basicOptions()
-        userHasStartedThisRound.current = true
-        setShouldAIstartState(false)
-        setTimeout(() => {
-          startTimer()
-          clickBlocked.current = false
-          showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
-        }, 4300) // SYNC WITH POP-UP CLOSES
+        Swal.fire({
+          title: "Select number of rounds:",
+          input: "select",
+          inputValue: roundsValueLS !== null ? parseInt(roundsValueLS, 10) + 1 : "3", // DEFAULT VALUE
+          inputOptions: {
+            1: "1",
+            2: "2",
+            3: "3",
+            4: "4",
+            5: "5",
+            10: "10",
+            15: "15",
+            20: "20"
+          },
+          confirmButtonText: 'GO !',
+          confirmButtonColor: '#2e8b57',
+          showCancelButton: false,
+          inputValidator: (value) => {
+            console.log("123123 value", value)
+            gameEndRoundsNumber.current = parseInt(value, 10) - 1 // ONLY SEND WHEN result.isConfirmed
+            localStorage.setItem('roundsValue', JSON.stringify(parseInt(value, 10) - 1))
+          }
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            basicOptions()
+            userHasStartedThisRound.current = true
+            setShouldAIstartState(false)
+            setTimeout(() => {
+              startTimer()
+              clickBlocked.current = false
+              showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
+            }, 4300) // SYNC WITH POP-UP CLOSES
+          }
+          else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
+            console.log("123123 rejected")
+            setTimeout(function() {
+              addButtonAnimation()
+            },300);
+          }
+        })
       }
       else if (result.isDenied) { // START AI
-        //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
-        basicOptions()
-        userHasStartedThisRound.current = false
-        clickBlocked.current = true
-        setShouldAIstartState(true)
-        setTimeout(() => {
-          startTimer()
-          AIAction()
-          showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
-        }, 4300) // SYNC WITH POP-UP CLOSES
+        Swal.fire({
+          title: "Select number of rounds:",
+          input: "select",
+          inputValue: roundsValueLS !== null ? parseInt(roundsValueLS, 10) + 1 : "3", // DEFAULT VALUE
+          inputOptions: {
+            1: "1",
+            2: "2",
+            3: "3",
+            4: "4",
+            5: "5",
+            10: "10",
+            15: "15",
+            20: "20"
+          },
+          confirmButtonText: 'GO !',
+          confirmButtonColor: '#2e8b57',
+          showCancelButton: false,
+          inputValidator: (value) => {
+            gameEndRoundsNumber.current = parseInt(value, 10) - 1
+            localStorage.setItem('roundsValue', JSON.stringify(parseInt(value, 10) - 1))
+          }
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            basicOptions()
+            userHasStartedThisRound.current = false
+            clickBlocked.current = true
+            setShouldAIstartState(true)
+            setTimeout(() => {
+              startTimer()
+              AIAction()
+              showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
+            }, 4300) // SYNC WITH POP-UP CLOSES
+          }
+          else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
+            console.log("123123 rejected")
+            setTimeout(function() {
+              addButtonAnimation()
+            },300);
+          }
+        })
       }
-      else addButtonAnimation()
+      else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
+        setTimeout(function() {
+          addButtonAnimation()
+        },300); // NECESSARY FOR ADD ANIMATION WHEN USER PRESS SCAPE.. DON'T ASK WHY.
+      }
     })
   }
 
@@ -728,10 +799,13 @@ const Main = () => {
   console.log("123 rC", rC) // rowsAndColumns
   console.log("123 winnerRound.current", winnerRound.current) // rowsAndColumns
   
+  let roundsValueLS: string | null = localStorage.getItem('roundsValue');
+  if (roundsValueLS !== null) gameEndRoundsNumber.current = parseInt(roundsValueLS, 10)
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
       <Button
+        focusRipple={false}
         id={`buttonStart`}
         className={css.button}
         variant="outlined"
@@ -765,11 +839,11 @@ const Main = () => {
             gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "TIED" ?
             `GAME WINNER: TIED !` :
             roundEnd.current && winnerRoundState === "X" ?
-            `ROUND'S WON: YOU !` :
+            `ROUND WINNER: YOU !` :
             roundEnd.current && winnerRoundState === "O" ?
-            `ROUND'S WON: AI !` :
+            `ROUND WINNER: AI !` :
             roundEnd.current && winnerRoundState === "TIED" ?
-            `ROUND'S WON: TIED !` :
+            `ROUND WINNER: TIED !` :
             null
           }
         </div>
