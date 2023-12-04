@@ -17,3 +17,13 @@
   -ms-user-select: none !important;
   user-select: none !important;
 }
+
+.swal2-select {
+  width: 80px !important;
+  max-width: 80px !important;
+  min-width: 0px !important;
+  justify-self: center;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-left: 22px !important;
+}

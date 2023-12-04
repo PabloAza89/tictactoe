@@ -296,6 +296,8 @@ const Main = () => {
   const removeButtonAnimation = () => $(`#buttonStart`).removeClass(`${css.shakeAnimation}`);
   const addTimerChangeColor = () => $(`#timerBox`).addClass(`${css.changeColor}`);
   const removeTimerChangeColor = () => $(`#timerBox`).removeClass(`${css.changeColor}`);
+  const addFinalWinnerChangeColor = () => $(`#finalWinnerBox`).addClass(`${css.changeColor}`);
+  const removeFinalWinnerChangeColor = () => $(`#finalWinnerBox`).removeClass(`${css.changeColor}`);
   const addFlowPopUp = () => continueFlowPopUp.current = true;
   const removeFlowPopUp = () => continueFlowPopUp.current = false;
 
@@ -338,46 +340,23 @@ const Main = () => {
 
   const hardResetGame = () => {
     score.current = []
+    roundEnd.current = false
+    setWinnerGameState("")
+    setWinnerRoundState("")
+    removeFinalWinnerChangeColor()
 
-
-
-        //  score.current = [
-        //       {
-        //         id: 0,
-        //         timeX: `10:34:112`,
-        //         scoreX: 100,
-        //         X: "✔️",
-        //         O: "❌",
-        //         scoreO: 0,
-        //         timeO: `00:00:000`
-        //       },
-        //       {
-        //         id: 1,
-        //         timeX: `00:00:000`,
-        //         scoreX: 0,
-        //         X: "❌",
-        //         O: "✔️",
-        //         scoreO: 100,
-        //         timeO: `10:34:112`
-        //       }
-        //     ]
-
+    XfinalMin.current = 0
+    XfinalSec.current = 0
+    XfinalMs.current = 0
+    OfinalMin.current = 0
+    OfinalSec.current = 0
+    OfinalMs.current = 0
 
     addFlowPopUp()
     stopTimer()
     resetTimer()
     rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
-    // rC.current = [ // rowsAndColumns
-    //   { id: 0, value: 'X' },
-    //   { id: 1, value: 'O' },
-    //   { id: 2, value: 'X' },
-    //   { id: 3, value: 'X' },
-    //   { id: 4, value: 'O' },
-    //   { id: 5, value: 'X' },
-    //   { id: 6, value: 'O' },
-    //   { id: 7, value: '' },
-    //   { id: 8, value: 'O' }
-    // ]
+
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 });
     actionPoints = 0;
@@ -401,6 +380,11 @@ const Main = () => {
     hardResetGame();
     removeButtonAnimation()
     setNewGameStarted(false) // REMOVE TIMER FROM SCREEN
+    gameEndRoundsBoolean.current = false
+    // roundEnd.current = false
+    // setWinnerGameState("")
+    // setWinnerRoundState("")
+    // removeFinalWinnerChangeColor()
     Swal.fire({
       title: `WELCOME TO TIC-TAC-TOE !`,
       text: 'Please, select who start first..',
@@ -418,11 +402,11 @@ const Main = () => {
           input: "select",
           inputValue: roundsValueLS !== null ? parseInt(roundsValueLS, 10) + 1 : "3", // DEFAULT VALUE
           inputOptions: {
-            1: "1",
-            2: "2",
-            3: "3",
-            4: "4",
-            5: "5",
+            1: " 1",
+            2: " 2",
+            3: " 3",
+            4: " 4",
+            5: " 5",
             10: "10",
             15: "15",
             20: "20"
@@ -461,11 +445,11 @@ const Main = () => {
           input: "select",
           inputValue: roundsValueLS !== null ? parseInt(roundsValueLS, 10) + 1 : "3", // DEFAULT VALUE
           inputOptions: {
-            1: "1",
-            2: "2",
-            3: "3",
-            4: "4",
-            5: "5",
+            1: " 1",
+            2: " 2",
+            3: " 3",
+            4: " 4",
+            5: " 5",
             10: "10",
             15: "15",
             20: "20"
@@ -726,6 +710,7 @@ const Main = () => {
 
         setTimeout(() => {
           setWinnerGameState(finalWinner)
+          addFinalWinnerChangeColor()
         }, 200) // DELAY WAITS FOR FINAL POPUP
         
 
@@ -825,31 +810,36 @@ const Main = () => {
           <div className={css.participantName}>AI:</div>
           <div className={css.points}><div className={css.innerPoints}> {points.O} </div></div>
         </div>
-        <div className={css.finalWinner}>
-          {
-            //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "X" ?
-            gameEndRoundsBoolean.current && roundEnd.current && (winnerGameState === "X" || winnerGameState === "XByTime") ?
-            `GAME WINNER: YOU !` :
-            //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "O" ?
-            gameEndRoundsBoolean.current && roundEnd.current && (winnerGameState === "O" || winnerGameState === "OByTime") ?
-            `GAME WINNER: AI !` :
-            //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "TIED" ?
-            gameEndRoundsBoolean.current && roundEnd.current && winnerGameState === "TIED" ?
-            `GAME WINNER: TIED !` :
-            !gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "X" ?
-            `ROUND WINNER: YOU !` :
-            !gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "O" ?
-            `ROUND WINNER: AI !` :
-            !gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "TIED" ?
-            `ROUND WINNER: TIED !` :
-            null
-          }
+        <div
+          //id={`finalWinnerBox`}
+          className={css.finalWinner}
+        >
+          <div id={`finalWinnerBox`}>
+            {
+              //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "X" ?
+              gameEndRoundsBoolean.current && roundEnd.current && (winnerGameState === "X" || winnerGameState === "XByTime") ?
+              `GAME WINNER: YOU !` :
+              //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "O" ?
+              gameEndRoundsBoolean.current && roundEnd.current && (winnerGameState === "O" || winnerGameState === "OByTime") ?
+              `GAME WINNER: AI !` :
+              //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "TIED" ?
+              gameEndRoundsBoolean.current && roundEnd.current && winnerGameState === "TIED" ?
+              `GAME WINNER: TIED !` :
+              !gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "X" ?
+              `ROUND WINNER: YOU !` :
+              !gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "O" ?
+              `ROUND WINNER: AI !` :
+              !gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "TIED" ?
+              `ROUND WINNER: TIED !` :
+              null
+            }
+          </div>
         </div>
         <div
           // style={{
           //   display: newGameStarted ? 'flex' : 'none'
           // }}
-          // id={`timerBox`}
+          //id={`roundsBox`}
           style={{
             display: newGameStarted || gameEndRoundsBoolean.current ? 'flex' : 'none'
           }}
