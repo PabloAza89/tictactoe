@@ -21,7 +21,8 @@ const Main = () => {
   //let gameEndRoundsNumber = useRef(9) // 10 ROUNDS
   //let gameEndRoundsNumber = useRef(1) // 2 ROUNDS
   //let gameEndRoundsNumber = useRef(0) // 1 ROUNDS
-  let gameEndRoundsNumber = useRef(2) // 3 ROUNDS
+  //let gameEndRoundsNumber = useRef(2) // 3 ROUNDS
+  let gameEndRoundsNumber = useRef(1) // 2 ROUNDS
   let gameEndRoundsBoolean = useRef(false)
   let winnerRound = useRef("")
   const [ winnerRoundState, setWinnerRoundState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
