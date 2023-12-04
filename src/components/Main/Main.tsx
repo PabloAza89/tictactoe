@@ -19,10 +19,12 @@ const Main = () => {
   const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
   let roundEnd = useRef(false)
   //let gameEndRoundsNumber = useRef(9) // 10 ROUNDS
-  let gameEndRoundsNumber = useRef(1) // 2 ROUNDS
+  //let gameEndRoundsNumber = useRef(1) // 2 ROUNDS
+  //let gameEndRoundsNumber = useRef(0) // 1 ROUNDS
+  let gameEndRoundsNumber = useRef(2) // 3 ROUNDS
   let gameEndRoundsBoolean = useRef(false)
-  let winner = useRef("")
-  const [ winnerState, setWinnerState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
+  let winnerRound = useRef("")
+  const [ winnerRoundState, setWinnerRoundState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
   const [ userPlaying, setUserPlaying ] = useState(true)
   let userHasStartedThisRound = useRef(true)
   const [ countdownRound, setCountdownRound ] = useState<number>(3)
@@ -132,9 +134,9 @@ const Main = () => {
       let copyPoints: pointsI = {...points}
       copyPoints[letter] = copyPoints[letter] + actionPoints
       setPoints(copyPoints)
-      winner.current = `${letter}`
+      winnerRound.current = `${letter}`
       setTimeout(() => {
-        setWinnerState(`${letter}`) // SYNC WITH POP-UP
+        setWinnerRoundState(`${letter}`) // SYNC WITH POP-UP
       }, 300)
     }, 1200)
   }
@@ -154,12 +156,12 @@ const Main = () => {
 
       score.current.push({
         id: score.current.length,
-        timeX: winner.current === "X" || winner.current === "" ? `${min}:${sec}:${mss}` : `00:00:000`, // FAKE MS FOR TEST (TIED BY POINTS & TIME)
-        scoreX: winner.current === "X" ? actionPoints : 0,
-        X: winner.current === "" ? "➖" : winner.current === "X" ? "✔️" : "❌",
-        O: winner.current === "" ? "➖" : winner.current === "O" ? "✔️" : "❌",
-        scoreO: winner.current === "O" ? actionPoints : 0,
-        timeO: winner.current === "O" || winner.current === "" ? `${min}:${sec}:${mss}` : `00:00:000`,
+        timeX: winnerRound.current === "X" || winnerRound.current === "TIED" ? `${min}:${sec}:${mss}` : `00:00:000`, // FAKE MS FOR TEST (TIED BY POINTS & TIME)
+        scoreX: winnerRound.current === "X" ? actionPoints : 0,
+        X: winnerRound.current === "TIED" ? "➖" : winnerRound.current === "X" ? "✔️" : "❌",
+        O: winnerRound.current === "TIED" ? "➖" : winnerRound.current === "O" ? "✔️" : "❌",
+        scoreO: winnerRound.current === "O" ? actionPoints : 0,
+        timeO: winnerRound.current === "O" || winnerRound.current === "TIED" ? `${min}:${sec}:${mss}` : `00:00:000`,
       })
     }, 1200) // SYNC WITH HIGHLIGHTER FUNC UPDATE
   }
@@ -204,7 +206,56 @@ const Main = () => {
       if (e.every((e: eachBoxI) => e.value === 'O')) highlighter({ array: e, letter: "O" })
     })
 
-    if (rC.current.filter(e => e.value === '').length === 0) roundEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
+     // if (winnerRound.current === "") {
+            //   setWinnerRoundState("TIED") // SYNC WITH POP-UP
+            //   clickBlocked.current = true
+            // }
+
+      // setTimeout(() => {
+      //   let copyPoints: pointsI = {...points}
+      //   copyPoints[letter] = copyPoints[letter] + actionPoints
+      //   setPoints(copyPoints)
+      //   winnerRound.current = `${letter}`
+      //   setTimeout(() => {
+      //     setWinnerRoundState(`${letter}`) // SYNC WITH POP-UP
+      //   }, 300)
+      // }, 1200)
+
+    // if (rC.current.filter(e => e.value === '').length === 0 && winnerRound.current !== "X" && winnerRound.current !== "O") {
+    //   setTimeout(() => {
+    //     //let copyPoints: pointsI = {...points}
+    //     //copyPoints[letter] = copyPoints[letter] + actionPoints
+    //     setPoints({ "X": 0, "O": 0 })
+    //     winnerRound.current = ""
+    //     setTimeout(() => {
+    //       setWinnerRoundState("") // SYNC WITH POP-UP
+    //     }, 300)
+    //   }, 1200)
+
+    //   roundEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
+    // }
+
+    if (
+      rC.current.filter(e => e.value === '').length === 0
+      && !roundEnd.current
+    ) {
+      roundEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
+      setTimeout(() => {
+        //let copyPoints: pointsI = {...points}
+        //copyPoints[letter] = copyPoints[letter] + actionPoints
+        setPoints({ "X": 0, "O": 0 })
+        winnerRound.current = "TIED"
+        setTimeout(() => {
+          setWinnerRoundState("TIED") // SYNC WITH POP-UP
+        }, 300)
+      }, 1200)
+    }
+
+
+
+    if (rC.current.filter(e => e.value === '').length === 0) {
+      roundEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
+    }
 
     if (roundEnd.current) {
       stopTimer()
@@ -214,9 +265,9 @@ const Main = () => {
         if (continueFlowPopUp.current && !gameEndRoundsBoolean.current) {
           Swal.fire({
             title:
-              winner.current === "X" ?
+              winnerRound.current === "X" ?
               `YOU WIN !` :
-              winner.current === "O" ?
+              winnerRound.current === "O" ?
               `AI WIN !` :
               `TIED GAME`,
             text:
@@ -226,7 +277,7 @@ const Main = () => {
               `+200 Points !! Supperrrb !!!` :
               `no winner, no points.`,
             icon:
-              winner.current === "" ?
+              winnerRound.current === "" ?
               'info' :
               'success',
             showConfirmButton: false,
@@ -235,10 +286,10 @@ const Main = () => {
             timer: 2000,
           })
           setTimeout(() => {
-            if (winner.current === "") {
-              setWinnerState("TIED") // SYNC WITH POP-UP
-              clickBlocked.current = true
-            }
+            // if (winnerRound.current === "") {
+            //   setWinnerRoundState("TIED") // SYNC WITH POP-UP
+            //   clickBlocked.current = true
+            // }
           }, 1200)
         }
       }, 1200)
@@ -286,8 +337,8 @@ const Main = () => {
     clickBlocked.current = true
     actionPoints = 0;
     roundEnd.current = false;
-    winner.current = ""
-    setWinnerState("")
+    winnerRound.current = ""
+    setWinnerRoundState("")
     setUserPlaying(true);
     removeButtonAnimation()
     removeTimerChangeColor()
@@ -300,115 +351,53 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
-    score.current = []
+    //score.current = []
 
     
-    // score.current = [
-    //     {
-    //       id: 0,
-    //       timeX: `10:34:112`,
-    //       scoreX: 100,
-    //       X: "✔️",
-    //       O: "❌",
-    //       scoreO: 0,
-    //       timeO: `00:00:000`
-    //     },
-    //     {
-    //       id: 1,
-    //       timeX: `00:00:000`,
-    //       scoreX: 0,
-    //       X: "❌",
-    //       O: "✔️",
-    //       scoreO: 100,
-    //       timeO: `00:39:124`
-    //     },
-    //     {
-    //       id: 2,
-    //       timeX: `00:00:000`,
-    //       scoreX: 0,
-    //       X: "❌",
-    //       O: "✔️",
-    //       scoreO: 100,
-    //       timeO: `00:52:356`
-    //     },
-    //     {
-    //       id: 3,
-    //       timeX: `53:45:544`,
-    //       scoreX: 200,
-    //       X: "✔️",
-    //       O: "❌",
-    //       scoreO: 0,
-    //       timeO: `00:00:000`
-    //     },
-    //     {
-    //       id: 4,
-    //       timeX: `03:15:821`,
-    //       scoreX: 100,
-    //       X: "✔️",
-    //       O: "❌",
-    //       scoreO: 0,
-    //       timeO: `00:00:000`
-    //     },
-    //     {
-    //       id: 5,
-    //       timeX: `00:00:000`,
-    //       scoreX: 0,
-    //       X: "❌",
-    //       O: "✔️",
-    //       scoreO: 200,
-    //       timeO: `00:15:231`
-    //     },
-    //     {
-    //       id: 6,
-    //       timeX: `00:00:000`,
-    //       scoreX: 0,
-    //       X: "❌",
-    //       O: "✔️",
-    //       scoreO: 100,
-    //       timeO: `03:52:339`
-    //     },
-    //     {
-    //       id: 7,
-    //       timeX: `00:02:234`,
-    //       scoreX: 200,
-    //       X: "✔️",
-    //       O: "❌",
-    //       scoreO: 0,
-    //       timeO: `00:00:000`
-    //     },
-    //     {
-    //       id: 8,
-    //       timeX: `00:02:234`,
-    //       scoreX: 200,
-    //       X: "✔️",
-    //       O: "❌",
-    //       scoreO: 0,
-    //       timeO: `00:00:000`
-    //     }
-    //   ]
+
+         score.current = [
+              {
+                id: 0,
+                timeX: `10:34:112`,
+                scoreX: 100,
+                X: "✔️",
+                O: "❌",
+                scoreO: 0,
+                timeO: `00:00:000`
+              },
+              {
+                id: 1,
+                timeX: `00:00:000`,
+                scoreX: 0,
+                X: "❌",
+                O: "✔️",
+                scoreO: 100,
+                timeO: `10:34:112`
+              }
+            ]
 
 
     addFlowPopUp()
     stopTimer()
     resetTimer()
-    rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
-    // rC.current = [ // rowsAndColumns
-    //   { id: 0, value: 'X' },
-    //   { id: 1, value: 'O' },
-    //   { id: 2, value: 'X' },
-    //   { id: 3, value: 'X' },
-    //   { id: 4, value: 'O' },
-    //   { id: 5, value: 'X' },
-    //   { id: 6, value: 'O' },
-    //   { id: 7, value: '' },
-    //   { id: 8, value: 'O' }
-    // ]
+    //rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
+    rC.current = [ // rowsAndColumns
+      { id: 0, value: 'X' },
+      { id: 1, value: 'O' },
+      { id: 2, value: 'X' },
+      { id: 3, value: 'X' },
+      { id: 4, value: 'O' },
+      { id: 5, value: 'X' },
+      { id: 6, value: 'O' },
+      { id: 7, value: '' },
+      { id: 8, value: 'O' }
+    ]
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 });
     actionPoints = 0;
     roundEnd.current = false;
-    winner.current = ""
-    setWinnerState("")
+    winnerRound.current = ""
+    setWinnerRoundState("")
     setUserPlaying(true);
     removeButtonAnimation()
     removeTimerChangeColor()
@@ -643,12 +632,19 @@ const Main = () => {
     console.log("score.current.length", score.current)
 
     if (gameEndRoundsNumber.current === score.current.length ) {
+      // gameEndRoundsBoolean.current = true;
+      // showCountdownRound.current = false // PREVENT DEFAULT NEXT ROUND COUNTDOWN
+
       gameEndRoundsBoolean.current = true;
-      showCountdownRound.current = false // PREVENT DEFAULT NEXT ROUND COUNTDOWN
+      showCountdownRound.current = false
+      setTimeout(() => {
+         // PREVENT DEFAULT NEXT ROUND COUNTDOWN
+      }, 1300)
       //setShowCountdownRoundState(false)
 
       //console.log("123123 333", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
       setTimeout(() => {
+        
         console.log("123123", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
         let XSumScore = score.current.reduce((partial, el) => partial + el.scoreX, 0)
         let OSumScore = score.current.reduce((partial, el) => partial + el.scoreO, 0)
@@ -672,7 +668,9 @@ const Main = () => {
             `GAME END !\nYOU WIN !` :
             finalWinner === "OByTime" || finalWinner === "O" ?
             `GAME END !\nAI WIN !` :
-            `GAME END !\nTIED, INCREDIBLE !!`
+            score.current.some(e => e.X === "✔️" || e.O === "✔️") ? // CHECK IF TIED BY POINTS & TIME HAS AT LEAST A WINNING ROUND, no way !
+            `GAME END !\nTIED, INCREDIBLE !!` : 
+            `GAME END !\nTIED !` 
             ,
           html:
             finalWinner === `XByTime` ? // CHECKED
@@ -698,10 +696,17 @@ const Main = () => {
                 <div>AI have won by points !</div>
                 <div>Points: ${OSumScore}</div>
                 <div>Time: ${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}</div>
-              </div>` : // ↓↓↓ CHECKED ↓↓↓
+              </div>` :
+            score.current.some(e => e.X === "✔️" || e.O === "✔️") ? // CHECK IF TIED BY POINTS & TIME HAS AT LEAST A WINNING ROUND
               `<div>
                 <div>The game is tied, this is really incredible !!</div>
                 <div>Tied by points & time !!!</div>
+                <div>Points: ${XSumScore}</div>
+                <div>Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}</div>
+              </div>` : // ↓↓↓ CHECKED, no way ! ↓↓↓
+              `<div>
+                <div>The game is tied !</div>
+                <div>Tied by points & time !</div>
                 <div>Points: ${XSumScore}</div>
                 <div>Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}</div>
               </div>`
@@ -718,8 +723,9 @@ const Main = () => {
   }
 
 
-  //console.log("score.current", score.current)
-  console.log("rC", rC) // rowsAndColumns
+  console.log("123 score.current", score.current)
+  console.log("123 rC", rC) // rowsAndColumns
+  console.log("123 winnerRound.current", winnerRound.current) // rowsAndColumns
   
 
   return (
@@ -751,12 +757,18 @@ const Main = () => {
         </div>
         <div className={css.finalWinner}>
           {
-            roundEnd.current && winnerState === "X" ?
-            `WINNER: YOU !` :
-            roundEnd.current && winnerState === "O" ?
-            `WINNER: AI !` :
-            roundEnd.current && winnerState === "TIED" ?
-            `TIED GAME !` :
+            gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "X" ?
+            `GAME WINNER: YOU !` :
+            gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "O" ?
+            `GAME WINNER: AI !` :
+            gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "TIED" ?
+            `GAME WINNER: TIED !` :
+            roundEnd.current && winnerRoundState === "X" ?
+            `ROUND'S WON: YOU !` :
+            roundEnd.current && winnerRoundState === "O" ?
+            `ROUND'S WON: AI !` :
+            roundEnd.current && winnerRoundState === "TIED" ?
+            `ROUND'S WON: TIED !` :
             null
           }
         </div>
