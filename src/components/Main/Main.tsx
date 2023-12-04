@@ -8,8 +8,6 @@ import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfac
 
 const Main = () => {
 
-
-
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
   let score = useRef<any[]>([])
@@ -28,6 +26,7 @@ const Main = () => {
   let gameEndRoundsBoolean = useRef(false)
   let winnerRound = useRef("")
   const [ winnerRoundState, setWinnerRoundState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
+  const [ winnerGameState, setWinnerGameState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
   const [ userPlaying, setUserPlaying ] = useState(true)
   let userHasStartedThisRound = useRef(true)
   const [ countdownRound, setCountdownRound ] = useState<number>(3)
@@ -54,7 +53,7 @@ const Main = () => {
           }
         } while (success === false)
       }
-      checkWinner()
+      checkRoundWinner()
       .then(() => { if (!roundEnd.current) clickBlocked.current = false })
     }, randomTimes[Math.floor(Math.random() * 5)])
   }
@@ -71,7 +70,7 @@ const Main = () => {
 
   const handleSequence = async ({ target }: handleSequenceI) => {
     userAction(target)
-    .then(() => { if (validClick.current) checkWinner() })
+    .then(() => { if (validClick.current) checkRoundWinner() })
     .then(() => { if (!roundEnd.current && validClick.current) AIAction() })
   }
 
@@ -142,6 +141,12 @@ const Main = () => {
         setWinnerRoundState(`${letter}`) // SYNC WITH POP-UP
       }, 300)
     }, 1200)
+
+    // setTimeout(() => { // TEST
+    //     //setWinnerRoundState(`${letter}`) // SYNC WITH POP-UP
+    //     setWinnerGameState(`${letter}`) // SYNC WITH POP-UP
+    // }, 1800) // WINNER SIGN AFTER FINAL POPUP (1700ms)
+    
   }
 
   const updateScore = () => {
@@ -171,7 +176,7 @@ const Main = () => {
 
   let actionPoints: number = 0
 
-  const checkWinner = async () => {
+  const checkRoundWinner = async () => {
     let rT = [0,3,6,9] // rowTargets
     let cT = [0,1,2,3] // columnsTargets
     let dT = [0,2,4]   // diagonalTargets
@@ -228,6 +233,7 @@ const Main = () => {
           setWinnerRoundState("TIED") // SYNC WITH POP-UP
         }, 300)
       }, 1200)
+      
     }
 
 
@@ -503,7 +509,7 @@ const Main = () => {
   const buttonNewGameHandler = () => {
     removeFlowPopUp() // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
     removeButtonAnimation()
-    if (newGameStarted) {
+    if (newGameStarted/*  || gameEndRoundsBoolean.current */) {
       Swal.fire({
         title: `DO YOU WANT TO START A NEW GAME ?`,
         text: 'All points gonna be lost !..',
@@ -679,26 +685,33 @@ const Main = () => {
   const checkGameEndByRounds = () => { // GAME END BY ROUNDS HANDLER
     console.log("score.current.length", score.current)
 
-    if (gameEndRoundsNumber.current === score.current.length ) {
+    if (gameEndRoundsNumber.current === score.current.length ) { // GAME END BY ROUNDS
       // gameEndRoundsBoolean.current = true;
       // showCountdownRound.current = false // PREVENT DEFAULT NEXT ROUND COUNTDOWN
 
+      //gameEndRoundsBoolean.current = true;
       gameEndRoundsBoolean.current = true;
       showCountdownRound.current = false
+      setNewGameStarted(false)
+      
       setTimeout(() => {
+        addButtonAnimation()
+        //gameEndRoundsBoolean.current = true;
          // PREVENT DEFAULT NEXT ROUND COUNTDOWN
-      }, 1300)
+      }, 1800) // BUTTON SHAKE AFTER FINAL POPUP (1700ms)
       //setShowCountdownRoundState(false)
 
       //console.log("123123 333", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
       setTimeout(() => {
 
-        console.log("123123", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
+        //console.log("123123", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
         let XSumScore = score.current.reduce((partial, el) => partial + el.scoreX, 0)
         let OSumScore = score.current.reduce((partial, el) => partial + el.scoreO, 0)
         let XSumTime = parseInt(XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()), 10)
         let OSumTime = parseInt(OfinalMin.current.toString().concat(OfinalSec.current.toString(), OfinalMs.current.toString()), 10)
 
+        //let finalWinner =
+        //setWinnerGameState(
         let finalWinner =
           XSumScore === OSumScore && XSumTime === OSumTime ?
           "TIED" :
@@ -709,10 +722,16 @@ const Main = () => {
           XSumScore > OSumScore ?
           "X" :
           "O"
+        //)
+
+        setTimeout(() => {
+          setWinnerGameState(finalWinner)
+        }, 200) // DELAY WAITS FOR FINAL POPUP
+        
 
         Swal.fire({
           title:
-            finalWinner === "XByTime" || finalWinner === "X" ?
+            winnerGameState === "XByTime" || finalWinner === "X" ?
             `GAME END !\nYOU WIN !` :
             finalWinner === "OByTime" || finalWinner === "O" ?
             `GAME END !\nAI WIN !` :
@@ -808,17 +827,20 @@ const Main = () => {
         </div>
         <div className={css.finalWinner}>
           {
-            gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "X" ?
+            //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "X" ?
+            gameEndRoundsBoolean.current && roundEnd.current && (winnerGameState === "X" || winnerGameState === "XByTime") ?
             `GAME WINNER: YOU !` :
-            gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "O" ?
+            //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "O" ?
+            gameEndRoundsBoolean.current && roundEnd.current && (winnerGameState === "O" || winnerGameState === "OByTime") ?
             `GAME WINNER: AI !` :
-            gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "TIED" ?
+            //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "TIED" ?
+            gameEndRoundsBoolean.current && roundEnd.current && winnerGameState === "TIED" ?
             `GAME WINNER: TIED !` :
-            roundEnd.current && winnerRoundState === "X" ?
+            !gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "X" ?
             `ROUND WINNER: YOU !` :
-            roundEnd.current && winnerRoundState === "O" ?
+            !gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "O" ?
             `ROUND WINNER: AI !` :
-            roundEnd.current && winnerRoundState === "TIED" ?
+            !gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "TIED" ?
             `ROUND WINNER: TIED !` :
             null
           }
@@ -828,13 +850,11 @@ const Main = () => {
           //   display: newGameStarted ? 'flex' : 'none'
           // }}
           // id={`timerBox`}
+          style={{
+            display: newGameStarted || gameEndRoundsBoolean.current ? 'flex' : 'none'
+          }}
           className={css.rounds}
         >
-          {/* <div>TIME:  </div>
-          <div id={`timer_minutes`} className={css.eachTime}>00</div>:
-          <div id={`timer_seconds`} className={css.eachTime}>00</div>
-          <div className={css.smallerMili}>:</div>
-          <div id={`timer_ms`} className={`${css.smallerMili} ${css.eachTimeMini}`}>000</div> */}
           Rounds: {gameEndRoundsNumber.current + 1}
         </div>
         <div
