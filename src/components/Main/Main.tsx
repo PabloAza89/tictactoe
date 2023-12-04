@@ -8,7 +8,7 @@ import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfac
 
 const Main = () => {
 
-  
+
 
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
@@ -214,30 +214,6 @@ const Main = () => {
             //   clickBlocked.current = true
             // }
 
-      // setTimeout(() => {
-      //   let copyPoints: pointsI = {...points}
-      //   copyPoints[letter] = copyPoints[letter] + actionPoints
-      //   setPoints(copyPoints)
-      //   winnerRound.current = `${letter}`
-      //   setTimeout(() => {
-      //     setWinnerRoundState(`${letter}`) // SYNC WITH POP-UP
-      //   }, 300)
-      // }, 1200)
-
-    // if (rC.current.filter(e => e.value === '').length === 0 && winnerRound.current !== "X" && winnerRound.current !== "O") {
-    //   setTimeout(() => {
-    //     //let copyPoints: pointsI = {...points}
-    //     //copyPoints[letter] = copyPoints[letter] + actionPoints
-    //     setPoints({ "X": 0, "O": 0 })
-    //     winnerRound.current = ""
-    //     setTimeout(() => {
-    //       setWinnerRoundState("") // SYNC WITH POP-UP
-    //     }, 300)
-    //   }, 1200)
-
-    //   roundEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
-    // }
-
     if (
       rC.current.filter(e => e.value === '').length === 0
       && !roundEnd.current
@@ -297,7 +273,7 @@ const Main = () => {
         }
       }, 1200)
 
-      //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
+      if (!gameEndRoundsBoolean.current) showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
       countdownHandler() // START COUNTDOWN FOR NEXT ROUND
 
       setTimeout(() => {
@@ -357,7 +333,7 @@ const Main = () => {
   const hardResetGame = () => {
     score.current = []
 
-    
+
 
         //  score.current = [
         //       {
@@ -716,7 +692,7 @@ const Main = () => {
 
       //console.log("123123 333", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
       setTimeout(() => {
-        
+
         console.log("123123", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
         let XSumScore = score.current.reduce((partial, el) => partial + el.scoreX, 0)
         let OSumScore = score.current.reduce((partial, el) => partial + el.scoreO, 0)
@@ -741,8 +717,8 @@ const Main = () => {
             finalWinner === "OByTime" || finalWinner === "O" ?
             `GAME END !\nAI WIN !` :
             score.current.some(e => e.X === "✔️" || e.O === "✔️") ? // CHECK IF TIED BY POINTS & TIME HAS AT LEAST A WINNING ROUND, no way !
-            `GAME END !\nTIED, INCREDIBLE !!` : 
-            `GAME END !\nTIED !` 
+            `GAME END !\nTIED, INCREDIBLE !!` :
+            `GAME END !\nTIED !`
             ,
           html:
             finalWinner === `XByTime` ? // CHECKED
@@ -798,7 +774,7 @@ const Main = () => {
   console.log("123 score.current", score.current)
   console.log("123 rC", rC) // rowsAndColumns
   console.log("123 winnerRound.current", winnerRound.current) // rowsAndColumns
-  
+
   let roundsValueLS: string | null = localStorage.getItem('roundsValue');
   if (roundsValueLS !== null) gameEndRoundsNumber.current = parseInt(roundsValueLS, 10)
 
@@ -846,6 +822,20 @@ const Main = () => {
             `ROUND WINNER: TIED !` :
             null
           }
+        </div>
+        <div
+          // style={{
+          //   display: newGameStarted ? 'flex' : 'none'
+          // }}
+          // id={`timerBox`}
+          className={css.rounds}
+        >
+          {/* <div>TIME:  </div>
+          <div id={`timer_minutes`} className={css.eachTime}>00</div>:
+          <div id={`timer_seconds`} className={css.eachTime}>00</div>
+          <div className={css.smallerMili}>:</div>
+          <div id={`timer_ms`} className={`${css.smallerMili} ${css.eachTimeMini}`}>000</div> */}
+          Rounds: {gameEndRoundsNumber.current + 1}
         </div>
         <div
           style={{
