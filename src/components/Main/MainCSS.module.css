@@ -165,7 +165,8 @@
   display: flex;
   position: relative;
   display: flex;
-  width: 440px;
+  /* width: 440px; */ /* TEST */
+  width: 350px;
   height: 200px;
   flex-direction: column;
   font-size: 40px;
