@@ -8,7 +8,8 @@
 
 body {
   display: flex;
-  position: fixed;
+  /* position: fixed; */
+  position: absolute;
   /* position: relative; */
   margin: 0;
   /* width: 100vw;

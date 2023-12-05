@@ -895,17 +895,17 @@ const Main = () => {
           </div>
         </div>
         <div
-          /* style={{
+          style={{
             display: newGameStarted || gameEndRoundsBoolean.current ? 'flex' : 'none'
-          }} */
+          }}
           className={css.rounds}
         >
           Rounds: {gameEndRoundsNumber.current + 1}
         </div>
         <div
-          /* style={{
+          style={{
             display: newGameStarted ? 'flex' : 'none'
-          }} */
+          }}
           id={`timerBox`}
           className={css.timer}
         >
@@ -941,8 +941,6 @@ const Main = () => {
           style={{
             display:
               showCountdownRoundState && showCountdownRound.current ?
-              //showCountdownRoundState ?
-              //showCountdownRound.current ?
               'flex' :
               'none'
           }}
