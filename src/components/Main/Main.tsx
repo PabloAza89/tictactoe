@@ -7,18 +7,19 @@ import { easings } from '../../commons/easingsCSS';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
-import { setScoreShown } from '../../actions';
+//import { setScoreShown } from '../../actions';
 
 const Main = () => {
 
   easings() // JQuery easings..
   const dispatch = useDispatch()
-  const scoreShown = useSelector((state: { scoreShown: boolean }) => state.scoreShown)
+  //const scoreShown = useSelector((state: { scoreShown: boolean }) => state.scoreShown)
+
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
   let score = useRef<any[]>([])
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
-
+  const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -394,6 +395,7 @@ const Main = () => {
     Swal.fire({
       title: `WELCOME TO TIC-TAC-TOE !`,
       text: 'Please, select who start first..',
+      heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
       showDenyButton: true,
       confirmButtonText: 'LET ME START !',
       denyButtonText: `    AI STARTS !   `,
@@ -406,6 +408,7 @@ const Main = () => {
         Swal.fire({
           title: "Select number of rounds:",
           input: "select",
+          heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
           inputValue: roundsValueLS !== null ? parseInt(roundsValueLS, 10) + 1 : "3", // DEFAULT VALUE
           inputOptions: {
             1: " 1",
@@ -449,6 +452,7 @@ const Main = () => {
         Swal.fire({
           title: "Select number of rounds:",
           input: "select",
+          heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
           inputValue: roundsValueLS !== null ? parseInt(roundsValueLS, 10) + 1 : "3", // DEFAULT VALUE
           inputOptions: {
             1: " 1",
@@ -503,6 +507,7 @@ const Main = () => {
       Swal.fire({
         title: `DO YOU WANT TO START A NEW GAME ?`,
         text: 'All points gonna be lost !..',
+        heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
         icon: 'info',
         showDenyButton: true,
         confirmButtonText: 'START NEW GAME !',
@@ -578,6 +583,7 @@ const Main = () => {
     setTimeout(() => {
       Swal.fire({
         title: `STARTS IN\n3..`,
+        heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
         showConfirmButton: false,
         showDenyButton: false,
         allowOutsideClick: false,
@@ -588,6 +594,7 @@ const Main = () => {
     setTimeout(() => {
       Swal.fire({
         title: `STARTS IN\n2..`,
+        heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
         showConfirmButton: false,
         showDenyButton: false,
         allowOutsideClick: false,
@@ -598,6 +605,7 @@ const Main = () => {
     setTimeout(() => {
       Swal.fire({
         title: `STARTS IN\n1..`,
+        heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
         showConfirmButton: false,
         showDenyButton: false,
         allowOutsideClick: false,
@@ -608,6 +616,7 @@ const Main = () => {
     setTimeout(() => {
       Swal.fire({
         title: `GO !!!`,
+        heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
         showConfirmButton: false,
         showDenyButton: false,
         allowOutsideClick: false,
@@ -769,6 +778,7 @@ const Main = () => {
                 <div>Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}</div>
               </div>`
           ,
+          heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
           icon:
             'success',
           showConfirmButton: true,
@@ -790,7 +800,7 @@ const Main = () => {
 
   useEffect(() => { // SHOW/HIDE SCORE HANDLER
     $(function() {
-      if (scoreShown) { // show -> hidden
+      if (!scoreShown) { // show --> hidden
         $(`.buttonShow`)
           .stop()
           .css("left", "auto")
@@ -810,7 +820,7 @@ const Main = () => {
           .css("left", "auto")
           .css("right", "-415px") // DIV WIDTH
       }
-      else if (!scoreShown) { // hidden -> show
+      else if (scoreShown) { // hidden -> show
         $(`.buttonShow`)
           .stop()
           .css("left", "auto")
@@ -953,7 +963,8 @@ const Main = () => {
         className={`buttonShow`}
         id={css.button}
         onClick={() => { 
-          dispatch(setScoreShown(!scoreShown))
+          //dispatch(setScoreShown(!scoreShown))
+          setScoreShown(!scoreShown)
           //localStorage.setItem('scoreShown', JSON.stringify(!scoreShown))
         }}
       >
