@@ -398,11 +398,47 @@
   /* max-width: 200px;
   overflow-x: scroll; */
 
+  background: /* gray */
+    /* linear-gradient(
+      to bottom,
+      lightseagreen 0px, lightseagreen 25px,
+      #138f88 25px, #138f88 50px,
+      lightseagreen 50px, lightseagreen 75px,
+      #138f88 75px, #138f88 100px,
+      lightseagreen 100px, lightseagreen 125px,
+      #138f88 125px, #138f88 150px,
+      lightseagreen 150px, lightseagreen 175px,
+      #138f88 175px, #138f88 200px,
+      lightseagreen 200px, lightseagreen 225px,
+      #138f88 225px, #138f88 250px,
+      lightseagreen 250px, lightseagreen 275px,
+      #138f88 275px, #138f88 300px,
+      lightseagreen 300px, lightseagreen 325px,
+      #138f88 325px, #138f88 350px,
+      lightseagreen 350px, lightseagreen 375px,
+      #138f88 375px, #138f88 400px,
+      lightseagreen 400px, lightseagreen 425px,
+      #138f88 425px, #138f88 450px,
+      lightseagreen 450px, lightseagreen 475px,
+      #138f88 475px, #138f88 500px,
+      lightseagreen 500px, lightseagreen 525px,
+      #138f88 525px, #138f88 550px
+    ) */
+
 
 }
 
 .scoreTableNumeral {
-  box-shadow: 0 0 0 2px blue inset;
+  box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue;
+  width: 25px;
+  height: 25px;
+  line-height: 24px;
+  text-align: center;
+  
+}
+
+.scoreTableNumeralLast {
+  /* box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue; */
   width: 25px;
   height: 25px;
   line-height: 24px;
@@ -411,23 +447,17 @@
 }
 
 .scoreTableTotal {
-  box-shadow: 0 0 0 2px blue inset;
+  /* box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue; */
+  box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue;
   width: 80px;
   height: 25px;
   line-height: 24px;
   text-align: center;
 }
 
-.scoreTableYou {
-  box-shadow: 0 0 0 2px blue inset;
-  width: 40px;
-  height: 25px;
-  line-height: 24px;
-  text-align: center;
-}
-
-.scoreTableAI {
-  box-shadow: 0 0 0 2px blue inset;
+.scoreTableYouAI {
+  /* box-shadow: 0 0 0 2px blue inset; */
+  box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue;
   width: 40px;
   height: 25px;
   line-height: 24px;
@@ -435,7 +465,8 @@
 }
 
 .scoreTableScore {
-  box-shadow: 0 0 0 2px blue inset;
+  /* box-shadow: 0 0 0 2px blue inset; */
+  box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue;
   width: 60px;
   height: 25px;
   line-height: 24px;
@@ -443,14 +474,25 @@
 }
 
 .scoreTableTime {
-  box-shadow: 0 0 0 2px blue inset;
+  /* box-shadow: 0 0 0 2px blue inset; */
+  box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue;
   width: 80px;
   height: 25px;
   line-height: 24px;
   text-align: center;
 }
 
-.scoreTableTitlesContainer {
+.scoreTableTimeLast {
+  /* box-shadow: 0 0 0 2px blue inset; */
+  /* box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue; */
+  width: 80px;
+  height: 25px;
+  line-height: 24px;
+  text-align: center;
+}
+
+.scoreTableTitlesContainerUpper {
+  /* background: lightseagreen; */
   display: flex;
   flex-direction: row;
   /*                #    T    S    Y    A    S    T    B  = 415px */
@@ -460,7 +502,7 @@
 }
 
 .scoreTableTitlesContainerLower {
-  background: red; /* DEV */
+  /* background: red; */ /* DEV */
   display: flex;
   position: relative;
   flex-direction: row;
@@ -471,7 +513,7 @@
 }
 
 .scoreTableEachScore {
-  background: gray; /* DEV */
+  /* background: gray; */ /* DEV */
   /* width: 225px; */
   height: 25px;
   display: flex;
@@ -481,6 +523,31 @@
   min-width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
   max-width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
 }
+
+[class*="scoreBackgroundLight"] {
+  background: #138f88; /* DEV */
+  display: flex;
+  position: absolute;
+  left: 0px;
+  width: 412px;
+  height: 25px;
+  z-index: -1;
+}
+
+/* ↓↓ THIS WAY FOR LOW PERFORMANCE MOBILE DEVICES ↓↓ */
+.scoreBackgroundLight1 { top: 25px }
+.scoreBackgroundLight2 { top: 75px }
+.scoreBackgroundLight3 { top: 125px }
+.scoreBackgroundLight4 { top: 175px }
+.scoreBackgroundLight5 { top: 225px }
+.scoreBackgroundLight6 { top: 275px }
+.scoreBackgroundLight7 { top: 325px }
+.scoreBackgroundLight8 { top: 375px }
+.scoreBackgroundLight9 { top: 425px }
+.scoreBackgroundLight10 { top: 475px }
+.scoreBackgroundLight11 { top: 525px }
+
+
 
 #buttonShow {
   margin-top: 250px;

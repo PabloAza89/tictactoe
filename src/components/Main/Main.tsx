@@ -1,6 +1,6 @@
 import css from './MainCSS.module.css';
 import com from '../../commons/commonsCSS.module.css';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@mui/material/';
 import { easings } from '../../commons/easingsCSS';
@@ -804,16 +804,7 @@ const Main = () => {
     $(function() {
       if (!scoreShown) { // show --> hidden
         $(`.buttonShow`)
-          .stop()
-          .css("left", "auto")
-          .css("right", "0px")
           .on("click", function() {
-            $(this)
-              .stop()
-              .css(`animationName`,`none`)
-              .css(`animationDuration`,`0s`)
-              .css(`animationDelay`,`0s`)
-              .css(`animationIterationCount`,`none`)
           $(`#sliderBox`)
             .stop() // ↓↓ ABSOLUTE ↓↓
             .animate( { right: '0px' }, { queue: false, easing: 'easeOutCubic', duration: 800 }) // INITIAL POSITION
@@ -824,16 +815,7 @@ const Main = () => {
       }
       else if (scoreShown) { // hidden -> show
         $(`.buttonShow`)
-          .stop()
-          .css("left", "auto")
-          .css("right", "0px")
           .on("click", function() {
-            $(this)
-              .stop()
-              .css(`animationName`,`none`)
-              .css(`animationDuration`,`0s`)
-              .css(`animationDelay`,`0s`)
-              .css(`animationIterationCount`,`none`)
             $(`#sliderBox`)
               .stop() // DIV WIDTH
               .animate( { right: '-415px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
@@ -844,50 +826,6 @@ const Main = () => {
       }
     })
   },[scoreShown])
-
-  let { width } = window.screen
-  //let orientation = window.matchMedia("(orientation: portrait)").matches
-  //const [ paginateAmount, setPaginateAmount ] = useState<number>(((width < 425 && orientation) || (height < 425 && !orientation)) ? 45 : 90)
-
-  //if (true) {
-  //if (width < 415) {
-    // document.addEventListener('DOMContentLoaded', function() {
-    //   const el = document.getElementById('sliderBox');
-    //   if (el !== null) el.style.cursor = 'grab';
-    //   let pos = { top: 0, left: 0, x: 0, y: 0 };
-
-    //   const mouseDownHandler = function (e: any) {
-    //     if (el !== null) el.style.cursor = 'grabbing';
-    //     if (el !== null) el.style.userSelect = 'none';
-    //     if (el !== null) {
-    //       pos = {
-    //         left: el.scrollLeft,
-    //         top: el.scrollTop,
-    //         x: e.clientX,
-    //         y: e.clientY,
-    //       }
-    //     }
-    //     document.addEventListener('mousemove', mouseMoveHandler);
-    //     document.addEventListener('mouseup', mouseUpHandler);
-    //   };
-
-    //   const mouseMoveHandler = function (e: any) { // HOW MUCH MOUSE HAS MOVED
-    //     const dx = e.clientX - pos.x;
-    //     const dy = e.clientY - pos.y;
-    //     if (el !== null) el.scrollTop = pos.top - dy;
-    //     if (el !== null) el.scrollLeft = pos.left - dx;
-    //   };
-
-    //   const mouseUpHandler = function () {
-    //     if (el !== null) el.style.cursor = 'grab';
-    //     if (el !== null) el.style.removeProperty('user-select');
-    //     document.removeEventListener('mousemove', mouseMoveHandler);
-    //     document.removeEventListener('mouseup', mouseUpHandler);
-    //   };
-
-    //   if (el !== null) el.addEventListener('mousedown', mouseDownHandler);
-    // })
-  //}
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -1018,13 +956,13 @@ const Main = () => {
         className={css.scoreTable}
         id={`sliderBox`}
       >
-        <div>
-          <div className={css.scoreTableTitlesContainer}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className={css.scoreTableTitlesContainerUpper}>
             <div className={css.scoreTableNumeral}>#</div>
             <div className={css.scoreTableTime}>TIME</div>
             <div className={css.scoreTableScore}>SCORE</div>
-            <div className={css.scoreTableYou}>YOU</div>
-            <div className={css.scoreTableAI}>AI</div>
+            <div className={css.scoreTableYouAI}>YOU</div>
+            <div className={css.scoreTableYouAI}>AI</div>
             <div className={css.scoreTableScore}>SCORE</div>
             <div className={css.scoreTableTime}>TIME</div>
           </div>
@@ -1035,23 +973,42 @@ const Main = () => {
                   <div className={css.scoreTableNumeral}>{e.id + 1}</div>
                   <div className={css.scoreTableTime}>{ e.timeX === '00:00:000' ? "➖" : e.timeX }</div>
                   <div className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
-                  <div className={css.scoreTableYou}>{ e.X }</div>
-                  <div className={css.scoreTableAI}>{ e.O }</div>
+                  <div className={css.scoreTableYouAI}>{ e.X }</div>
+                  <div className={css.scoreTableYouAI}>{ e.O }</div>
                   <div className={css.scoreTableScore}>{ e.scoreO === 0 ? "➖" : e.scoreO }</div>
                   <div className={css.scoreTableTime}>{ e.timeO === '00:00:000' ? "➖" : e.timeO }</div>
                 </div>
               )
             })
           }
+          
+          
         </div>
         <div className={css.scoreTableTitlesContainerLower}>
-          <div className={css.scoreTableNumeral}>#</div>
+          <div className={css.scoreTableNumeralLast}></div>
           <div className={css.scoreTableTime}>{ `${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}` }</div>
           <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreX, 0) }</div>
           <div className={css.scoreTableTotal}>TOTAL</div>
           <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
-          <div className={css.scoreTableTime}>{ `${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}` }</div>
+          <div className={css.scoreTableTimeLast}>{ `${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}` }</div>
         </div>
+
+
+          <div className={css.scoreBackgroundLight1}></div>
+          <div className={css.scoreBackgroundLight2}></div>
+          <div className={css.scoreBackgroundLight3}></div>
+          <div className={css.scoreBackgroundLight4}></div>
+          <div className={css.scoreBackgroundLight5}></div>
+          <div className={css.scoreBackgroundLight6}></div>
+          <div className={css.scoreBackgroundLight7}></div>
+          <div className={css.scoreBackgroundLight8}></div>
+          <div className={css.scoreBackgroundLight9}></div>
+          <div className={css.scoreBackgroundLight10}></div>
+          <div className={css.scoreBackgroundLight11}></div>
+          
+
+
+
       </div>
     </div>
   );
