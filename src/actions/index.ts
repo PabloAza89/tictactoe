@@ -1,5 +1,6 @@
-export function applyFilters() {
+export function setScoreShown(payload:boolean) {
   return {
-    type: 'APPLY_FILTERS'
+    type: 'SET_SCORE_SHOWN',
+    payload: payload
   }
 };

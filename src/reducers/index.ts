@@ -1,22 +1,18 @@
-// import {
-//   recipesI, serverStatusI, navBarFiltersI, settingsFiltersI
-// } from '../interfaces/interfaces';
-
 interface initialStateI {
-  serverStatus?: string,
+  scoreShown: boolean,
 }
 
 const initialState: initialStateI = {
-  serverStatus: 'asd',
+  scoreShown: localStorage.getItem('scoreShown') !== null ? JSON.parse(localStorage.getItem('scoreShown')!) : false,
 }
 
 const reducer = (state = initialState, action: {type: string; payload: any}) => {
   switch (action.type) {
-    case 'SET_INDEX_CHOOSEN':
+    case 'SET_SCORE_SHOWN':
       return {
         ...state,
-        indexChoosen: action.payload
-      };    
+        scoreShown: action.payload
+      };
     default:
       return state
   }

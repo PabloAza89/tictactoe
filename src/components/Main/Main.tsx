@@ -1,13 +1,19 @@
 import css from './MainCSS.module.css';
 import com from '../../commons/commonsCSS.module.css';
 import { useEffect, useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@mui/material/';
+import { easings } from '../../commons/easingsCSS';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
+import { setScoreShown } from '../../actions';
 
 const Main = () => {
 
+  easings() // JQuery easings..
+  const dispatch = useDispatch()
+  const scoreShown = useSelector((state: { scoreShown: boolean }) => state.scoreShown)
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
   let score = useRef<any[]>([])
@@ -339,7 +345,186 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
-    score.current = []
+    //score.current = []
+
+    score.current = [
+      {
+        id: 0,
+        timeX: `10:34:112`,
+        scoreX: 100,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 1,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:39:124`
+      },
+      {
+        id: 2,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:52:356`
+      },
+      {
+        id: 3,
+        timeX: `53:45:544`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 4,
+        timeX: `03:15:821`,
+        scoreX: 100,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 5,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:15:231`
+      },
+      {
+        id: 6,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `03:52:339`
+      },
+      {
+        id: 7,
+        timeX: `00:02:234`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 8,
+        timeX: `00:02:234`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 9,
+        timeX: `10:34:112`,
+        scoreX: 100,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 10,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:39:124`
+      },
+      {
+        id: 11,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:52:356`
+      },
+      {
+        id: 12,
+        timeX: `53:45:544`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 13,
+        timeX: `03:15:821`,
+        scoreX: 100,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 14,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:15:231`
+      },
+      {
+        id: 15,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `03:52:339`
+      },
+      {
+        id: 16,
+        timeX: `00:02:234`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 17,
+        timeX: `00:02:234`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 18,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 100,
+        timeO: `03:52:339`
+      },
+    ]
+
+
+
+
+
     roundEnd.current = false
     setWinnerGameState("")
     setWinnerRoundState("")
@@ -782,6 +967,51 @@ const Main = () => {
   let roundsValueLS: string | null = localStorage.getItem('roundsValue');
   if (roundsValueLS !== null) gameEndRoundsNumber.current = parseInt(roundsValueLS, 10)
 
+  useEffect(() => { // SHOW/HIDE SCORE HANDLER
+    $(function() {
+      if (scoreShown) { // show -> hidden
+        $(`.buttonShow`)
+          .stop()
+          .css("left", "auto")
+          .css("right", "0px")
+          .on("click", function() {
+            $(this)
+              .stop()
+              .css(`animationName`,`none`)
+              .css(`animationDuration`,`0s`)
+              .css(`animationDelay`,`0s`)
+              .css(`animationIterationCount`,`none`)
+          $(`#sliderBox`)
+            .stop()
+            .animate( { right: '-60px' }, { queue: false, easing: 'easeOutCubic', duration: 800 }) // INITIAL POSITION
+        })
+        $(`#sliderBox`)
+          .css("left", "auto")
+          .css("right", "280px")
+      }
+      else if (!scoreShown) { // hidden -> show
+        $(`.buttonShow`)
+          .stop()
+          .css("left", "auto")
+          .css("right", "0px")
+          .on("click", function() {
+            $(this)
+              .stop()
+              .css(`animationName`,`none`)
+              .css(`animationDuration`,`0s`)
+              .css(`animationDelay`,`0s`)
+              .css(`animationIterationCount`,`none`)
+            $(`#sliderBox`)
+              .stop()
+              .animate( { right: '280px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
+          })
+        $(`#sliderBox`)
+          .css("left", "auto")
+          .css("right", "-60px")
+      }
+    })
+  },[scoreShown])
+
   return (
     <div className={`${css.background} ${com.noSelect}`}>
       <Button
@@ -816,13 +1046,10 @@ const Main = () => {
         >
           <div id={`finalWinnerBox`}>
             {
-              //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "X" ?
               gameEndRoundsBoolean.current && roundEnd.current && (winnerGameState === "X" || winnerGameState === "XByTime") ?
               `GAME WINNER: YOU !` :
-              //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "O" ?
               gameEndRoundsBoolean.current && roundEnd.current && (winnerGameState === "O" || winnerGameState === "OByTime") ?
               `GAME WINNER: AI !` :
-              //gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "TIED" ?
               gameEndRoundsBoolean.current && roundEnd.current && winnerGameState === "TIED" ?
               `GAME WINNER: TIED !` :
               !gameEndRoundsBoolean.current && roundEnd.current && winnerRoundState === "X" ?
@@ -901,7 +1128,22 @@ const Main = () => {
           }
         </div>
       </div>
-      <div className={css.scoreTable}>
+      <Button
+        className={`buttonShow`}
+        id={css.button}
+        onClick={() => { 
+          dispatch(setScoreShown(!scoreShown))
+          //localStorage.setItem('scoreShown', JSON.stringify(!scoreShown))
+        }}
+      >
+        <div className={css.buttonTypo}>
+          { `TOTAL SCORE` }
+        </div>
+      </Button>
+      <div
+        className={css.scoreTable}
+        id={`sliderBox`}
+      >
         <div>
           <div className={css.scoreTableTitlesContainer}>
             <div className={css.scoreTableNumeral}>#</div>

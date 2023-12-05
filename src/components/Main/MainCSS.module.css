@@ -332,8 +332,9 @@
   position: absolute;
   flex-direction: column;
   background: darkorange;
-  width: 400px;
-  height: 600px;
+  /*                #    T    S    Y    A    S    T    B  */
+  width: 415px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 */
+  height: 550px; /* 25 * 22 (550 MAX) */
   right: 0px;
   font-size: 16px;
   font-weight: 500;
@@ -409,5 +410,29 @@
   position: relative;
 }
 
+#button {
+  display: flex;
+  position: fixed;
+  z-index: 3001;
+  min-width: 30px !important;
+  width: 30px !important;
+  min-height: 120px !important;
+  height: 120px !important;
+  color: darkblue;
+  border-radius: 0px;
+  /* background: lightblue; */ /* DEV */
+  background: violet;
+}
+
+.buttonTypo {
+  display: flex;
+  align-items: center;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  transform: rotate(270deg);
+  height: 30px;
+  white-space: nowrap
+}
 
 
