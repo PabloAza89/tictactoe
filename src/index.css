@@ -20,9 +20,6 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   overflow-x: hidden;
-  /* overflow-y: auto; */
-  /* overflow: auto; */
-  /* overflow-y: scroll; */
 }
 
 /* #root {

@@ -19,7 +19,8 @@ const Main = () => {
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
   let score = useRef<any[]>([])
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
-  const [ scoreShown, setScoreShown ] = useState<boolean>(false)
+  //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
+  const [ scoreShown, setScoreShown ] = useState<boolean>(true)
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -844,6 +845,50 @@ const Main = () => {
     })
   },[scoreShown])
 
+  let { width } = window.screen
+  //let orientation = window.matchMedia("(orientation: portrait)").matches
+  //const [ paginateAmount, setPaginateAmount ] = useState<number>(((width < 425 && orientation) || (height < 425 && !orientation)) ? 45 : 90)
+
+  //if (true) {
+  //if (width < 415) {
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   const el = document.getElementById('sliderBox');
+    //   if (el !== null) el.style.cursor = 'grab';
+    //   let pos = { top: 0, left: 0, x: 0, y: 0 };
+
+    //   const mouseDownHandler = function (e: any) {
+    //     if (el !== null) el.style.cursor = 'grabbing';
+    //     if (el !== null) el.style.userSelect = 'none';
+    //     if (el !== null) {
+    //       pos = {
+    //         left: el.scrollLeft,
+    //         top: el.scrollTop,
+    //         x: e.clientX,
+    //         y: e.clientY,
+    //       }
+    //     }
+    //     document.addEventListener('mousemove', mouseMoveHandler);
+    //     document.addEventListener('mouseup', mouseUpHandler);
+    //   };
+
+    //   const mouseMoveHandler = function (e: any) { // HOW MUCH MOUSE HAS MOVED
+    //     const dx = e.clientX - pos.x;
+    //     const dy = e.clientY - pos.y;
+    //     if (el !== null) el.scrollTop = pos.top - dy;
+    //     if (el !== null) el.scrollLeft = pos.left - dx;
+    //   };
+
+    //   const mouseUpHandler = function () {
+    //     if (el !== null) el.style.cursor = 'grab';
+    //     if (el !== null) el.style.removeProperty('user-select');
+    //     document.removeEventListener('mousemove', mouseMoveHandler);
+    //     document.removeEventListener('mouseup', mouseUpHandler);
+    //   };
+
+    //   if (el !== null) el.addEventListener('mousedown', mouseDownHandler);
+    // })
+  //}
+
   return (
     <div className={`${css.background} ${com.noSelect}`}>
       <Button
@@ -983,7 +1028,6 @@ const Main = () => {
             <div className={css.scoreTableScore}>SCORE</div>
             <div className={css.scoreTableTime}>TIME</div>
           </div>
-
           {
             score.current.map((e,i)=> {
               return (
@@ -1008,10 +1052,7 @@ const Main = () => {
           <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
           <div className={css.scoreTableTime}>{ `${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}` }</div>
         </div>
-
-
       </div>
-
     </div>
   );
 }

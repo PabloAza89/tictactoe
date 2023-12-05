@@ -376,13 +376,29 @@
   /* position: relative; */
   right: -415px; /* DEFAULT RENDER */
   flex-direction: column;
-  background: darkorange;
-  /*                #    T    S    Y    A    S    T    B  */
-  width: 415px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 */
+  background: lightseagreen;
+  /* max-width: 100vw; */
+  /*                #    T    S    Y    A    S    T    B  = 415px */
+  /*                25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
+  /* max-width: 100vw; */
+  /* min-width: 415px; */
+  /* min-width: 100%; */
   height: 550px; /* 25 * 22 (550 MAX) */
   font-size: 16px;
   font-weight: 500;
   justify-content: space-between;
+
+  /* width: 100vw; */
+
+  /* max-width: 200px; */
+  max-width: 100vw;
+  /* max-width: calc(100vw - 10px); */
+  /* overflow-x: scroll; */
+  overflow-x: auto;
+  /* max-width: 200px;
+  overflow-x: scroll; */
+
+
 }
 
 .scoreTableNumeral {
@@ -437,6 +453,10 @@
 .scoreTableTitlesContainer {
   display: flex;
   flex-direction: row;
+  /*                #    T    S    Y    A    S    T    B  = 415px */
+  width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
+  min-width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
+  max-width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
 }
 
 .scoreTableTitlesContainerLower {
@@ -444,6 +464,10 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  /*                #    T    S    Y    A    S    T    B  = 415px */
+  width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
+  min-width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
+  max-width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
 }
 
 .scoreTableEachScore {
@@ -452,6 +476,10 @@
   height: 25px;
   display: flex;
   position: relative;
+  /*                #    T    S    Y    A    S    T    B  = 415px */
+  width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
+  min-width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
+  max-width: 412px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
 }
 
 #buttonShow {
@@ -481,7 +509,7 @@
   white-space: nowrap
 }
 
-/* SMALL DEVICES -> WIDTH MIN THAN 370 */
+/* SMALL DEVICES -> WIDTH MIN THAN 370 (GAME WIDTH) */
 @media screen
 and (orientation: portrait)
 and (max-device-width: 370px),
@@ -492,8 +520,26 @@ and (max-device-height: 370px) {
     width: calc((100vw - 110px) / 2);
     justify-content: center;
   }
-  /* .rounds {
-    width: calc((100vw - 110px) / 2);
-  } */
+}
 
+/* SMALL DEVICES -> WIDTH MIN THAN 415 (SCORE BAR WIDTH) */ 
+@media screen
+and (orientation: portrait)
+and (max-device-width: 415px),
+screen
+and (orientation: landscape)
+and (max-device-height: 415px) {
+  /* .timer, .rounds {
+    width: calc((100vw - 110px) / 2);
+    justify-content: center;
+  } */
+  .scoreTable {
+    /* width: calc((100vw - 110px) / 2);
+    justify-content: center; */
+    /* overflow: auto;
+    overflow-x: visible; */
+    /* width: 100vw;
+    overflow-x: scroll; */
+
+  }
 }
