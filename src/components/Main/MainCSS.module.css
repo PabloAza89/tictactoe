@@ -1,6 +1,7 @@
 .background {
   background: lightblue; /* DEV */
   display: flex;
+  /* position: fixed; */
   position: relative;
   flex-direction: column;
   width: 100vw;
@@ -43,8 +44,11 @@
   /* background: orange; */ /* DEV */
 }
 
-.button {
+.buttonNewGame {
   margin-bottom: 10px !important;
+  width: 110px;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
   /* animation-name: none;
   animation-duration: 0s;
   animation-iteration-count: none; */
@@ -107,15 +111,18 @@
     
 
 .rounds {
-  /* background: lightgreen; */ /* DEV */
+  background: lightgreen; /* DEV */
   display: flex;
   position: absolute;
-  width: 110px;
+  /* width: 110px; */
+  /* width: 100px; */
+  width: 120px;
   height: 50px;
   line-height: 50px;
   /* right: 10px; */
   top: -54px;
-  left: 32px;
+  /* left: 32px; */
+  left: 0px;
   font-size: 16px;
   align-items: baseline;
   font-weight: 500;
@@ -125,27 +132,54 @@
 }
 
 .timer {
-  /* background: lightgreen; */ /* DEV */
+  background: lightgreen; /* DEV */
   display: flex;
   position: absolute;
-  width: 150px;
+  /* margin-left: 10px; */
+  /* parent 370 */
+  /* button 110 */
+  /* width: 150px; */
+  /* width: 150px; */
+  width: 120px;
+  /* width: calc((100vw - 110px) / 2); */
   height: 50px;
-  line-height: 50px;
+  /* line-height: 25px; */
   /* right: 10px; */
   top: -54px;
-  right: 1px;
+  right: 0px;
   font-size: 16px;
   align-items: baseline;
   font-weight: 500;
-  justify-content: center;
+  /* justify-content: center; */
+  justify-content: flex-start;
   /* transform: scale(3.05); */
   /* transform: scale(3.00) */
+  align-items: center;
+  flex-wrap: wrap;
+  align-content: space-evenly;
+}
+
+.timeContainer {
+  /* height: 25px */
+  height: 15px;
+  line-height: 15px;
+}
+
+.numbersContainer {
+  display: flex;
+  position: relative;
+  /* height: 25px; */
+  height: 15px;
+  line-height: 15px;
+  flex-direction: row;
+  align-items: baseline;
 }
 
 .eachTime {
   display: flex;
   /* box-shadow: 0 0 0 2px blue inset; */ /* DEV */
   width: 19px;
+  height: 25px;
   justify-content: center;
 }
 
@@ -166,7 +200,9 @@
   position: relative;
   display: flex;
   /* width: 440px; */ /* TEST */
-  width: 350px;
+  /* width: 370px;  */
+  width: 100vw;
+  max-width: 370px;
   height: 200px;
   flex-direction: column;
   font-size: 40px;
@@ -195,6 +231,8 @@
   background: lightgreen; /* DEV */
   /* width: 180px; */
   width: 60px;
+  min-width: 60px;
+  max-width: 60px;
   color: red;
   font-size: 20px;
   animation: blink 1s linear infinite;
@@ -207,6 +245,8 @@
   align-items: center;
   height: 50px;
   width: 80px;
+  min-width: 80px;
+  max-width: 80px;
   background: orange; /* DEV */
   /* box-shadow: 0 0 0 2px blue inset; */
   justify-content: center;
@@ -214,7 +254,7 @@
 }
 
 .pointsTitle {
-  width: 440px;
+  width: 346px;
   height: 50px;
   font-size: 32px;
   text-align: center;
@@ -411,7 +451,8 @@
   position: relative;
 }
 
-#button {
+#buttonShow {
+  margin-top: 250px;
   right: 0px; /* DEFAULT RENDER */
   display: flex;
   position: fixed;
@@ -437,4 +478,19 @@
   white-space: nowrap
 }
 
+/* SMALL DEVICES -> WIDTH MIN THAN 370 */
+@media screen
+and (orientation: portrait)
+and (max-device-width: 370px),
+screen
+and (orientation: landscape)
+and (max-device-height: 370px) {
+  .timer, .rounds {
+    width: calc((100vw - 110px) / 2);
+    justify-content: center;
+  }
+  /* .rounds {
+    width: calc((100vw - 110px) / 2);
+  } */
 
+}

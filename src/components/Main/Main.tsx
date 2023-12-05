@@ -268,6 +268,7 @@ const Main = () => {
               actionPoints === 200 ?
               `+200 Points !! Supperrrb !!!` :
               `no winner, no points.`,
+            heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
             icon:
               winnerRound.current === "" ?
               'info' :
@@ -848,7 +849,7 @@ const Main = () => {
       <Button
         focusRipple={false}
         id={`buttonStart`}
-        className={css.button}
+        className={css.buttonNewGame}
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
         onClick={() => {
@@ -894,29 +895,27 @@ const Main = () => {
           </div>
         </div>
         <div
-          // style={{
-          //   display: newGameStarted ? 'flex' : 'none'
-          // }}
-          //id={`roundsBox`}
-          style={{
+          /* style={{
             display: newGameStarted || gameEndRoundsBoolean.current ? 'flex' : 'none'
-          }}
+          }} */
           className={css.rounds}
         >
           Rounds: {gameEndRoundsNumber.current + 1}
         </div>
         <div
-          style={{
+          /* style={{
             display: newGameStarted ? 'flex' : 'none'
-          }}
+          }} */
           id={`timerBox`}
           className={css.timer}
         >
-          <div>TIME:  </div>
-          <div id={`timer_minutes`} className={css.eachTime}>00</div>:
-          <div id={`timer_seconds`} className={css.eachTime}>00</div>
-          <div className={css.smallerMili}>:</div>
-          <div id={`timer_ms`} className={`${css.smallerMili} ${css.eachTimeMini}`}>000</div>
+          <div className={css.timeContainer}> TIME: </div>
+          <div className={css.numbersContainer}>
+            <div id={`timer_minutes`} className={css.eachTime}>00</div>:
+            <div id={`timer_seconds`} className={css.eachTime}>00</div>
+            <div className={css.smallerMili}>:</div>
+            <div id={`timer_ms`} className={`${css.smallerMili} ${css.eachTimeMini}`}>000</div>
+          </div>
         </div>
       </div >
       <div className={css.rowsAndColumns}>
@@ -961,7 +960,7 @@ const Main = () => {
       </div>
       <Button
         className={`buttonShow`}
-        id={css.button}
+        id={css.buttonShow}
         onClick={() => { 
           //dispatch(setScoreShown(!scoreShown))
           setScoreShown(!scoreShown)
