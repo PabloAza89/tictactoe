@@ -1,13 +1,13 @@
 .background {
+  background: lightblue; /* DEV */
   display: flex;
   position: relative;
-  background: lightblue; /* DEV */
-  /* z-index: 10000; */
   flex-direction: column;
   width: 100vw;
   height: 100vh;
   justify-content: center;
   align-items: center;
+  min-height: 590px;
 }
 
 .nextGameIn {
@@ -330,12 +330,12 @@
 .scoreTable {
   display: flex;
   position: absolute;
+  right: -415px; /* DEFAULT RENDER */
   flex-direction: column;
   background: darkorange;
   /*                #    T    S    Y    A    S    T    B  */
   width: 415px;  /* 25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 */
   height: 550px; /* 25 * 22 (550 MAX) */
-  right: 0px;
   font-size: 16px;
   font-weight: 500;
   justify-content: space-between;
@@ -411,6 +411,7 @@
 }
 
 #button {
+  right: 0px; /* DEFAULT RENDER */
   display: flex;
   position: fixed;
   z-index: 3001;

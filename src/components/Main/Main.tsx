@@ -345,186 +345,7 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
-    //score.current = []
-
-    score.current = [
-      {
-        id: 0,
-        timeX: `10:34:112`,
-        scoreX: 100,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 1,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 200,
-        timeO: `00:39:124`
-      },
-      {
-        id: 2,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 200,
-        timeO: `00:52:356`
-      },
-      {
-        id: 3,
-        timeX: `53:45:544`,
-        scoreX: 200,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 4,
-        timeX: `03:15:821`,
-        scoreX: 100,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 5,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 200,
-        timeO: `00:15:231`
-      },
-      {
-        id: 6,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 200,
-        timeO: `03:52:339`
-      },
-      {
-        id: 7,
-        timeX: `00:02:234`,
-        scoreX: 200,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 8,
-        timeX: `00:02:234`,
-        scoreX: 200,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 9,
-        timeX: `10:34:112`,
-        scoreX: 100,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 10,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 200,
-        timeO: `00:39:124`
-      },
-      {
-        id: 11,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 200,
-        timeO: `00:52:356`
-      },
-      {
-        id: 12,
-        timeX: `53:45:544`,
-        scoreX: 200,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 13,
-        timeX: `03:15:821`,
-        scoreX: 100,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 14,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 200,
-        timeO: `00:15:231`
-      },
-      {
-        id: 15,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 200,
-        timeO: `03:52:339`
-      },
-      {
-        id: 16,
-        timeX: `00:02:234`,
-        scoreX: 200,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 17,
-        timeX: `00:02:234`,
-        scoreX: 200,
-        X: "✔️",
-        O: "❌",
-        scoreO: 0,
-        timeO: `00:00:000`
-      },
-      {
-        id: 18,
-        timeX: `00:00:000`,
-        scoreX: 0,
-        X: "❌",
-        O: "✔️",
-        scoreO: 100,
-        timeO: `03:52:339`
-      },
-    ]
-
-
-
-
-
+    score.current = []
     roundEnd.current = false
     setWinnerGameState("")
     setWinnerRoundState("")
@@ -982,12 +803,12 @@ const Main = () => {
               .css(`animationDelay`,`0s`)
               .css(`animationIterationCount`,`none`)
           $(`#sliderBox`)
-            .stop()
-            .animate( { right: '-60px' }, { queue: false, easing: 'easeOutCubic', duration: 800 }) // INITIAL POSITION
+            .stop() // ↓↓ ABSOLUTE ↓↓
+            .animate( { right: '0px' }, { queue: false, easing: 'easeOutCubic', duration: 800 }) // INITIAL POSITION
         })
         $(`#sliderBox`)
           .css("left", "auto")
-          .css("right", "280px")
+          .css("right", "-415px") // DIV WIDTH
       }
       else if (!scoreShown) { // hidden -> show
         $(`.buttonShow`)
@@ -1002,12 +823,12 @@ const Main = () => {
               .css(`animationDelay`,`0s`)
               .css(`animationIterationCount`,`none`)
             $(`#sliderBox`)
-              .stop()
-              .animate( { right: '280px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
+              .stop() // DIV WIDTH
+              .animate( { right: '-415px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
           })
         $(`#sliderBox`)
           .css("left", "auto")
-          .css("right", "-60px")
+          .css("right", "0px") // ABSOLUTE
       }
     })
   },[scoreShown])
