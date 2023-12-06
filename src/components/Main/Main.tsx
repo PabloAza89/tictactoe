@@ -154,7 +154,7 @@ const Main = () => {
     //     //setWinnerRoundState(`${letter}`) // SYNC WITH POP-UP
     //     setWinnerGameState(`${letter}`) // SYNC WITH POP-UP
     // }, 1800) // WINNER SIGN AFTER FINAL POPUP (1700ms)
-    
+
   }
 
   const updateScore = () => {
@@ -241,7 +241,7 @@ const Main = () => {
           setWinnerRoundState("TIED") // SYNC WITH POP-UP
         }, 300)
       }, 1200)
-      
+
     }
 
 
@@ -694,7 +694,7 @@ const Main = () => {
       gameEndRoundsBoolean.current = true;
       showCountdownRound.current = false
       setNewGameStarted(false)
-      
+
       setTimeout(() => {
         addButtonAnimation()
         //gameEndRoundsBoolean.current = true;
@@ -729,7 +729,7 @@ const Main = () => {
           setWinnerGameState(finalWinner)
           addFinalWinnerChangeColor()
         }, 200) // DELAY WAITS FOR FINAL POPUP
-        
+
 
         Swal.fire({
           title:
@@ -828,88 +828,66 @@ const Main = () => {
   },[scoreShown])
 
   const [ height, setHeight ] = useState<number>(window.innerHeight)
-  /* let { width, height } = window.screen */
 
-  /* console.log("123123123 window.screen",window.innerHeight) */
-  console.log("123123123 window.screen", height)
+  useEffect(() => { // INNER HEIGHT HANDLER
+    function handleResize() {
+      let { innerHeight } = window
+      setHeight(innerHeight)
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize)
+  })
 
-  useEffect(() => {
-    const ele = document.getElementById('sliderBox');
+  useEffect(() => { // MOUSE GRAB EFFECT ON MOUSE DEVICES
+    const el = document.getElementById('sliderBox');
+    if (el !== null) {
+      const mouseEnterOnScore = () => {
+        if (height <= 550) el.style.cursor = 'grab'; // GRAB WHEN ENTER (MOUSEENTER)
+        let pos = { top: 0, left: 0, x: 0, y: 0 };
 
-    function mouseEnterOnScore() {
-      console.log("333", "ENTRO ACA")
-      const el = document.getElementById('sliderBox');
-      if (el !== null) {
-        if (height <= 550) el.style.cursor = 'grab'; // GRAB WHEN ENTER (HOVER)
-        else el.style.cursor = 'default'; // GRAB WHEN ENTER (HOVER)
-      }
-      let pos = { top: 0, left: 0, x: 0, y: 0 };
-
-      const mouseDownHandler = function (e: any) {
-        if (el !== null && height <= 550) el.style.cursor = 'grabbing';
-        if (el !== null && height <= 550) el.style.userSelect = 'none';
-        if (el !== null) {
+        const mouseDownHandler = function (e: any) {
+          el.style.cursor = 'grabbing';
+          el.style.userSelect = 'none';
           pos = {
             left: el.scrollLeft,
             top: el.scrollTop,
             x: e.clientX,
             y: e.clientY,
           }
+          if (height <= 550) {
+            el.addEventListener('mousemove', mouseMoveHandler)
+            el.addEventListener('mouseup', mouseUpHandler)
+          } else {
+            el.removeEventListener('mousemove', mouseMoveHandler);
+            el.removeEventListener('mouseup', mouseUpHandler);
+            el.style.cursor = 'default';
+          }
         }
-        if (el !== null) el.addEventListener('mousemove', mouseMoveHandler)
-        if (el !== null) el.addEventListener('mouseup', mouseUpHandler)
-        if (height > 550 && el !== null) {
-          el.removeEventListener('mousemove', mouseMoveHandler);
-          el.removeEventListener('mouseup', mouseUpHandler);
-          el.style.cursor = 'default';
+
+        const mouseMoveHandler = function (e: any) { // HOW MUCH MOUSE HAS MOVED
+          const dx = e.clientX - pos.x;
+          const dy = e.clientY - pos.y;
+          el.scrollTop = pos.top - dy;
+          el.scrollLeft = pos.left - dx;
         }
-        
-      };
 
-      const mouseMoveHandler = function (e: any) { // HOW MUCH MOUSE HAS MOVED
-        const dx = e.clientX - pos.x;
-        const dy = e.clientY - pos.y;
-        if (el !== null) el.scrollTop = pos.top - dy;
-        if (el !== null) el.scrollLeft = pos.left - dx;
-      };
+        const mouseUpHandler = function () {
+          el.style.cursor = 'grab'
+          el.style.removeProperty('user-select')
+          el.removeEventListener('mousemove', mouseMoveHandler)
+          el.removeEventListener('mouseup', mouseUpHandler)
+        }
 
-      const mouseUpHandler = function () {
-        if (el !== null && height <= 550) {
-          el.style.cursor = 'grab';
-          el.style.removeProperty('user-select');
-        } 
-        if (el !== null) el.removeEventListener('mousemove', mouseMoveHandler);
-        if (el !== null) el.removeEventListener('mouseup', mouseUpHandler);
-      };
-      if (el !== null) {
         el.addEventListener('mousedown', mouseDownHandler);
         el.addEventListener('mouseleave', function() {
           el.removeEventListener('mousedown', mouseDownHandler)
-          el.removeEventListener('mousemove', mouseMoveHandler);
-          el.removeEventListener('mouseup', mouseUpHandler);
           el.style.cursor = 'default'
         })
-
       }
-      
+      el.addEventListener("mouseenter", mouseEnterOnScore)
+      return () => el.removeEventListener("mouseenter", mouseEnterOnScore)
     }
-
-    if (ele !== null) ele.addEventListener("mouseenter", mouseEnterOnScore)
-    return () => { if (ele !== null) ele.removeEventListener("mouseenter", mouseEnterOnScore)  }
   })
-
-    useEffect(() => {
-      function handleResize() {
-        let { innerHeight } = window
-        setHeight(innerHeight)
-        console.log("123123123", "resized")
-        
-      }
-      window.addEventListener("resize", handleResize);
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      }
-    })
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -1026,7 +1004,7 @@ const Main = () => {
       <Button
         className={`buttonShow`}
         id={css.buttonShow}
-        onClick={() => { 
+        onClick={() => {
           //dispatch(setScoreShown(!scoreShown))
           setScoreShown(!scoreShown)
           //localStorage.setItem('scoreShown', JSON.stringify(!scoreShown))
@@ -1067,10 +1045,10 @@ const Main = () => {
               )
             })
           }
-          
-          
+
+
         </div>
-        
+
 
 
           <div className={css.scoreBackgroundLight1}></div>
@@ -1093,7 +1071,7 @@ const Main = () => {
               <div id={`evenTarget`} className={css.scoreTableTimeLast}>{ `${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}` }</div>
             </div>
           </div>
-          
+
 
 
 
