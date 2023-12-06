@@ -222,29 +222,18 @@ const Main = () => {
       if (e.every((e: eachBoxI) => e.value === 'O')) highlighter({ array: e, letter: "O" })
     })
 
-     // if (winnerRound.current === "") {
-            //   setWinnerRoundState("TIED") // SYNC WITH POP-UP
-            //   clickBlocked.current = true
-            // }
-
     if (
       rC.current.filter(e => e.value === '').length === 0
       && !roundEnd.current
     ) {
       roundEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
       setTimeout(() => {
-        //let copyPoints: pointsI = {...points}
-        //copyPoints[letter] = copyPoints[letter] + actionPoints
-        setPoints({ "X": 0, "O": 0 })
         winnerRound.current = "TIED"
         setTimeout(() => {
           setWinnerRoundState("TIED") // SYNC WITH POP-UP
         }, 300)
       }, 1200)
-
     }
-
-
 
     if (rC.current.filter(e => e.value === '').length === 0) {
       roundEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
@@ -348,7 +337,182 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
-    score.current = []
+    //score.current = []
+
+  score.current = [
+    {
+      id: 0,
+      timeX: `10:34:112`,
+      scoreX: 100,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 1,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 200,
+      timeO: `00:39:124`
+    },
+    {
+      id: 2,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 200,
+      timeO: `00:52:356`
+    },
+    {
+      id: 3,
+      timeX: `53:45:544`,
+      scoreX: 200,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 4,
+      timeX: `03:15:821`,
+      scoreX: 100,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 5,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 200,
+      timeO: `00:15:231`
+    },
+    {
+      id: 6,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 200,
+      timeO: `03:52:339`
+    },
+    {
+      id: 7,
+      timeX: `00:02:234`,
+      scoreX: 200,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 8,
+      timeX: `00:02:234`,
+      scoreX: 200,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 9,
+      timeX: `10:34:112`,
+      scoreX: 100,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 10,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 200,
+      timeO: `00:39:124`
+    },
+    {
+      id: 11,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 200,
+      timeO: `00:52:356`
+    },
+    {
+      id: 12,
+      timeX: `53:45:544`,
+      scoreX: 200,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 13,
+      timeX: `03:15:821`,
+      scoreX: 100,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 14,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 200,
+      timeO: `00:15:231`
+    },
+    {
+      id: 15,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 200,
+      timeO: `03:52:339`
+    },
+    {
+      id: 16,
+      timeX: `00:02:234`,
+      scoreX: 200,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 17,
+      timeX: `00:02:234`,
+      scoreX: 200,
+      X: "✔️",
+      O: "❌",
+      scoreO: 0,
+      timeO: `00:00:000`
+    },
+    {
+      id: 18,
+      timeX: `00:00:000`,
+      scoreX: 0,
+      X: "❌",
+      O: "✔️",
+      scoreO: 100,
+      timeO: `03:52:339`
+    },
+  ]
+
     roundEnd.current = false
     setWinnerGameState("")
     setWinnerRoundState("")
@@ -1030,17 +1194,36 @@ const Main = () => {
             <div id={`evenTarget`} className={css.scoreTableScore}>SCORE</div>
             <div id={`evenTarget`} className={css.scoreTableTime}>TIME</div>
           </div>
+
           {
             score.current.map((e,i)=> {
               return (
                 <div key={i} className={css.scoreTableEachScore}>
                   <div id={`evenTarget`} className={css.scoreTableNumeral}>{e.id + 1}</div>
-                  <div id={`evenTarget`} className={css.scoreTableTime}>{ e.timeX === '00:00:000' ? "➖" : e.timeX }</div>
+                  <div id={`evenTarget`} className={css.scoreTableTime}>
+                    {
+                      e.timeX === '00:00:000' ?
+                      "➖" :
+                      <div className={css.scoreTableTimeInner}>
+                        <div>{e.timeX.split(":").slice(0,2).join(":")}</div>
+                        <div className={css.smallerMili}>:{e.timeX.split(":")[2]}</div>
+                      </div>
+                    }
+                  </div>
                   <div id={`evenTarget`} className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
                   <div id={`evenTarget`} className={css.scoreTableYouAI}>{ e.X }</div>
                   <div id={`evenTarget`} className={css.scoreTableYouAI}>{ e.O }</div>
                   <div id={`evenTarget`} className={css.scoreTableScore}>{ e.scoreO === 0 ? "➖" : e.scoreO }</div>
-                  <div id={`evenTarget`} className={css.scoreTableTime}>{ e.timeO === '00:00:000' ? "➖" : e.timeO }</div>
+                  <div id={`evenTarget`} className={css.scoreTableTime}>
+                    {
+                      e.timeO === '00:00:000' ?
+                      "➖" :
+                      <div className={css.scoreTableTimeInner}>
+                        <div>{e.timeO.split(":").slice(0,2).join(":")}</div>
+                        <div className={css.smallerMili}>:{e.timeO.split(":")[2]}</div>
+                      </div>
+                    }
+                  </div>
                 </div>
               )
             })
@@ -1064,11 +1247,25 @@ const Main = () => {
           <div className={css.scoreBackgroundLight11}>
             <div className={css.scoreTableTitlesContainerLower}>
               <div id={`evenTarget`} className={css.scoreTableNumeralLast}></div>
-              <div id={`evenTarget`} className={css.scoreTableTime}>{ `${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}` }</div>
+              <div id={`evenTarget`} className={css.scoreTableTime}>
+                {
+                  <div className={css.scoreTableTimeInner}>
+                    <div>{XfinalMin.current.toString().padStart(2,'0')}:{XfinalSec.current.toString().padStart(2,'0')}</div>
+                    <div className={css.smallerMili}>:{XfinalMs.current.toString().padStart(3,'0')}</div>
+                  </div>
+                }
+              </div>
               <div id={`evenTarget`} className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreX, 0) }</div>
               <div id={`evenTarget`} className={css.scoreTableTotal}>TOTAL</div>
               <div id={`evenTarget`} className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
-              <div id={`evenTarget`} className={css.scoreTableTimeLast}>{ `${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}` }</div>
+              <div id={`evenTarget`} className={css.scoreTableTimeLast}>
+                {
+                  <div className={css.scoreTableTimeInner}>
+                    <div>{OfinalMin.current.toString().padStart(2,'0')}:{OfinalSec.current.toString().padStart(2,'0')}</div>
+                    <div className={css.smallerMili}>:{OfinalMs.current.toString().padStart(3,'0')}</div>
+                  </div>
+                }
+              </div>
             </div>
           </div>
 
