@@ -20,7 +20,7 @@ const Main = () => {
   let score = useRef<any[]>([])
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
   //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
-  const [ scoreShown, setScoreShown ] = useState<boolean>(false)
+  const [ scoreShown, setScoreShown ] = useState<boolean>(true)
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -834,16 +834,20 @@ const Main = () => {
   console.log("123123123 window.screen", height)
 
   useEffect(() => {
-  if (height !== null && height <= 550 ) {
-      console.log("333 aca")
-      //document.addEventListener('DOMContentLoaded', function() {
+    const ele = document.getElementById('sliderBox');
+
+    function mouseEnterOnScore() {
+      console.log("333", "ENTRO ACA")
       const el = document.getElementById('sliderBox');
-      if (el !== null) el.style.cursor = 'grab';
+      if (el !== null) {
+        if (height <= 550) el.style.cursor = 'grab'; // GRAB WHEN ENTER (HOVER)
+        else el.style.cursor = 'default'; // GRAB WHEN ENTER (HOVER)
+      }
       let pos = { top: 0, left: 0, x: 0, y: 0 };
 
       const mouseDownHandler = function (e: any) {
-        if (el !== null) el.style.cursor = 'grabbing';
-        if (el !== null) el.style.userSelect = 'none';
+        if (el !== null && height <= 550) el.style.cursor = 'grabbing';
+        if (el !== null && height <= 550) el.style.userSelect = 'none';
         if (el !== null) {
           pos = {
             left: el.scrollLeft,
@@ -852,8 +856,14 @@ const Main = () => {
             y: e.clientY,
           }
         }
-        document.addEventListener('mousemove', mouseMoveHandler);
-        document.addEventListener('mouseup', mouseUpHandler);
+        if (el !== null) el.addEventListener('mousemove', mouseMoveHandler)
+        if (el !== null) el.addEventListener('mouseup', mouseUpHandler)
+        if (height > 550 && el !== null) {
+          el.removeEventListener('mousemove', mouseMoveHandler);
+          el.removeEventListener('mouseup', mouseUpHandler);
+          el.style.cursor = 'default';
+        }
+        
       };
 
       const mouseMoveHandler = function (e: any) { // HOW MUCH MOUSE HAS MOVED
@@ -864,30 +874,29 @@ const Main = () => {
       };
 
       const mouseUpHandler = function () {
-        if (el !== null) el.style.cursor = 'grab';
-        if (el !== null) el.style.removeProperty('user-select');
-        document.removeEventListener('mousemove', mouseMoveHandler);
-        document.removeEventListener('mouseup', mouseUpHandler);
+        if (el !== null && height <= 550) {
+          el.style.cursor = 'grab';
+          el.style.removeProperty('user-select');
+        } 
+        if (el !== null) el.removeEventListener('mousemove', mouseMoveHandler);
+        if (el !== null) el.removeEventListener('mouseup', mouseUpHandler);
       };
+      if (el !== null) {
+        el.addEventListener('mousedown', mouseDownHandler);
+        el.addEventListener('mouseleave', function() {
+          el.removeEventListener('mousedown', mouseDownHandler)
+          el.removeEventListener('mousemove', mouseMoveHandler);
+          el.removeEventListener('mouseup', mouseUpHandler);
+          el.style.cursor = 'default'
+        })
 
-      if (el !== null) el.addEventListener('mousedown', mouseDownHandler);
-   // })
-  } else {
-    const el = document.getElementById('sliderBox');
-    /* document.removeEventListener('DOMContentLoaded', () => {}) */
-    /* const el = document.getElementById('sliderBox');
-    if (el !== null) {
-      el.style.cursor = 'default';
-      el.style.removeProperty('user-select');
+      }
+      
     }
-    console.log("123123123", "ELSEEEEE") */
-    if (el !== null) {
-      el.style.cursor = 'default';
-      el.style.removeProperty('user-select');
-      /* el.style.removeProperty('user-select'); */
-    }
-  }
-})
+
+    if (ele !== null) ele.addEventListener("mouseenter", mouseEnterOnScore)
+    return () => { if (ele !== null) ele.removeEventListener("mouseenter", mouseEnterOnScore)  }
+  })
 
     useEffect(() => {
       function handleResize() {
