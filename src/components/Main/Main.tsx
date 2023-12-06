@@ -957,26 +957,28 @@ const Main = () => {
         id={`sliderBox`}
       >
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div className={css.scoreTableTitlesContainerUpper}>
-            <div className={css.scoreTableNumeral}>#</div>
-            <div className={css.scoreTableTime}>TIME</div>
-            <div className={css.scoreTableScore}>SCORE</div>
-            <div className={css.scoreTableYouAI}>YOU</div>
-            <div className={css.scoreTableYouAI}>AI</div>
-            <div className={css.scoreTableScore}>SCORE</div>
-            <div className={css.scoreTableTime}>TIME</div>
+          <div
+            className={css.scoreTableTitlesContainerUpper}
+          >
+            <div id={`evenTarget`} className={css.scoreTableNumeral}>#</div>
+            <div id={`evenTarget`} className={css.scoreTableTime}>TIME</div>
+            <div id={`evenTarget`} className={css.scoreTableScore}>SCORE</div>
+            <div id={`evenTarget`} className={css.scoreTableYouAI}>YOU</div>
+            <div id={`evenTarget`} className={css.scoreTableYouAI}>AI</div>
+            <div id={`evenTarget`} className={css.scoreTableScore}>SCORE</div>
+            <div id={`evenTarget`} className={css.scoreTableTime}>TIME</div>
           </div>
           {
             score.current.map((e,i)=> {
               return (
                 <div key={i} className={css.scoreTableEachScore}>
-                  <div className={css.scoreTableNumeral}>{e.id + 1}</div>
-                  <div className={css.scoreTableTime}>{ e.timeX === '00:00:000' ? "➖" : e.timeX }</div>
-                  <div className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
-                  <div className={css.scoreTableYouAI}>{ e.X }</div>
-                  <div className={css.scoreTableYouAI}>{ e.O }</div>
-                  <div className={css.scoreTableScore}>{ e.scoreO === 0 ? "➖" : e.scoreO }</div>
-                  <div className={css.scoreTableTime}>{ e.timeO === '00:00:000' ? "➖" : e.timeO }</div>
+                  <div id={`evenTarget`} className={css.scoreTableNumeral}>{e.id + 1}</div>
+                  <div id={`evenTarget`} className={css.scoreTableTime}>{ e.timeX === '00:00:000' ? "➖" : e.timeX }</div>
+                  <div id={`evenTarget`} className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
+                  <div id={`evenTarget`} className={css.scoreTableYouAI}>{ e.X }</div>
+                  <div id={`evenTarget`} className={css.scoreTableYouAI}>{ e.O }</div>
+                  <div id={`evenTarget`} className={css.scoreTableScore}>{ e.scoreO === 0 ? "➖" : e.scoreO }</div>
+                  <div id={`evenTarget`} className={css.scoreTableTime}>{ e.timeO === '00:00:000' ? "➖" : e.timeO }</div>
                 </div>
               )
             })
@@ -984,14 +986,7 @@ const Main = () => {
           
           
         </div>
-        <div className={css.scoreTableTitlesContainerLower}>
-          <div className={css.scoreTableNumeralLast}></div>
-          <div className={css.scoreTableTime}>{ `${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}` }</div>
-          <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreX, 0) }</div>
-          <div className={css.scoreTableTotal}>TOTAL</div>
-          <div className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
-          <div className={css.scoreTableTimeLast}>{ `${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}` }</div>
-        </div>
+        
 
 
           <div className={css.scoreBackgroundLight1}></div>
@@ -1004,7 +999,16 @@ const Main = () => {
           <div className={css.scoreBackgroundLight8}></div>
           <div className={css.scoreBackgroundLight9}></div>
           <div className={css.scoreBackgroundLight10}></div>
-          <div className={css.scoreBackgroundLight11}></div>
+          <div className={css.scoreBackgroundLight11}>
+            <div className={css.scoreTableTitlesContainerLower}>
+              <div id={`evenTarget`} className={css.scoreTableNumeralLast}></div>
+              <div id={`evenTarget`} className={css.scoreTableTime}>{ `${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}` }</div>
+              <div id={`evenTarget`} className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreX, 0) }</div>
+              <div id={`evenTarget`} className={css.scoreTableTotal}>TOTAL</div>
+              <div id={`evenTarget`} className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
+              <div id={`evenTarget`} className={css.scoreTableTimeLast}>{ `${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}` }</div>
+            </div>
+          </div>
           
 
 
