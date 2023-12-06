@@ -20,7 +20,7 @@ const Main = () => {
   let score = useRef<any[]>([])
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
   //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
-  const [ scoreShown, setScoreShown ] = useState<boolean>(true)
+  const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -826,6 +826,81 @@ const Main = () => {
       }
     })
   },[scoreShown])
+
+  const [ height, setHeight ] = useState<number>(window.innerHeight)
+  /* let { width, height } = window.screen */
+
+  /* console.log("123123123 window.screen",window.innerHeight) */
+  console.log("123123123 window.screen", height)
+
+  useEffect(() => {
+  if (height !== null && height <= 550 ) {
+      console.log("333 aca")
+      //document.addEventListener('DOMContentLoaded', function() {
+      const el = document.getElementById('sliderBox');
+      if (el !== null) el.style.cursor = 'grab';
+      let pos = { top: 0, left: 0, x: 0, y: 0 };
+
+      const mouseDownHandler = function (e: any) {
+        if (el !== null) el.style.cursor = 'grabbing';
+        if (el !== null) el.style.userSelect = 'none';
+        if (el !== null) {
+          pos = {
+            left: el.scrollLeft,
+            top: el.scrollTop,
+            x: e.clientX,
+            y: e.clientY,
+          }
+        }
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
+      };
+
+      const mouseMoveHandler = function (e: any) { // HOW MUCH MOUSE HAS MOVED
+        const dx = e.clientX - pos.x;
+        const dy = e.clientY - pos.y;
+        if (el !== null) el.scrollTop = pos.top - dy;
+        if (el !== null) el.scrollLeft = pos.left - dx;
+      };
+
+      const mouseUpHandler = function () {
+        if (el !== null) el.style.cursor = 'grab';
+        if (el !== null) el.style.removeProperty('user-select');
+        document.removeEventListener('mousemove', mouseMoveHandler);
+        document.removeEventListener('mouseup', mouseUpHandler);
+      };
+
+      if (el !== null) el.addEventListener('mousedown', mouseDownHandler);
+   // })
+  } else {
+    const el = document.getElementById('sliderBox');
+    /* document.removeEventListener('DOMContentLoaded', () => {}) */
+    /* const el = document.getElementById('sliderBox');
+    if (el !== null) {
+      el.style.cursor = 'default';
+      el.style.removeProperty('user-select');
+    }
+    console.log("123123123", "ELSEEEEE") */
+    if (el !== null) {
+      el.style.cursor = 'default';
+      el.style.removeProperty('user-select');
+      /* el.style.removeProperty('user-select'); */
+    }
+  }
+})
+
+    useEffect(() => {
+      function handleResize() {
+        let { innerHeight } = window
+        setHeight(innerHeight)
+        console.log("123123123", "resized")
+        
+      }
+      window.addEventListener("resize", handleResize);
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      }
+    })
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
