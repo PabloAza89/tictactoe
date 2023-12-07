@@ -9,12 +9,21 @@ import $ from 'jquery';
 import check from '../../images/check.png';
 import cross from '../../images/cross.png';
 import dash from '../../images/dash.png';
+import Xmove from '../../audio/Xmove.mp3';
+import Omove from '../../audio/Omove.mp3';
+import revealed from '../../audio/revealed.mp3';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
+import { playSound } from '../../commons/playSound';
 
 const Main = () => {
 
   easings() // JQuery easings..
   const dispatch = useDispatch()
+
+  //let Omove = new Audio('/assets/Omove.mp3');
+  //let Xmove = new Audio(XmoveImp);
+  //let Omove = new Audio(OmoveImp);
+
   //const scoreShown = useSelector((state: { scoreShown: boolean }) => state.scoreShown)
 
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
@@ -57,6 +66,8 @@ const Main = () => {
           AIRandomGridIndex.current = Math.floor(Math.random() * 9)
           if (rC.current[AIRandomGridIndex.current].value === "") {
             rC.current[AIRandomGridIndex.current].value = "O"
+            //Omove.play()
+            playSound(Omove)
             success = true
             setShouldAIstartState(false)
             setUserPlaying(true)
@@ -72,6 +83,9 @@ const Main = () => {
     if (target !== undefined && rC.current[target].value === "") {
       console.log("while se ejecuto func de user, valid click")
       rC.current[target].value = "X"
+      //Omove.play()
+      //Xmove.play()
+      playSound(Xmove)
       setUserPlaying(false)
       validClick.current = true
       clickBlocked.current = true
@@ -131,15 +145,18 @@ const Main = () => {
     roundEnd.current = true
     setTimeout(() => {
       $(`#${array[0].id}`)
-        .css("background", "yellow")
+        .css("background", "yellow");
+        playSound(revealed, -500)
     }, 300)
     setTimeout(() => {
       $(`#${array[1].id}`)
-        .css("background", "yellow")
+        .css("background", "yellow");
+        playSound(revealed, -100)
     }, 600)
     setTimeout(() => {
       $(`#${array[2].id}`)
         .css("background", "yellow")
+        playSound(revealed, 200)
     }, 900)
 
     setTimeout(() => {
@@ -965,6 +982,8 @@ const Main = () => {
                 key={index}
                 id={`${index}`}
                 onClick={(e) => {
+                  //Omove.play()
+                  //Audio(Omove).play();
                   if (!clickBlocked.current) {
                     handleSequence({ target: index })
                   }
@@ -1127,10 +1146,30 @@ const Main = () => {
             </div>
           </div>
 
-
+        
 
 
       </div>
+
+        <Button
+          focusRipple={false}
+          variant="outlined"
+          onClick={() => {
+            //playSound(revealed, -500)
+          }}
+        >
+          TEST 1
+        </Button>
+        <Button
+          focusRipple={false}
+          variant="outlined"
+          onClick={() => {
+            //playSound(Xmove)
+          }}
+        >
+          TEST 2
+        </Button>
+
     </div>
   );
 }
