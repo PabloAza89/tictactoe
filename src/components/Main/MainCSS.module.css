@@ -116,7 +116,7 @@
     
 
 .rounds {
-  background: lightgreen; /* DEV */
+  /* background: lightgreen; */ /* DEV */
   display: flex;
   position: absolute;
   /* width: 110px; */
@@ -137,7 +137,7 @@
 }
 
 .timer {
-  background: lightgreen; /* DEV */
+  /* background: lightgreen; */ /* DEV */
   display: flex;
   position: absolute;
   /* margin-left: 10px; */
@@ -659,7 +659,7 @@ div:nth-child(even of [id*="evenTarget"]) {
 #buttonShow {
   /* margin-top: 250px; */
   /* margin-top: 0px; */
-  top: 114px;
+  top: 39px;
   right: 0px; /* DEFAULT RENDER */
   display: flex;
   position: fixed;
