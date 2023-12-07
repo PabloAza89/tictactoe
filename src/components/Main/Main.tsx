@@ -6,6 +6,9 @@ import { Button } from '@mui/material/';
 import { easings } from '../../commons/easingsCSS';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
+import check from '../../images/check.png';
+import cross from '../../images/cross.png';
+import dash from '../../images/dash.png';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
 //import { setScoreShown } from '../../actions';
 
@@ -17,7 +20,181 @@ const Main = () => {
 
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
   //let score = useRef<any[]>([{ "id": 0, "X": 0, "O": 0, "score": 0, "time": 0 }])
-  let score = useRef<any[]>([])
+  let score = useRef<any[]>(
+    [
+      {
+        id: 0,
+        timeX: `10:34:112`,
+        scoreX: 100,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 1,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:39:124`
+      },
+      {
+        id: 2,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:52:356`
+      },
+      {
+        id: 3,
+        timeX: `53:45:544`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 4,
+        timeX: `03:15:821`,
+        scoreX: 100,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 5,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:15:231`
+      },
+      {
+        id: 6,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `03:52:339`
+      },
+      {
+        id: 7,
+        timeX: `00:02:234`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 8,
+        timeX: `00:02:234`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 9,
+        timeX: `10:34:112`,
+        scoreX: 100,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 10,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:39:124`
+      },
+      {
+        id: 11,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:52:356`
+      },
+      {
+        id: 12,
+        timeX: `53:45:544`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 13,
+        timeX: `03:15:821`,
+        scoreX: 100,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 14,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `00:15:231`
+      },
+      {
+        id: 15,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 200,
+        timeO: `03:52:339`
+      },
+      {
+        id: 16,
+        timeX: `00:02:234`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 17,
+        timeX: `00:02:234`,
+        scoreX: 200,
+        X: "✔️",
+        O: "❌",
+        scoreO: 0,
+        timeO: `00:00:000`
+      },
+      {
+        id: 18,
+        timeX: `00:00:000`,
+        scoreX: 0,
+        X: "❌",
+        O: "✔️",
+        scoreO: 100,
+        timeO: `03:52:339`
+      },
+    ]
+  )
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
   //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   const [ scoreShown, setScoreShown ] = useState<boolean>(true)
@@ -337,181 +514,9 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
-    //score.current = []
+    score.current = []
 
-  score.current = [
-    {
-      id: 0,
-      timeX: `10:34:112`,
-      scoreX: 100,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 1,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 200,
-      timeO: `00:39:124`
-    },
-    {
-      id: 2,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 200,
-      timeO: `00:52:356`
-    },
-    {
-      id: 3,
-      timeX: `53:45:544`,
-      scoreX: 200,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 4,
-      timeX: `03:15:821`,
-      scoreX: 100,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 5,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 200,
-      timeO: `00:15:231`
-    },
-    {
-      id: 6,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 200,
-      timeO: `03:52:339`
-    },
-    {
-      id: 7,
-      timeX: `00:02:234`,
-      scoreX: 200,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 8,
-      timeX: `00:02:234`,
-      scoreX: 200,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 9,
-      timeX: `10:34:112`,
-      scoreX: 100,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 10,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 200,
-      timeO: `00:39:124`
-    },
-    {
-      id: 11,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 200,
-      timeO: `00:52:356`
-    },
-    {
-      id: 12,
-      timeX: `53:45:544`,
-      scoreX: 200,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 13,
-      timeX: `03:15:821`,
-      scoreX: 100,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 14,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 200,
-      timeO: `00:15:231`
-    },
-    {
-      id: 15,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 200,
-      timeO: `03:52:339`
-    },
-    {
-      id: 16,
-      timeX: `00:02:234`,
-      scoreX: 200,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 17,
-      timeX: `00:02:234`,
-      scoreX: 200,
-      X: "✔️",
-      O: "❌",
-      scoreO: 0,
-      timeO: `00:00:000`
-    },
-    {
-      id: 18,
-      timeX: `00:00:000`,
-      scoreX: 0,
-      X: "❌",
-      O: "✔️",
-      scoreO: 100,
-      timeO: `03:52:339`
-    },
-  ]
+
 
     roundEnd.current = false
     setWinnerGameState("")
@@ -1200,24 +1205,52 @@ const Main = () => {
               return (
                 <div key={i} className={css.scoreTableEachScore}>
                   <div id={`evenTarget`} className={css.scoreTableNumeral}>{e.id + 1}</div>
-                  <div id={`evenTarget`} className={css.scoreTableTime}>
+                  <div id={`evenTarget`} className={css.scoreTableTimePNG}>
                     {
                       e.timeX === '00:00:000' ?
-                      "➖" :
+                      <img className={css.test123} src={dash} alt=""></img> :
                       <div className={css.scoreTableTimeInner}>
                         <div>{e.timeX.split(":").slice(0,2).join(":")}</div>
                         <div className={css.smallerMili}>:{e.timeX.split(":")[2]}</div>
                       </div>
                     }
                   </div>
-                  <div id={`evenTarget`} className={css.scoreTableScore}>{ e.scoreX === 0 ? "➖" : e.scoreX }</div>
-                  <div id={`evenTarget`} className={css.scoreTableYouAI}>{ e.X }</div>
-                  <div id={`evenTarget`} className={css.scoreTableYouAI}>{ e.O }</div>
-                  <div id={`evenTarget`} className={css.scoreTableScore}>{ e.scoreO === 0 ? "➖" : e.scoreO }</div>
-                  <div id={`evenTarget`} className={css.scoreTableTime}>
+                  <div id={`evenTarget`} className={css.scoreTableScorePNG}>
+                    {
+                      e.scoreX === 0 ?
+                      <img className={css.test123} src={dash} alt=""></img> :
+                      e.scoreX
+                    }
+                  </div>
+                  <div id={`evenTarget`} className={css.scoreTableYouAIPNG}>
+                    {
+                      e.X === "✔️" ?
+                      <img className={css.test123} src={check} alt=""></img> :
+                      e.X === "❌" ?
+                      <img className={css.test123} src={cross} alt=""></img> :
+                      <img className={css.test123} src={dash} alt=""></img>
+                    }
+                  </div>
+                  <div id={`evenTarget`} className={css.scoreTableYouAIPNG}>
+                    {
+                      e.O === "✔️" ?
+                      <img className={css.test123} src={check} alt=""></img> :
+                      e.O === "❌" ?
+                      <img className={css.test123} src={cross} alt=""></img> :
+                      <img className={css.test123} src={dash} alt=""></img>
+                    }
+                  </div>
+                  <div id={`evenTarget`} className={css.scoreTableScorePNG}>
+                    {
+                      e.scoreO === 0 ?
+                      <img className={css.test123} src={dash} alt=""></img> :
+                      e.scoreO
+                    }
+                  </div>
+                  <div id={`evenTarget`} className={css.scoreTableTimePNG}>
                     {
                       e.timeO === '00:00:000' ?
-                      "➖" :
+                      <img className={css.test123} src={dash} alt=""></img> :
                       <div className={css.scoreTableTimeInner}>
                         <div>{e.timeO.split(":").slice(0,2).join(":")}</div>
                         <div className={css.smallerMili}>:{e.timeO.split(":")[2]}</div>

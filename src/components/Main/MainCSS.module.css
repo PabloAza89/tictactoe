@@ -449,6 +449,79 @@
   text-align: center;
   justify-content: center;
   /* background: rgba(0, 0, 0, .05) */
+  
+}
+
+.scoreTableTimePNG {
+  /* box-shadow: 0 0 0 2px blue inset; */
+  /* box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue; */
+  width: 80px;
+  height: 25px;
+  line-height: 24px;
+  text-align: center;
+  justify-content: center;
+  /* background: rgba(0, 0, 0, .05) */
+  /* ADDED */
+  display: flex;
+  position: relative;
+  justify-content: space-evenly;
+  align-items: center;
+
+
+}
+
+.symbolTarget1 {
+  color: green;
+}
+
+.symbolTarget2 {
+  color: crimson;
+}
+
+.symbolTarget3 {
+  /* display: flex; */
+  /* position: relative; */
+  color: grey;
+  font-size: 22px;
+  /* transform: rotate(10deg); */
+  line-height: 25px;
+  height: 25px;
+  /* transform: scale(1.0, 0.7); */
+  -webkit-text-stroke: 0.4px black;
+}
+
+.scoreTableYouAIPNG {
+  /* box-shadow: 0 0 0 2px blue inset; */
+  /* box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue; */
+  width: 40px;
+  height: 25px;
+  line-height: 24px;
+  text-align: center;
+
+  /* ADDED */
+  display: flex;
+  position: relative;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.test123 {
+  display: flex;
+  width: 22px;
+  height: 22px;
+  display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+[id*="symbolTarget"] {
+  font-size: 22px;
+  /* transform: rotate(10deg); */
+  line-height: 25px;
+  height: 25px;
+  /* transform: scale(1.0, 0.7); */
+  -webkit-text-stroke: 0.4px black;
 }
 
 .scoreTableTimeInner {
@@ -489,6 +562,21 @@
   height: 25px;
   line-height: 24px;
   text-align: center;
+  
+}
+
+.scoreTableScorePNG {
+  /* box-shadow: 0 0 0 2px blue inset; */
+  /* box-shadow: inset 0px 0px 0px 0px, 1px 0px 0px 0px blue; */
+  width: 60px;
+  height: 25px;
+  line-height: 24px;
+  text-align: center;
+  /* ADDED */
+  display: flex;
+  position: relative;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 
