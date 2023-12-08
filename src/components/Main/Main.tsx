@@ -1155,7 +1155,7 @@ const Main = () => {
           focusRipple={false}
           variant="outlined"
           onClick={() => {
-            //playSound(revealed, -500)
+            playSound(revealed, -500)
           }}
         >
           TEST 1
