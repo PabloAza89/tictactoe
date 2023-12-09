@@ -12,6 +12,16 @@ import dash from '../../images/dash.png';
 import Xmove from '../../audio/Xmove.mp3';
 import Omove from '../../audio/Omove.mp3';
 import revealed from '../../audio/revealed.mp3';
+import menu from '../../audio/menu.mp3';
+import countDown from '../../audio/countDown.mp3';
+import countDown2 from '../../audio/countDown2.mp3';
+import countDownA from '../../audio/countDownA.mp3';
+import countDownB from '../../audio/countDownB.mp3';
+import taDah from '../../audio/taDah.mp3';
+import looser from '../../audio/looser.mp3';
+import roundWin from '../../audio/roundWin.mp3';
+import roundLost from '../../audio/roundLost.mp3';
+import trill from '../../audio/trill.mp3';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
 import { playSound } from '../../commons/playSound';
 
@@ -262,8 +272,17 @@ const Main = () => {
       stopTimer()
       updateScore()
       checkGameEndByRounds()
+
+      //playSound(taDah)
+
       setTimeout(() => {
         if (continueFlowPopUp.current && !gameEndRoundsBoolean.current) {
+
+          if (winnerRound.current === "X") playSound(roundWin)
+          else if (winnerRound.current === "O") playSound(roundLost)
+          else playSound(trill)
+
+
           Swal.fire({
             title:
               winnerRound.current === "X" ?
@@ -395,6 +414,7 @@ const Main = () => {
   }
 
   const selectOptions = () => {
+    playSound(menu)
     showCountdownRound.current = false
     setShowCountdownRoundState(false)
     hardResetGame();
@@ -418,6 +438,7 @@ const Main = () => {
     .then((result) => {
       console.log("123123 result", result)
       if (result.isConfirmed) { // START USER
+        playSound(menu)
         Swal.fire({
           title: "Select number of rounds:",
           input: "select",
@@ -444,6 +465,7 @@ const Main = () => {
         })
         .then((result) => {
           if (result.isConfirmed) {
+            playSound(menu)
             basicOptions()
             userHasStartedThisRound.current = true
             setShouldAIstartState(false)
@@ -462,6 +484,7 @@ const Main = () => {
         })
       }
       else if (result.isDenied) { // START AI
+        playSound(menu)
         Swal.fire({
           title: "Select number of rounds:",
           input: "select",
@@ -487,6 +510,7 @@ const Main = () => {
         })
         .then((result) => {
           if (result.isConfirmed) {
+            playSound(menu)
             basicOptions()
             userHasStartedThisRound.current = false
             clickBlocked.current = true
@@ -514,6 +538,7 @@ const Main = () => {
   }
 
   const buttonNewGameHandler = () => {
+    playSound(menu)
     removeFlowPopUp() // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
     removeButtonAnimation()
     if (newGameStarted/*  || gameEndRoundsBoolean.current */) {
@@ -534,6 +559,7 @@ const Main = () => {
           //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
         }
         else {
+          //playSound(menu)
           addFlowPopUp() // ELSE CONTINUE GAME
           //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
         }
@@ -594,6 +620,8 @@ const Main = () => {
 
   const startsIn = () => {
     setTimeout(() => {
+      //playSound(countDown2, -400)
+      playSound(countDownA)
       Swal.fire({
         title: `STARTS IN\n3..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -605,6 +633,8 @@ const Main = () => {
       })
     }, 0)
     setTimeout(() => {
+      //playSound(countDown2, -400)
+      playSound(countDownA)
       Swal.fire({
         title: `STARTS IN\n2..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -616,6 +646,8 @@ const Main = () => {
       })
     }, 1000)
     setTimeout(() => {
+      //playSound(countDown2, -400)
+      playSound(countDownA)
       Swal.fire({
         title: `STARTS IN\n1..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -627,6 +659,8 @@ const Main = () => {
       })
     }, 2000)
     setTimeout(() => {
+      //playSound(countDown2, 800)
+      playSound(countDownB)
       Swal.fire({
         title: `GO !!!`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -741,6 +775,8 @@ const Main = () => {
           addFinalWinnerChangeColor()
         }, 200) // DELAY WAITS FOR FINAL POPUP
 
+        if (winnerGameState === "XByTime" || finalWinner === "X") playSound(taDah)
+        else if (finalWinner === "OByTime" || finalWinner === "O") playSound(looser) // SEGUIR ACA
 
         Swal.fire({
           title:
@@ -750,8 +786,7 @@ const Main = () => {
             `GAME END !\nAI WIN !` :
             score.current.some(e => e.X === "✔️" || e.O === "✔️") ? // CHECK IF TIED BY POINTS & TIME HAS AT LEAST A WINNING ROUND, no way !
             `GAME END !\nTIED, INCREDIBLE !!` :
-            `GAME END !\nTIED !`
-            ,
+            `GAME END !\nTIED !`,
           html:
             finalWinner === `XByTime` ? // CHECKED
               `<div>
@@ -789,8 +824,7 @@ const Main = () => {
                 <div>Tied by points & time !</div>
                 <div>Points: ${XSumScore}</div>
                 <div>Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}</div>
-              </div>`
-          ,
+              </div>`,
           heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
           icon:
             'success',
@@ -1151,7 +1185,7 @@ const Main = () => {
 
       </div>
 
-        <Button
+        {/* <Button
           focusRipple={false}
           variant="outlined"
           onClick={() => {
@@ -1164,11 +1198,11 @@ const Main = () => {
           focusRipple={false}
           variant="outlined"
           onClick={() => {
-            //playSound(Xmove)
+            
           }}
         >
           TEST 2
-        </Button>
+        </Button> */}
 
     </div>
   );

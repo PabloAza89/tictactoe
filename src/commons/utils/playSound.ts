@@ -1,4 +1,6 @@
-let context: any = new AudioContext();
+export {}
+
+// let context: any = new AudioContext();
 
 // let gain1: any = context.createGain();
 // gain1.gain.value = 1;
@@ -59,46 +61,43 @@ let context: any = new AudioContext();
 // distortion.curve = new Float32Array(44100)
 // distortion.oversample = "4x";
 
-// source --> gain1 --> gain1 --> filter --> filter --> context.destination
-// source --> filter --> filter --> context.destination
-
-export const playSound = async (data: any, pitch?: number) => {
-  try {
-    const playBuffer = (buffer: any) => {
-      let source = context.createBufferSource();
-      source.buffer = buffer;
+// export const playSound = async (data: any, pitch?: number) => {
+//   try {
+//     const playBuffer = (buffer: any) => {
+//       let source = context.createBufferSource();
+//       source.buffer = buffer;
       
-      //delay.buffer = buffer
-      //convolver.buffer = buffer;
+//       //delay.buffer = buffer
+//       //convolver.buffer = buffer;
     
-       //const convolver = context.createConvolver();
-       //convolver.buffer = reverbBuffer;
+//        //const convolver = context.createConvolver();
+//        //convolver.buffer = reverbBuffer;
     
+//       // source --> gain1 --> gain1 --> filter --> filter --> context.destination
+//       // source --> filter --> filter --> context.destination
+//       //convolver.connect(source);
+//       //source.connect(convolver);
+//       source.connect(delay);
       
-      //convolver.connect(source);
-      //source.connect(convolver);
-      //source.connect(delay);
-      
-      //convolver.connect(filter);
-      //source.connect(filter);
-      //oscillator.connect(filter);
-      //gain1.connect(filter);
-      //state.gain2.connect(filter);
-      source.detune.value = pitch ? pitch : 0;
-      //source.loop = true;
-      source.connect(context.destination);
+//       //convolver.connect(filter);
+//       //source.connect(filter);
+//       //oscillator.connect(filter);
+//       //gain1.connect(filter);
+//       //state.gain2.connect(filter);
+//       //source.loop = true;
+//       delay.connect(context.destination);
 
 
-      source.start();
-    }
+//       source.start();
+//     }
 
 
-    const response = await fetch(data)
-    //console.log("123 response.arrayBuffer()", await response.arrayBuffer())
-    context.decodeAudioData(await response.arrayBuffer(), playBuffer);
+//     const response = await fetch(data)
+//     //console.log("123 response.arrayBuffer()", await response.arrayBuffer())
+//     context.decodeAudioData(await response.arrayBuffer(), playBuffer);
 
-    //audioCtx.decodeAudioData(await response.arrayBuffer(), createReverb);
+//     //audioCtx.decodeAudioData(await response.arrayBuffer(), createReverb);
 
     
-  } catch (err: any) { console.log(err) }
-}
+//   } catch (err: any) { console.log(err) }
+// }
