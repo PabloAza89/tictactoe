@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/tictactoe/static/css/main.0d393350.chunk.css",
-    "main.js": "/tictactoe/static/js/main.c814de99.chunk.js",
-    "main.js.map": "/tictactoe/static/js/main.c814de99.chunk.js.map",
+    "main.js": "/tictactoe/static/js/main.39816057.chunk.js",
+    "main.js.map": "/tictactoe/static/js/main.39816057.chunk.js.map",
     "runtime-main.js": "/tictactoe/static/js/runtime-main.68d2a3da.js",
     "runtime-main.js.map": "/tictactoe/static/js/runtime-main.68d2a3da.js.map",
     "static/js/2.6a909994.chunk.js": "/tictactoe/static/js/2.6a909994.chunk.js",
@@ -12,12 +12,20 @@
     "static/js/2.6a909994.chunk.js.LICENSE.txt": "/tictactoe/static/js/2.6a909994.chunk.js.LICENSE.txt",
     "static/media/Omove.7092c42c.mp3": "/tictactoe/static/media/Omove.7092c42c.mp3",
     "static/media/Xmove.082d8234.mp3": "/tictactoe/static/media/Xmove.082d8234.mp3",
-    "static/media/revealed.7ccf0a51.mp3": "/tictactoe/static/media/revealed.7ccf0a51.mp3"
+    "static/media/countDownA.2e00440d.mp3": "/tictactoe/static/media/countDownA.2e00440d.mp3",
+    "static/media/countDownB.c2dfa531.mp3": "/tictactoe/static/media/countDownB.c2dfa531.mp3",
+    "static/media/looser.2a98477b.mp3": "/tictactoe/static/media/looser.2a98477b.mp3",
+    "static/media/menu.29e022df.mp3": "/tictactoe/static/media/menu.29e022df.mp3",
+    "static/media/revealed.7ccf0a51.mp3": "/tictactoe/static/media/revealed.7ccf0a51.mp3",
+    "static/media/roundLost.2e868e4f.mp3": "/tictactoe/static/media/roundLost.2e868e4f.mp3",
+    "static/media/roundWin.f2e24fd6.mp3": "/tictactoe/static/media/roundWin.f2e24fd6.mp3",
+    "static/media/taDah.d4157f1d.mp3": "/tictactoe/static/media/taDah.d4157f1d.mp3",
+    "static/media/trill.20ea0783.mp3": "/tictactoe/static/media/trill.20ea0783.mp3"
   },
   "entrypoints": [
     "static/js/runtime-main.68d2a3da.js",
     "static/js/2.6a909994.chunk.js",
     "static/css/main.0d393350.chunk.css",
-    "static/js/main.c814de99.chunk.js"
+    "static/js/main.39816057.chunk.js"
   ]
 }
