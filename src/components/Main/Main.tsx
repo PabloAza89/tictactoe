@@ -22,6 +22,10 @@ import roundLost from '../../audio/roundLost.mp3';
 import trill from '../../audio/trill.mp3';
 import ticTac3Sec from '../../audio/ticTac3Sec.mp3';
 import startRound from '../../audio/startRound.mp3';
+import tied from '../../audio/tied.mp3';
+import tiedWeird from '../../audio/tiedWeird.mp3';
+import XTime from '../../audio/XTime.mp3';
+import OTime from '../../audio/OTime.mp3';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
 import { playSound } from '../../commons/playSound';
 
@@ -37,6 +41,9 @@ const Main = () => {
   //const scoreShown = useSelector((state: { scoreShown: boolean }) => state.scoreShown)
 
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
+
+
+
   let score = useRef<any[]>([])
 
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
@@ -113,7 +120,7 @@ const Main = () => {
       if (showCountdownRound.current) { // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
         setShowCountdownRoundState(true)
         setCountdownRound(3)
-        playSound(ticTac3Sec)
+        playSound(ticTac3Sec, 0, 0.1)
       }
     }, 3000)
     setTimeout(() => {
@@ -125,7 +132,7 @@ const Main = () => {
     setTimeout(() => {
       if (showCountdownRound.current) {
         setCountdownRound(0) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
-        playSound(startRound)
+        playSound(startRound, 0, 0.2)
       }
     }, 6000)
     setTimeout(() => {
@@ -205,7 +212,8 @@ const Main = () => {
 
       score.current.push({
         id: score.current.length,
-        timeX: winnerRound.current === "X" || winnerRound.current === "TIED" ? `${min}:${sec}:${mss}` : `00:00:000`, // FAKE MS FOR TEST (TIED BY POINTS & TIME)
+        //timeX: winnerRound.current === "X" || winnerRound.current === "TIED" ? `${min}:${sec}:339` : `00:00:000`, // FAKE MS FOR TEST (TIED BY POINTS & TIME)
+        timeX: winnerRound.current === "X" || winnerRound.current === "TIED" ? `${min}:${sec}:${mss}` : `00:00:000`,
         scoreX: winnerRound.current === "X" ? actionPoints : 0,
         X: winnerRound.current === "TIED" ? "➖" : winnerRound.current === "X" ? "✔️" : "❌",
         O: winnerRound.current === "TIED" ? "➖" : winnerRound.current === "O" ? "✔️" : "❌",
@@ -283,8 +291,8 @@ const Main = () => {
         if (continueFlowPopUp.current && !gameEndRoundsBoolean.current) {
 
           if (winnerRound.current === "X") playSound(roundWin)
-          else if (winnerRound.current === "O") playSound(roundLost)
-          else playSound(trill)
+          else if (winnerRound.current === "O") playSound(roundLost, 0, 0.6)
+          else playSound(trill, 0, 0.9)
 
 
           Swal.fire({
@@ -293,7 +301,7 @@ const Main = () => {
               `YOU WIN !` :
               winnerRound.current === "O" ?
               `AI WIN !` :
-              `TIED GAME`,
+              `ROUND TIED`,
             text:
               actionPoints === 100 ?
               `+100 Points` :
@@ -380,6 +388,26 @@ const Main = () => {
 
   const hardResetGame = () => {
     score.current = []
+//   score.current = [
+//   {
+//     id: 0,
+//     timeX: `10:34:112`,
+//     scoreX: 100,
+//     X: "✔️",
+//     O: "❌",
+//     scoreO: 0,
+//     timeO: `00:00:000`
+//   },
+//   {
+//     id: 1,
+//     timeX: `00:00:000`,
+//     scoreX: 0,
+//     X: "❌",
+//     O: "✔️",
+//     scoreO: 100,
+//     timeO: `10:34:112`
+//   }
+// ]
 
 
 
@@ -398,7 +426,20 @@ const Main = () => {
     addFlowPopUp()
     stopTimer()
     resetTimer()
-    rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
+    //rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
+
+    // CONTINUE CHECK OF DOUBLE SOUND GAME WHEN 200 POINTS
+// rC.current = [ // rowsAndColumns
+// { id: 0, value: 'X' },
+// { id: 1, value: 'O' },
+// { id: 2, value: 'X' },
+// { id: 3, value: 'X' },
+// { id: 4, value: 'X' },
+// { id: 5, value: 'O' },
+// { id: 6, value: '' },
+// { id: 7, value: 'O' },
+// { id: 8, value: 'O' }
+// ]
 
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 });
@@ -764,7 +805,7 @@ const Main = () => {
         //setWinnerGameState(
         let finalWinner =
           XSumScore === OSumScore && XSumTime === OSumTime ?
-          "TIED" :
+          "TIED" : // WEIRD TIED :S
           XSumScore === OSumScore && XSumTime > OSumTime ?
           "OByTime" :
           XSumScore === OSumScore && XSumTime < OSumTime ?
@@ -779,17 +820,24 @@ const Main = () => {
           addFinalWinnerChangeColor()
         }, 200) // DELAY WAITS FOR FINAL POPUP
 
-        if (winnerGameState === "XByTime" || finalWinner === "X") playSound(taDah)
-        else if (finalWinner === "OByTime" || finalWinner === "O") playSound(looser) // SEGUIR ACA
+        // finalWinner === "XByTime" || 
+        // finalWinner === "OByTime"
+
+        if (finalWinner === "X") playSound(taDah, 0, 0.8) // X win entire game
+        else if (finalWinner === "O") playSound(looser, 0, 0.7) // O win entire game
+        else if (finalWinner === "XByTime") playSound(XTime, 0, 1) // X win entire game by time
+        else if (finalWinner === "OByTime") playSound(OTime, 0, 1) // O win entire game by time
+        else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound(tiedWeird, 0, 0.9) // Tied by points & time & has at least a winning round, no way !
+        else playSound(tied) // Normal tied game
 
         Swal.fire({
           title:
-            winnerGameState === "XByTime" || finalWinner === "X" ?
+            finalWinner === "XByTime" || finalWinner === "X" ?
             `GAME END !\nYOU WIN !` :
             finalWinner === "OByTime" || finalWinner === "O" ?
             `GAME END !\nAI WIN !` :
-            score.current.some(e => e.X === "✔️" || e.O === "✔️") ? // CHECK IF TIED BY POINTS & TIME HAS AT LEAST A WINNING ROUND, no way !
-            `GAME END !\nTIED, INCREDIBLE !!` :
+            score.current.some(e => e.X === "✔️" || e.O === "✔️") ? // Check if tied by points & time & has at least a winning round, no way !
+            `GAME END !\nTIED, INCREDIBLE !!`: // Tied by points & time & has at least a winning round, no way !
             `GAME END !\nTIED !`,
           html:
             finalWinner === `XByTime` ? // CHECKED
