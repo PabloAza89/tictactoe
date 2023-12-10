@@ -13,8 +13,6 @@ import Xmove from '../../audio/Xmove.mp3';
 import Omove from '../../audio/Omove.mp3';
 import revealed from '../../audio/revealed.mp3';
 import menu from '../../audio/menu.mp3';
-import countDown from '../../audio/countDown.mp3';
-import countDown2 from '../../audio/countDown2.mp3';
 import countDownA from '../../audio/countDownA.mp3';
 import countDownB from '../../audio/countDownB.mp3';
 import taDah from '../../audio/taDah.mp3';
@@ -22,6 +20,8 @@ import looser from '../../audio/looser.mp3';
 import roundWin from '../../audio/roundWin.mp3';
 import roundLost from '../../audio/roundLost.mp3';
 import trill from '../../audio/trill.mp3';
+import ticTac3Sec from '../../audio/ticTac3Sec.mp3';
+import startRound from '../../audio/startRound.mp3';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
 import { playSound } from '../../commons/playSound';
 
@@ -77,7 +77,7 @@ const Main = () => {
           if (rC.current[AIRandomGridIndex.current].value === "") {
             rC.current[AIRandomGridIndex.current].value = "O"
             //Omove.play()
-            playSound(Omove)
+            playSound(Omove, 0, 0.6)
             success = true
             setShouldAIstartState(false)
             setUserPlaying(true)
@@ -95,7 +95,7 @@ const Main = () => {
       rC.current[target].value = "X"
       //Omove.play()
       //Xmove.play()
-      playSound(Xmove)
+      playSound(Xmove, 0, 0.6)
       setUserPlaying(false)
       validClick.current = true
       clickBlocked.current = true
@@ -113,6 +113,7 @@ const Main = () => {
       if (showCountdownRound.current) { // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
         setShowCountdownRoundState(true)
         setCountdownRound(3)
+        playSound(ticTac3Sec)
       }
     }, 3000)
     setTimeout(() => {
@@ -122,7 +123,10 @@ const Main = () => {
       if (showCountdownRound.current) setCountdownRound(1) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
     }, 5000)
     setTimeout(() => {
-      if (showCountdownRound.current) setCountdownRound(0) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
+      if (showCountdownRound.current) {
+        setCountdownRound(0) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
+        playSound(startRound)
+      }
     }, 6000)
     setTimeout(() => {
       if (showCountdownRound.current) { // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
@@ -156,17 +160,17 @@ const Main = () => {
     setTimeout(() => {
       $(`#${array[0].id}`)
         .css("background", "yellow");
-        playSound(revealed, -500)
+        playSound(revealed, -500, 0.5)
     }, 300)
     setTimeout(() => {
       $(`#${array[1].id}`)
         .css("background", "yellow");
-        playSound(revealed, -100)
+        playSound(revealed, -100, 0.5)
     }, 600)
     setTimeout(() => {
       $(`#${array[2].id}`)
         .css("background", "yellow")
-        playSound(revealed, 200)
+        playSound(revealed, 200, 0.5)
     }, 900)
 
     setTimeout(() => {
@@ -414,7 +418,7 @@ const Main = () => {
   }
 
   const selectOptions = () => {
-    playSound(menu)
+    playSound(menu, 0, 0.5)
     showCountdownRound.current = false
     setShowCountdownRoundState(false)
     hardResetGame();
@@ -621,7 +625,7 @@ const Main = () => {
   const startsIn = () => {
     setTimeout(() => {
       //playSound(countDown2, -400)
-      playSound(countDownA)
+      playSound(countDownA, 0, 0.5)
       Swal.fire({
         title: `STARTS IN\n3..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -634,7 +638,7 @@ const Main = () => {
     }, 0)
     setTimeout(() => {
       //playSound(countDown2, -400)
-      playSound(countDownA)
+      playSound(countDownA, 0, 0.5)
       Swal.fire({
         title: `STARTS IN\n2..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -647,7 +651,7 @@ const Main = () => {
     }, 1000)
     setTimeout(() => {
       //playSound(countDown2, -400)
-      playSound(countDownA)
+      playSound(countDownA, 0, 0.5)
       Swal.fire({
         title: `STARTS IN\n1..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -660,7 +664,7 @@ const Main = () => {
     }, 2000)
     setTimeout(() => {
       //playSound(countDown2, 800)
-      playSound(countDownB)
+      playSound(countDownB, 0, 0.4)
       Swal.fire({
         title: `GO !!!`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION

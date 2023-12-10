@@ -1,7 +1,7 @@
 let context: any = new AudioContext();
 
-// let gain1: any = context.createGain();
-// gain1.gain.value = 1;
+let gain: any = context.createGain();
+// gain.gain.value = 1;
 
 // let delay = context.createDelay(1.0);
 // delay.delayTime.setValueAtTime(1, context.currentTime)
@@ -62,7 +62,7 @@ let context: any = new AudioContext();
 // source --> gain1 --> gain1 --> filter --> filter --> context.destination
 // source --> filter --> filter --> context.destination
 
-export const playSound = async (data: any, pitch?: number) => {
+export const playSound = async (data: any, pitch?: number, volume?: number) => {
   try {
     const playBuffer = (buffer: any) => {
       let source = context.createBufferSource();
@@ -85,8 +85,12 @@ export const playSound = async (data: any, pitch?: number) => {
       //gain1.connect(filter);
       //state.gain2.connect(filter);
       source.detune.value = pitch ? pitch : 0;
+
+      source.connect(gain);
+
+      gain.gain.value = volume ? volume : 1;
       //source.loop = true;
-      source.connect(context.destination);
+      gain.connect(context.destination);
 
 
       source.start();
