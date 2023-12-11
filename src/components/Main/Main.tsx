@@ -4,6 +4,8 @@ import { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@mui/material/';
 import { easings } from '../../commons/easingsCSS';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
 import check from '../../images/check.png';
@@ -28,6 +30,10 @@ import XTime from '../../audio/XTime.mp3';
 import OTime from '../../audio/OTime.mp3';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
 import { playSound } from '../../commons/playSound';
+import { setMute } from '../../actions';
+//const confetti = require('canvas-confetti');
+import confetti from 'canvas-confetti';
+//import  confetti from 'canvas-confetti';
 
 const Main = () => {
 
@@ -47,8 +53,11 @@ const Main = () => {
   let score = useRef<any[]>([])
 
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
-  const [ scoreShown, setScoreShown ] = useState<boolean>(false)
-  //const [ scoreShown, setScoreShown ] = useState<boolean>(true)
+  //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
+  const mute = useSelector((state: { mute:boolean }) => state.mute)
+  let allowSound = useRef(true)
+  //const menuShown = useSelector((state: {menuShown:boolean}) => state.menuShown)
+  const [ scoreShown, setScoreShown ] = useState<boolean>(true)
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -167,18 +176,24 @@ const Main = () => {
     setTimeout(() => {
       $(`#${array[0].id}`)
         .css("background", "yellow");
-        playSound(revealed, -500, 0.5)
-    }, 300)
+        playSound(revealed, -500, actionPoints === 100 ? 0.3 : 0.5)
+    }, actionPoints === 100 ? 400 : 300)
+    //}, actionPoints === 100 ? 375 : 300)
+    //}, actionPoints === 100 ? 400 : 300)
     setTimeout(() => {
       $(`#${array[1].id}`)
         .css("background", "yellow");
-        playSound(revealed, -100, 0.5)
-    }, 600)
+        playSound(revealed, -100, actionPoints === 100 ? 0.3 : 0.5)
+    }, actionPoints === 100 ? 700 : 600)
+    //}, actionPoints === 100 ? 675 : 600)
+    //}, actionPoints === 100 ? 700 : 600)
     setTimeout(() => {
       $(`#${array[2].id}`)
         .css("background", "yellow")
-        playSound(revealed, 200, 0.5)
-    }, 900)
+        playSound(revealed, 200, actionPoints === 100 ? 0.3 : 0.5)
+    }, actionPoints === 100 ? 1000 : 900)
+    //}, actionPoints === 100 ? 975 : 900)
+    //}, actionPoints === 100 ? 1000 : 900)
 
     setTimeout(() => {
       let copyPoints: pointsI = {...points}
@@ -371,7 +386,6 @@ const Main = () => {
     resetTimer()
     rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))
     clickBlocked.current = true
-    actionPoints = 0;
     roundEnd.current = false;
     winnerRound.current = ""
     setWinnerRoundState("")
@@ -429,21 +443,21 @@ const Main = () => {
     //rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
 
     // CONTINUE CHECK OF DOUBLE SOUND GAME WHEN 200 POINTS
-// rC.current = [ // rowsAndColumns
-// { id: 0, value: 'X' },
-// { id: 1, value: 'O' },
-// { id: 2, value: 'X' },
-// { id: 3, value: 'X' },
-// { id: 4, value: 'X' },
-// { id: 5, value: 'O' },
-// { id: 6, value: '' },
-// { id: 7, value: 'O' },
-// { id: 8, value: 'O' }
-// ]
+rC.current = [ // rowsAndColumns
+{ id: 0, value: 'X' },
+{ id: 1, value: 'O' },
+{ id: 2, value: 'X' },
+{ id: 3, value: 'X' },
+{ id: 4, value: 'X' },
+{ id: 5, value: 'O' },
+{ id: 6, value: '' },
+{ id: 7, value: 'O' },
+{ id: 8, value: 'O' }
+]
 
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 });
-    actionPoints = 0;
+    //actionPoints = 0;
     roundEnd.current = false;
     winnerRound.current = ""
     setWinnerRoundState("")
@@ -459,7 +473,7 @@ const Main = () => {
   }
 
   const selectOptions = () => {
-    playSound(menu, 0, 0.5)
+    //playSound(menu, 0, 0.5)
     showCountdownRound.current = false
     setShowCountdownRoundState(false)
     hardResetGame();
@@ -823,12 +837,47 @@ const Main = () => {
         // finalWinner === "XByTime" || 
         // finalWinner === "OByTime"
 
-        if (finalWinner === "X") playSound(taDah, 0, 0.8) // X win entire game
+        if (finalWinner === "X") {
+          ///* if (allowSound.current) */ playSound(taDah, 0, 0.8); // X win entire game
+          playSound(taDah, 0, 0.8, !allowSound.current); // X win entire game
+          startConfetti()
+          //totalFire()
+          // setTimeout(() => {
+          //   totalFire()
+          // }, 2000)
+          // setTimeout(() => {
+          //   totalFire()
+          // }, 4000)
+          // setTimeout(() => {
+          //   totalFire()
+          // }, 6000)
+          // setTimeout(() => {
+          //   totalFire()
+          // }, 8000)
+          //gameEndRoundsBoolean.current
+          // do {
+          //   totalFire()
+          //   setTimeout(() => {
+          //     console.log("ABASDBASDASDASDASDASD")
+          //     //totalFire()
+          //   }, 1000)
+          // } while (gameEndRoundsBoolean.current)
+    
+        }
         else if (finalWinner === "O") playSound(looser, 0, 0.7) // O win entire game
         else if (finalWinner === "XByTime") playSound(XTime, 0, 1) // X win entire game by time
         else if (finalWinner === "OByTime") playSound(OTime, 0, 1) // O win entire game by time
         else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound(tiedWeird, 0, 0.9) // Tied by points & time & has at least a winning round, no way !
         else playSound(tied) // Normal tied game
+
+
+        
+        // do {
+        //   setTimeout(() => {
+        //     console.log("ABASDBASDASDASDASDASD")
+        //     //totalFire()
+        //   }, 1000)
+        // } while (gameEndRoundsBoolean.current)
 
         Swal.fire({
           title:
@@ -885,7 +934,23 @@ const Main = () => {
           showCancelButton: false,
           //timer: 2000,
         })
+
+        //startConfetti()
+
       }, 1700) // WAITS FINAL TIME & POINTS TO UPDATE
+
+      // confetti({
+      //   particleCount: 100,
+      //   spread: 70,
+      //   origin: { y: 0.6 }
+      // });
+
+      //confetti()
+
+      //totalFire()
+
+
+
     }
   }
 
@@ -986,8 +1051,65 @@ const Main = () => {
     }
   })
 
+  // BEGIN CONFETTI //
+
+  let countConfetti = 200;
+  let defaultsConfetti = {
+    origin: { y: 0.7 }
+  };
+
+  const fireConfetti = (particleRatio: any, opts: any) => {
+    confetti({
+      ...defaultsConfetti,
+      ...opts,
+      particleCount: Math.floor(countConfetti * particleRatio)
+    });
+  }
+
+  const fireAllConfetti = () => {
+    fireConfetti(0.25, {
+      spread: 26,
+      startVelocity: 55,
+    });
+    fireConfetti(0.2, {
+      spread: 60,
+    });
+    fireConfetti(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8
+    });
+    fireConfetti(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2
+    });
+    fireConfetti(0.1, {
+      spread: 120,
+      startVelocity: 45,
+    });
+  }
+
+  let intervalID: any
+  const startConfetti = () => {
+    fireAllConfetti()
+    intervalID = setInterval(fireAllConfetti, 2000);
+  }
+
+  const stopConfetti = () => {
+    clearInterval(intervalID);
+    intervalID = null;
+  }
+
+  // END CONFETTI //
+
   return (
-    <div className={`${css.background} ${com.noSelect}`}>
+    <div
+      //volume="0"
+      //muted={true}
+      className={`${css.background} ${com.noSelect}`}
+    >
       <Button
         focusRipple={false}
         id={`buttonStart`}
@@ -1236,6 +1358,26 @@ const Main = () => {
 
 
       </div>
+      <Button
+        //className={`buttonShow`}
+        id={css.buttonMute}
+        //id={css.buttonShow}
+        onClick={() => {
+          //dispatch(setScoreShown(!scoreShown))
+          //setScoreShown(!scoreShown)
+          dispatch(setMute(!mute))
+          allowSound.current = !allowSound.current
+          //localStorage.setItem('scoreShown', JSON.stringify(!scoreShown))
+        }}
+      >
+        
+        {
+          mute ?
+          <VolumeOffIcon /> :
+          <VolumeUpIcon />
+        }
+      </Button>
+
 
         {/* <Button
           focusRipple={false}

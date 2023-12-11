@@ -375,47 +375,23 @@
 
 .scoreTable {
   display: flex;
-  /* position: absolute; */
   position: fixed;
-  /* top: 20px; */
-  /* top: 5vh; */
   top: 0px;
-  /* top: min(10px, 50%); */
-  /* position: relative; */
   right: -415px; /* DEFAULT RENDER */
   flex-direction: column;
   background: lightseagreen;
   /* max-width: 100vw; */
   /*                #    T    S    Y    A    S    T    B  = 415px */
   /*                25 + 80 + 60 + 40 + 40 + 60 + 80 + 30 = 415px */
-  /* max-width: 100vw; */
-  /* min-width: 415px; */
-  /* min-width: 100%; */
   height: 550px; /* 25 * 22 (550 MAX) */
-  /* min-height: 550px; */
-  /* max-height: 550px; */
   max-height: 100vh;
-
   font-size: 16px;
   font-weight: 500;
   justify-content: space-between;
-
-  /* width: 100vw; */
-
-  /* max-width: 200px; */
   max-width: 100vw;
-
-  
-  /* max-width: calc(100vw - 10px); */
-  /* overflow-x: scroll; */
   overflow-x: auto;
-  /* max-width: 200px;
-  overflow-x: scroll; */
-
-  
   overflow-y: auto;
-  /* scrollbar-width: none !important */
-  /* scrollbar-width: unset !important; */
+  z-index: 101 /* HIGHER THAN CONFETTI */
 }
 
 .scoreTable::-webkit-scrollbar {
@@ -672,6 +648,28 @@ div:nth-child(even of [id*="evenTarget"]) {
   border-radius: 0px;
   /* background: lightblue; */ /* DEV */
   background: violet;
+}
+
+#buttonMute {
+  /* margin-top: 250px; */
+  /* margin-top: 0px; */
+  /* display: flex; */
+  /* position: fixed; */
+  display: flex;
+  /* position: fixed; */
+  position: absolute;
+  top: 5px;
+  left: 5px; /* DEFAULT RENDER */
+    z-index: 3001;
+  min-width: 35px !important;
+  width: 35px !important;
+  min-height: 35px !important;
+  height: 35px !important;
+  color: darkblue;
+  border: 2px solid blue !important;
+  /* border-radius: 0px; */
+  /* background: lightblue; */ /* DEV */
+  /* background: violet !important; */ /* DEV */
 }
 
 .buttonTypo {

@@ -62,7 +62,8 @@ let gain: any = context.createGain();
 // source --> gain1 --> gain1 --> filter --> filter --> context.destination
 // source --> filter --> filter --> context.destination
 
-export const playSound = async (data: any, pitch?: number, volume?: number) => {
+export const playSound = async (data: any, pitch?: number, volume?: number, mute?: boolean) => {
+  //if (mute) return
   try {
     const playBuffer = (buffer: any) => {
       let source = context.createBufferSource();
