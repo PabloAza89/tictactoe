@@ -12,7 +12,7 @@ interface playSoundI {
 }
 
 export const arraySoundResetter = () => {
-  soundsArray = []
+  soundsArray = [] 
 }
 
 export const playSound = async ({ file, buffered, pitch, volume, index }: playSoundI) => {
