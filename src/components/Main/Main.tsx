@@ -1,3 +1,4 @@
+
 import css from './MainCSS.module.css';
 import com from '../../commons/commonsCSS.module.css';
 import { useEffect, useState, useRef, useLayoutEffect } from 'react';
@@ -11,25 +12,9 @@ import $ from 'jquery';
 import check from '../../images/check.png';
 import cross from '../../images/cross.png';
 import dash from '../../images/dash.png';
-import Xmove from '../../audio/Xmove.mp3';
-import Omove from '../../audio/Omove.mp3';
-import revealed from '../../audio/revealed.mp3';
-import menu from '../../audio/menu.mp3';
-import countDownA from '../../audio/countDownA.mp3';
-import countDownB from '../../audio/countDownB.mp3';
-import taDah from '../../audio/taDah.mp3';
-import looser from '../../audio/looser.mp3';
-import roundWin from '../../audio/roundWin.mp3';
-import roundLost from '../../audio/roundLost.mp3';
-import trill from '../../audio/trill.mp3';
-import ticTac3Sec from '../../audio/ticTac3Sec.mp3';
-import startRound from '../../audio/startRound.mp3';
-import tied from '../../audio/tied.mp3';
-import tiedWeird from '../../audio/tiedWeird.mp3';
-import XTime from '../../audio/XTime.mp3';
-import OTime from '../../audio/OTime.mp3';
+import aF from '../../commons/aF';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
-import { playSound } from '../../commons/playSound';
+import { playSound, soundsArray, arraySoundResetter } from '../../commons/playSound';
 import { setMute } from '../../actions';
 //const confetti = require('canvas-confetti');
 import confetti from 'canvas-confetti';
@@ -93,7 +78,7 @@ const Main = () => {
           if (rC.current[AIRandomGridIndex.current].value === "") {
             rC.current[AIRandomGridIndex.current].value = "O"
             //Omove.play()
-            playSound(Omove, 0, 0.6)
+            playSound({ file: aF.Omove, volume: 0.6})
             success = true
             setShouldAIstartState(false)
             setUserPlaying(true)
@@ -111,7 +96,7 @@ const Main = () => {
       rC.current[target].value = "X"
       //Omove.play()
       //Xmove.play()
-      playSound(Xmove, 0, 0.6)
+      playSound({ file: aF.Xmove, volume: 0.6 })
       setUserPlaying(false)
       validClick.current = true
       clickBlocked.current = true
@@ -129,7 +114,7 @@ const Main = () => {
       if (showCountdownRound.current) { // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
         setShowCountdownRoundState(true)
         setCountdownRound(3)
-        playSound(ticTac3Sec, 0, 0.1)
+        playSound({ file: aF.ticTac3Sec, volume: 0.1 })
       }
     }, 3000)
     setTimeout(() => {
@@ -141,7 +126,7 @@ const Main = () => {
     setTimeout(() => {
       if (showCountdownRound.current) {
         setCountdownRound(0) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
-        playSound(startRound, 0, 0.2)
+        playSound({ file: aF.startRound, volume: 0.2 })
       }
     }, 6000)
     setTimeout(() => {
@@ -176,21 +161,21 @@ const Main = () => {
     setTimeout(() => {
       $(`#${array[0].id}`)
         .css("background", "yellow");
-        playSound(revealed, -500, actionPoints === 100 ? 0.3 : 0.5)
+        playSound({ file: aF.revealed, pitch: -500 , volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 400 : 300)
     //}, actionPoints === 100 ? 375 : 300)
     //}, actionPoints === 100 ? 400 : 300)
     setTimeout(() => {
       $(`#${array[1].id}`)
         .css("background", "yellow");
-        playSound(revealed, -100, actionPoints === 100 ? 0.3 : 0.5)
+        playSound({ file: aF.revealed, pitch: -100, volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 700 : 600)
     //}, actionPoints === 100 ? 675 : 600)
     //}, actionPoints === 100 ? 700 : 600)
     setTimeout(() => {
       $(`#${array[2].id}`)
         .css("background", "yellow")
-        playSound(revealed, 200, actionPoints === 100 ? 0.3 : 0.5)
+        playSound({ file: aF.revealed, pitch: 200, volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 1000 : 900)
     //}, actionPoints === 100 ? 975 : 900)
     //}, actionPoints === 100 ? 1000 : 900)
@@ -305,9 +290,9 @@ const Main = () => {
       setTimeout(() => {
         if (continueFlowPopUp.current && !gameEndRoundsBoolean.current) {
 
-          if (winnerRound.current === "X") playSound(roundWin)
-          else if (winnerRound.current === "O") playSound(roundLost, 0, 0.6)
-          else playSound(trill, 0, 0.9)
+          if (winnerRound.current === "X") playSound({ file: aF.roundWin })
+          else if (winnerRound.current === "O") playSound({ file: aF.roundLost, volume: 0.6 })
+          else playSound({ file: aF.trill, volume: 0.9 })
 
 
           Swal.fire({
@@ -497,7 +482,7 @@ rC.current = [ // rowsAndColumns
     .then((result) => {
       console.log("123123 result", result)
       if (result.isConfirmed) { // START USER
-        playSound(menu)
+        playSound({ file: aF.menu })
         Swal.fire({
           title: "Select number of rounds:",
           input: "select",
@@ -524,7 +509,7 @@ rC.current = [ // rowsAndColumns
         })
         .then((result) => {
           if (result.isConfirmed) {
-            playSound(menu)
+            playSound({ file: aF.menu })
             basicOptions()
             userHasStartedThisRound.current = true
             setShouldAIstartState(false)
@@ -543,7 +528,7 @@ rC.current = [ // rowsAndColumns
         })
       }
       else if (result.isDenied) { // START AI
-        playSound(menu)
+        playSound({ file: aF.menu })
         Swal.fire({
           title: "Select number of rounds:",
           input: "select",
@@ -569,7 +554,7 @@ rC.current = [ // rowsAndColumns
         })
         .then((result) => {
           if (result.isConfirmed) {
-            playSound(menu)
+            playSound({ file: aF.menu })
             basicOptions()
             userHasStartedThisRound.current = false
             clickBlocked.current = true
@@ -597,7 +582,9 @@ rC.current = [ // rowsAndColumns
   }
 
   const buttonNewGameHandler = () => {
-    playSound(menu)
+    //stopConfetti()
+    stopConfetti()
+    playSound({ file: aF.menu })
     removeFlowPopUp() // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
     removeButtonAnimation()
     if (newGameStarted/*  || gameEndRoundsBoolean.current */) {
@@ -680,7 +667,7 @@ rC.current = [ // rowsAndColumns
   const startsIn = () => {
     setTimeout(() => {
       //playSound(countDown2, -400)
-      playSound(countDownA, 0, 0.5)
+      playSound({ file: aF.countDownA, volume: 0.5 })
       Swal.fire({
         title: `STARTS IN\n3..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -693,7 +680,7 @@ rC.current = [ // rowsAndColumns
     }, 0)
     setTimeout(() => {
       //playSound(countDown2, -400)
-      playSound(countDownA, 0, 0.5)
+      playSound({ file: aF.countDownA, volume: 0.5 })
       Swal.fire({
         title: `STARTS IN\n2..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -706,7 +693,7 @@ rC.current = [ // rowsAndColumns
     }, 1000)
     setTimeout(() => {
       //playSound(countDown2, -400)
-      playSound(countDownA, 0, 0.5)
+      playSound({ file: aF.countDownA, volume: 0.5 })
       Swal.fire({
         title: `STARTS IN\n1..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -719,7 +706,7 @@ rC.current = [ // rowsAndColumns
     }, 2000)
     setTimeout(() => {
       //playSound(countDown2, 800)
-      playSound(countDownB, 0, 0.4)
+      playSound({ file: aF.countDownB, volume: 0.4 })
       Swal.fire({
         title: `GO !!!`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -839,7 +826,8 @@ rC.current = [ // rowsAndColumns
 
         if (finalWinner === "X") {
           ///* if (allowSound.current) */ playSound(taDah, 0, 0.8); // X win entire game
-          playSound(taDah, 0, 0.8, !allowSound.current); // X win entire game
+          //playSound(taDah, 0, 0.8, !allowSound.current); // X win entire game
+          playSound({ file: aF.taDah, volume: 0.8 }); // X win entire game
           startConfetti()
           //totalFire()
           // setTimeout(() => {
@@ -864,11 +852,11 @@ rC.current = [ // rowsAndColumns
           // } while (gameEndRoundsBoolean.current)
     
         }
-        else if (finalWinner === "O") playSound(looser, 0, 0.7) // O win entire game
-        else if (finalWinner === "XByTime") playSound(XTime, 0, 1) // X win entire game by time
-        else if (finalWinner === "OByTime") playSound(OTime, 0, 1) // O win entire game by time
-        else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound(tiedWeird, 0, 0.9) // Tied by points & time & has at least a winning round, no way !
-        else playSound(tied) // Normal tied game
+        else if (finalWinner === "O") playSound({ file: aF.looser, volume: 0.7 }) // O win entire game
+        else if (finalWinner === "XByTime") playSound({ file: aF.XTime, volume: 1 }) // X win entire game by time
+        else if (finalWinner === "OByTime") playSound({ file: aF.OTime, volume: 1 }) // O win entire game by time
+        else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound({ file: aF.tiedWeird, volume: 0.9 }) // Tied by points & time & has at least a winning round, no way !
+        else playSound({ file: aF.tied }) // Normal tied game
 
 
         
@@ -1091,18 +1079,25 @@ rC.current = [ // rowsAndColumns
     });
   }
 
-  let intervalID: any
+  let intervalID: any = useRef()
   const startConfetti = () => {
     fireAllConfetti()
-    intervalID = setInterval(fireAllConfetti, 2000);
+    intervalID.current = setInterval(fireAllConfetti, 2000);
   }
 
   const stopConfetti = () => {
-    clearInterval(intervalID);
-    intervalID = null;
+    console.log("EXECUTED CLEAR")
+    clearInterval(intervalID.current);
+    intervalID.current = null;
   }
 
   // END CONFETTI //
+
+  // let context: any =  useRef();
+  // let buffer: any = useRef();
+  // let source: any = useRef();
+ 
+  //console.log("test123", soundsArray)
 
   return (
     <div
@@ -1377,13 +1372,30 @@ rC.current = [ // rowsAndColumns
           <VolumeUpIcon />
         }
       </Button>
-
-
-        {/* <Button
+    
+        <Button
           focusRipple={false}
           variant="outlined"
           onClick={() => {
-            playSound(revealed, -500)
+            //timeoutId()
+            //startTest(testTest)
+            // startTest(trill)
+            // startTest(taDah)
+            
+           //playTest({ file: taDah })
+            ////playTest({ file: trill })
+            //if (!context) {
+              console.log("test123 play 1")
+              //playTest({ file: aF.testTest })
+              playSound({ file: aF.trill })
+              playSound({ file: aF.taDah })
+              //playTest({ file: trill, index: 1 })
+              
+            // } else /* if (context.state !== `running`) */ {
+            //   console.log("test123 play 2")
+            //   playTest({ buffered: true })
+            // }
+
           }}
         >
           TEST 1
@@ -1392,11 +1404,45 @@ rC.current = [ // rowsAndColumns
           focusRipple={false}
           variant="outlined"
           onClick={() => {
-            
+            //source.current.stop()
+            //source.current.disconnect()
+            //source.current.suspended() // THIS MAKE "suspended" THE CONTEXT NW
+            //source.current.close() // THIS MAKE "closed" THE CONTEXT NW
+            // if (context && context.state === `running`) {
+            //   //context.current.close() // THIS MAKE "closed" THE CONTEXT NW
+            //   source.stop()
+            // }
+
+            // clearTimeout(timeoutId.current);
+            // timeoutId.current = null
+            //source.stop()
+            soundsArray.forEach((e) => {
+              e.stop()
+              //e.suspend()
+              //e.close()
+            })
+            //soundsArray = []
+            arraySoundResetter()
+            //arr[0].stop()
+            //context.current.suspend()
+            //context.current.suspend() // NW
           }}
         >
           TEST 2
-        </Button> */}
+        </Button>
+        <Button
+          focusRipple={false}
+          variant="outlined"
+          onClick={() => {
+            //source.current.stop()
+            //source.current.resume()
+            //source.current.resume()
+            //source.current.start(0)
+            //stopConfetti()
+          }}
+        >
+          TEST 3
+        </Button>
 
     </div>
   );
