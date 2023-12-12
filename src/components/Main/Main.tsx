@@ -1,10 +1,11 @@
 
 import css from './MainCSS.module.css';
 import com from '../../commons/commonsCSS.module.css';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@mui/material/';
 import { easings } from '../../commons/easingsCSS';
+//import simulate from '../../commons/simulate';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import Swal from 'sweetalert2';
@@ -14,8 +15,10 @@ import cross from '../../images/cross.png';
 import dash from '../../images/dash.png';
 import aF from '../../commons/aF';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
-import { playSound, soundsArray, arraySoundResetter } from '../../commons/playSound';
+import { playSound, soundsArray, context, source, arraySoundResetter } from '../../commons/playSound';
 import { setAllowSound } from '../../actions';
+import silence from '../../audio/silence.mp3'
+import testTest from '../../audio/testTest.mp3'
 //const confetti = require('canvas-confetti');
 import confetti from 'canvas-confetti';
 //import  confetti from 'canvas-confetti';
@@ -40,7 +43,7 @@ const Main = () => {
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
   //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   const allowSoundState = useSelector((state: { allowSound: boolean }) => state.allowSound)
-  let allowSound = useRef(true)
+  let allowSound = useRef(allowSoundState)
   //const menuShown = useSelector((state: {menuShown:boolean}) => state.menuShown)
   const [ scoreShown, setScoreShown ] = useState<boolean>(true)
   let clickBlocked = useRef(true)
@@ -78,7 +81,7 @@ const Main = () => {
           if (rC.current[AIRandomGridIndex.current].value === "") {
             rC.current[AIRandomGridIndex.current].value = "O"
             //Omove.play()
-            if (allowSound.current) playSound({ file: aF.Omove, volume: 0.6})
+            playSound({ file: aF.Omove, volume: 0.6})
             success = true
             setShouldAIstartState(false)
             setUserPlaying(true)
@@ -96,7 +99,7 @@ const Main = () => {
       rC.current[target].value = "X"
       //Omove.play()
       //Xmove.play()
-      if (allowSound.current) playSound({ file: aF.Xmove, volume: 0.6 })
+      playSound({ file: aF.Xmove, volume: 0.6 })
       setUserPlaying(false)
       validClick.current = true
       clickBlocked.current = true
@@ -114,7 +117,7 @@ const Main = () => {
       if (showCountdownRound.current) { // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
         setShowCountdownRoundState(true)
         setCountdownRound(3)
-        if (allowSound.current) playSound({ file: aF.ticTac3Sec, volume: 0.1 })
+        playSound({ file: aF.ticTac3Sec, volume: 0.1 })
       }
     }, 3000)
     setTimeout(() => {
@@ -126,7 +129,7 @@ const Main = () => {
     setTimeout(() => {
       if (showCountdownRound.current) {
         setCountdownRound(0) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
-        if (allowSound.current) playSound({ file: aF.startRound, volume: 0.2 })
+        playSound({ file: aF.startRound, volume: 0.2 })
       }
     }, 6000)
     setTimeout(() => {
@@ -161,21 +164,21 @@ const Main = () => {
     setTimeout(() => {
       $(`#${array[0].id}`)
         .css("background", "yellow");
-        if (allowSound.current) playSound({ file: aF.revealed, pitch: -500 , volume: actionPoints === 100 ? 0.3 : 0.5 })
+        playSound({ file: aF.revealed, pitch: -500 , volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 400 : 300)
     //}, actionPoints === 100 ? 375 : 300)
     //}, actionPoints === 100 ? 400 : 300)
     setTimeout(() => {
       $(`#${array[1].id}`)
         .css("background", "yellow");
-        if (allowSound.current) playSound({ file: aF.revealed, pitch: -100, volume: actionPoints === 100 ? 0.3 : 0.5 })
+        playSound({ file: aF.revealed, pitch: -100, volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 700 : 600)
     //}, actionPoints === 100 ? 675 : 600)
     //}, actionPoints === 100 ? 700 : 600)
     setTimeout(() => {
       $(`#${array[2].id}`)
         .css("background", "yellow")
-        if (allowSound.current) playSound({ file: aF.revealed, pitch: 200, volume: actionPoints === 100 ? 0.3 : 0.5 })
+        playSound({ file: aF.revealed, pitch: 200, volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 1000 : 900)
     //}, actionPoints === 100 ? 975 : 900)
     //}, actionPoints === 100 ? 1000 : 900)
@@ -290,11 +293,11 @@ const Main = () => {
       setTimeout(() => {
         if (continueFlowPopUp.current && !gameEndRoundsBoolean.current) {
 
-          if (allowSound.current) {
+          
             if (winnerRound.current === "X") playSound({ file: aF.roundWin })
             else if (winnerRound.current === "O") playSound({ file: aF.roundLost, volume: 0.6 })
             else playSound({ file: aF.trill, volume: 0.9 })
-          }
+          
           
 
 
@@ -483,9 +486,9 @@ rC.current = [ // rowsAndColumns
       denyButtonColor: '#008000', // RIGHT OPTION
     })
     .then((result) => {
-      console.log("123123 result", result)
+      //console.log("123123 result", result)
       if (result.isConfirmed) { // START USER
-        if (allowSound.current) playSound({ file: aF.menu })
+        playSound({ file: aF.menu })
         Swal.fire({
           title: "Select number of rounds:",
           input: "select",
@@ -505,14 +508,14 @@ rC.current = [ // rowsAndColumns
           confirmButtonColor: '#2e8b57',
           showCancelButton: false,
           inputValidator: (value) => {
-            console.log("123123 value", value)
+            //console.log("123123 value", value)
             gameEndRoundsNumber.current = parseInt(value, 10) - 1 // ONLY SEND WHEN result.isConfirmed
             localStorage.setItem('roundsValue', JSON.stringify(parseInt(value, 10) - 1))
           }
         })
         .then((result) => {
           if (result.isConfirmed) {
-            if (allowSound.current) playSound({ file: aF.menu })
+            playSound({ file: aF.menu })
             basicOptions()
             userHasStartedThisRound.current = true
             setShouldAIstartState(false)
@@ -523,7 +526,8 @@ rC.current = [ // rowsAndColumns
             }, 4300) // SYNC WITH POP-UP CLOSES
           }
           else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-            console.log("123123 rejected")
+            //console.log("123123 rejected")
+            playSound({ file: aF.menu })
             setTimeout(function() {
               addButtonAnimation()
             },300);
@@ -531,7 +535,7 @@ rC.current = [ // rowsAndColumns
         })
       }
       else if (result.isDenied) { // START AI
-        if (allowSound.current) playSound({ file: aF.menu })
+        playSound({ file: aF.menu })
         Swal.fire({
           title: "Select number of rounds:",
           input: "select",
@@ -557,7 +561,7 @@ rC.current = [ // rowsAndColumns
         })
         .then((result) => {
           if (result.isConfirmed) {
-            if (allowSound.current) playSound({ file: aF.menu })
+            playSound({ file: aF.menu })
             basicOptions()
             userHasStartedThisRound.current = false
             clickBlocked.current = true
@@ -569,7 +573,8 @@ rC.current = [ // rowsAndColumns
             }, 4300) // SYNC WITH POP-UP CLOSES
           }
           else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-            console.log("123123 rejected")
+            //console.log("123123 rejected")
+            playSound({ file: aF.menu })
             setTimeout(function() {
               addButtonAnimation()
             },300);
@@ -577,6 +582,7 @@ rC.current = [ // rowsAndColumns
         })
       }
       else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
+        playSound({ file: aF.menu })
         setTimeout(function() {
           addButtonAnimation()
         },300); // NECESSARY FOR ADD ANIMATION WHEN USER PRESS SCAPE.. DON'T ASK WHY.
@@ -587,7 +593,7 @@ rC.current = [ // rowsAndColumns
   const buttonNewGameHandler = () => {
     //stopConfetti()
     stopConfetti()
-    if (allowSound.current) playSound({ file: aF.menu })
+    playSound({ file: aF.menu })
     removeFlowPopUp() // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
     removeButtonAnimation()
     if (newGameStarted/*  || gameEndRoundsBoolean.current */) {
@@ -670,7 +676,7 @@ rC.current = [ // rowsAndColumns
   const startsIn = () => {
     setTimeout(() => {
       //playSound(countDown2, -400)
-      if (allowSound.current) playSound({ file: aF.countDownA, volume: 0.5 })
+      playSound({ file: aF.countDownA, volume: 0.5 })
       Swal.fire({
         title: `STARTS IN\n3..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -683,7 +689,7 @@ rC.current = [ // rowsAndColumns
     }, 0)
     setTimeout(() => {
       //playSound(countDown2, -400)
-      if (allowSound.current) playSound({ file: aF.countDownA, volume: 0.5 })
+      playSound({ file: aF.countDownA, volume: 0.5 })
       Swal.fire({
         title: `STARTS IN\n2..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -696,7 +702,7 @@ rC.current = [ // rowsAndColumns
     }, 1000)
     setTimeout(() => {
       //playSound(countDown2, -400)
-      if (allowSound.current) playSound({ file: aF.countDownA, volume: 0.5 })
+      playSound({ file: aF.countDownA, volume: 0.5 })
       Swal.fire({
         title: `STARTS IN\n1..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -709,7 +715,7 @@ rC.current = [ // rowsAndColumns
     }, 2000)
     setTimeout(() => {
       //playSound(countDown2, 800)
-      if (allowSound.current) playSound({ file: aF.countDownB, volume: 0.4 })
+      playSound({ file: aF.countDownB, volume: 0.4 })
       Swal.fire({
         title: `GO !!!`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -830,7 +836,7 @@ rC.current = [ // rowsAndColumns
 
         if (finalWinner === "X") startConfetti()
 
-        if (allowSound.current) {
+        
           if (finalWinner === "X") {
             playSound({ file: aF.taDah, volume: 0.8 }); // X win entire game
           }
@@ -839,7 +845,7 @@ rC.current = [ // rowsAndColumns
           else if (finalWinner === "OByTime") playSound({ file: aF.OTime, volume: 1 }) // O win entire game by time
           else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound({ file: aF.tiedWeird, volume: 0.9 }) // Tied by points & time & has at least a winning round, no way !
           else playSound({ file: aF.tied }) // Normal tied game
-        }
+        
 
         
 
@@ -928,9 +934,9 @@ rC.current = [ // rowsAndColumns
   }
 
 
-  console.log("123 score.current", score.current)
-  console.log("123 rC", rC) // rowsAndColumns
-  console.log("123 winnerRound.current", winnerRound.current) // rowsAndColumns
+  //console.log("123 score.current", score.current)
+  //console.log("123 rC", rC) // rowsAndColumns
+  //console.log("123 winnerRound.current", winnerRound.current) // rowsAndColumns
 
   let roundsValueLS: string | null = localStorage.getItem('roundsValue');
   if (roundsValueLS !== null) gameEndRoundsNumber.current = parseInt(roundsValueLS, 10)
@@ -1083,6 +1089,60 @@ rC.current = [ // rowsAndColumns
   // let source: any = useRef();
  
   //console.log("test123", soundsArray)
+  //console.log("123 soundsArray", soundsArray)
+
+  // var audio = document.createElement("AUDIO")
+  // document.body.appendChild(audio);
+  // audio.src = '../../audio/testTest.mp3'
+
+  // document.body.addEventListener("mousemove", function () {
+  //     audio.play()
+  // })
+
+  let response: any = useRef()
+
+  useEffect(() => { // FOR AUTOPLAY POLICY
+    
+    //do {
+     // setTimeout(() => {
+        playSound({ file: aF.testTest })
+        .then((res) => { 
+          console.log("RES RES", res.state);
+          //response.current = res.state
+          if (res.state === "suspended") {
+            document.addEventListener('click', () => {
+              playSound({ file: aF.testTest })
+            }, { once: true }) 
+          }
+
+        })
+      //}, 3000)
+
+    //   console.log("ANOTHER ROUND")
+    // } while (response.current === 'suspended')
+      
+    // suspended
+    // running
+
+
+
+  },[])
+
+
+  
+  // useEffect(() => { // FIRED ONLY WHEN TAB IS FOCUSED, CHECK VALID USER
+  //   const onFocusGoogle = () => {
+  //     setTimeout(() => {
+  //       console.log("123 FOCUS")
+  //       playSound({ file: aF.testTest })
+  //     }, 2000)
+        
+  //   }
+  //   window.addEventListener("load", onFocusGoogle);
+  //   return () => window.removeEventListener("load", onFocusGoogle);
+  // })
+
+
 
   return (
     <div
@@ -1090,6 +1150,11 @@ rC.current = [ // rowsAndColumns
       //muted={true}
       className={`${css.background} ${com.noSelect}`}
     >
+      {/* <p><a href='../../audio/testTest.mp3'>Play mp3</a></p> */}
+      {/* <embed src={testTest} autostart="true" loop={false}></embed> */}
+      {/* <div>
+        <embed src={testTest}/> 
+      </div> */}
       <Button
         focusRipple={false}
         id={`buttonStart`}
@@ -1364,6 +1429,7 @@ rC.current = [ // rowsAndColumns
         <Button
           focusRipple={false}
           variant="outlined"
+          id={`mmb`}
           onClick={() => {
             //timeoutId()
             //startTest(testTest)
@@ -1373,10 +1439,14 @@ rC.current = [ // rowsAndColumns
            //playTest({ file: taDah })
             ////playTest({ file: trill })
             //if (!context) {
-              console.log("test123 play 1")
+              //console.log("test123 play 1")
               //playTest({ file: aF.testTest })
+
+              // playSound({ file: aF.trill })
+              // playSound({ file: aF.taDah })
+
               playSound({ file: aF.trill })
-              playSound({ file: aF.taDah })
+              
               //playTest({ file: trill, index: 1 })
               
             // } else /* if (context.state !== `running`) */ {
@@ -1408,7 +1478,7 @@ rC.current = [ // rowsAndColumns
               //e.close()
             soundsArray.forEach((e) => e.stop())
             //soundsArray = []
-            arraySoundResetter()
+            //arraySoundResetter()
             //arr[0].stop()
             //context.current.suspend()
             //context.current.suspend() // NW

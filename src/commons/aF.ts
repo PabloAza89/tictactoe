@@ -18,6 +18,7 @@ import tiedWeird from '../audio/tiedWeird.mp3';
 import XTime from '../audio/XTime.mp3';
 import OTime from '../audio/OTime.mp3';
 import testTest from '../audio/testTest.mp3';
+import silence from '../audio/silence.mp3';
 
 // const array: any = [
 //   { n: Xmove, i: 0 },
@@ -41,24 +42,25 @@ import testTest from '../audio/testTest.mp3';
 // ]
 
 const array: any = {
-  Xmove: { f: Xmove, i: 0 },
-  Omove: { f: Omove, i: 1 },
-  revealed: { f: revealed, i: 2 },
-  menu: { f: menu, i: 3 },
-  countDownA: { f: countDownA, i: 4 },
-  countDownB: { f: countDownB, i: 5 },
-  taDah: { f: taDah, i: 6 },
-  looser: { f: looser, i: 7 },
-  roundWif: { f: roundWin, i: 8 },
-  roundLost: { f: roundLost, i: 9 },
-  trill: { f: trill, i: 10 },
-  ticTac3Sec: { f: ticTac3Sec, i: 11},
-  startRound: { f: startRound, i: 12 },
-  tied: { f: tied, i: 13 },
-  tiedWeird: { f: tiedWeird, i: 14 },
-  XTime: { f: XTime, i: 15 },
-  OTime: { f: OTime, i: 16 },
-  testTest: { f: testTest, i: 17 }
+  Xmove: { n: Xmove, i: 0 },
+  Omove: { n: Omove, i: 1 },
+  revealed: { n: revealed, i: 2 },
+  menu: { n: menu, i: 3 },
+  countDownA: { n: countDownA, i: 4 },
+  countDownB: { n: countDownB, i: 5 },
+  taDah: { n: taDah, i: 6 },
+  looser: { n: looser, i: 7 },
+  roundWin: { n: roundWin, i: 8 },
+  roundLost: { n: roundLost, i: 9 },
+  trill: { n: trill, i: 10 },
+  ticTac3Sec: { n: ticTac3Sec, i: 11},
+  startRound: { n: startRound, i: 12 },
+  tied: { n: tied, i: 13 },
+  tiedWeird: { n: tiedWeird, i: 14 },
+  XTime: { n: XTime, i: 15 },
+  OTime: { n: OTime, i: 16 },
+  testTest: { n: testTest, i: 17 },
+  silence: { n: silence, i: 18 }
 }
 
 export default array;
