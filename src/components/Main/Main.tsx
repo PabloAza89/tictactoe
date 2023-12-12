@@ -1,7 +1,7 @@
 
 import css from './MainCSS.module.css';
 import com from '../../commons/commonsCSS.module.css';
-import { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@mui/material/';
 import { easings } from '../../commons/easingsCSS';
@@ -15,7 +15,7 @@ import dash from '../../images/dash.png';
 import aF from '../../commons/aF';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
 import { playSound, soundsArray, arraySoundResetter } from '../../commons/playSound';
-import { setMute } from '../../actions';
+import { setAllowSound } from '../../actions';
 //const confetti = require('canvas-confetti');
 import confetti from 'canvas-confetti';
 //import  confetti from 'canvas-confetti';
@@ -39,7 +39,7 @@ const Main = () => {
 
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
   //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
-  const mute = useSelector((state: { mute:boolean }) => state.mute)
+  const allowSoundState = useSelector((state: { allowSound: boolean }) => state.allowSound)
   let allowSound = useRef(true)
   //const menuShown = useSelector((state: {menuShown:boolean}) => state.menuShown)
   const [ scoreShown, setScoreShown ] = useState<boolean>(true)
@@ -78,7 +78,7 @@ const Main = () => {
           if (rC.current[AIRandomGridIndex.current].value === "") {
             rC.current[AIRandomGridIndex.current].value = "O"
             //Omove.play()
-            playSound({ file: aF.Omove, volume: 0.6})
+            if (allowSound.current) playSound({ file: aF.Omove, volume: 0.6})
             success = true
             setShouldAIstartState(false)
             setUserPlaying(true)
@@ -96,7 +96,7 @@ const Main = () => {
       rC.current[target].value = "X"
       //Omove.play()
       //Xmove.play()
-      playSound({ file: aF.Xmove, volume: 0.6 })
+      if (allowSound.current) playSound({ file: aF.Xmove, volume: 0.6 })
       setUserPlaying(false)
       validClick.current = true
       clickBlocked.current = true
@@ -114,7 +114,7 @@ const Main = () => {
       if (showCountdownRound.current) { // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
         setShowCountdownRoundState(true)
         setCountdownRound(3)
-        playSound({ file: aF.ticTac3Sec, volume: 0.1 })
+        if (allowSound.current) playSound({ file: aF.ticTac3Sec, volume: 0.1 })
       }
     }, 3000)
     setTimeout(() => {
@@ -126,7 +126,7 @@ const Main = () => {
     setTimeout(() => {
       if (showCountdownRound.current) {
         setCountdownRound(0) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
-        playSound({ file: aF.startRound, volume: 0.2 })
+        if (allowSound.current) playSound({ file: aF.startRound, volume: 0.2 })
       }
     }, 6000)
     setTimeout(() => {
@@ -161,21 +161,21 @@ const Main = () => {
     setTimeout(() => {
       $(`#${array[0].id}`)
         .css("background", "yellow");
-        playSound({ file: aF.revealed, pitch: -500 , volume: actionPoints === 100 ? 0.3 : 0.5 })
+        if (allowSound.current) playSound({ file: aF.revealed, pitch: -500 , volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 400 : 300)
     //}, actionPoints === 100 ? 375 : 300)
     //}, actionPoints === 100 ? 400 : 300)
     setTimeout(() => {
       $(`#${array[1].id}`)
         .css("background", "yellow");
-        playSound({ file: aF.revealed, pitch: -100, volume: actionPoints === 100 ? 0.3 : 0.5 })
+        if (allowSound.current) playSound({ file: aF.revealed, pitch: -100, volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 700 : 600)
     //}, actionPoints === 100 ? 675 : 600)
     //}, actionPoints === 100 ? 700 : 600)
     setTimeout(() => {
       $(`#${array[2].id}`)
         .css("background", "yellow")
-        playSound({ file: aF.revealed, pitch: 200, volume: actionPoints === 100 ? 0.3 : 0.5 })
+        if (allowSound.current) playSound({ file: aF.revealed, pitch: 200, volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 1000 : 900)
     //}, actionPoints === 100 ? 975 : 900)
     //}, actionPoints === 100 ? 1000 : 900)
@@ -290,9 +290,12 @@ const Main = () => {
       setTimeout(() => {
         if (continueFlowPopUp.current && !gameEndRoundsBoolean.current) {
 
-          if (winnerRound.current === "X") playSound({ file: aF.roundWin })
-          else if (winnerRound.current === "O") playSound({ file: aF.roundLost, volume: 0.6 })
-          else playSound({ file: aF.trill, volume: 0.9 })
+          if (allowSound.current) {
+            if (winnerRound.current === "X") playSound({ file: aF.roundWin })
+            else if (winnerRound.current === "O") playSound({ file: aF.roundLost, volume: 0.6 })
+            else playSound({ file: aF.trill, volume: 0.9 })
+          }
+          
 
 
           Swal.fire({
@@ -482,7 +485,7 @@ rC.current = [ // rowsAndColumns
     .then((result) => {
       console.log("123123 result", result)
       if (result.isConfirmed) { // START USER
-        playSound({ file: aF.menu })
+        if (allowSound.current) playSound({ file: aF.menu })
         Swal.fire({
           title: "Select number of rounds:",
           input: "select",
@@ -509,7 +512,7 @@ rC.current = [ // rowsAndColumns
         })
         .then((result) => {
           if (result.isConfirmed) {
-            playSound({ file: aF.menu })
+            if (allowSound.current) playSound({ file: aF.menu })
             basicOptions()
             userHasStartedThisRound.current = true
             setShouldAIstartState(false)
@@ -528,7 +531,7 @@ rC.current = [ // rowsAndColumns
         })
       }
       else if (result.isDenied) { // START AI
-        playSound({ file: aF.menu })
+        if (allowSound.current) playSound({ file: aF.menu })
         Swal.fire({
           title: "Select number of rounds:",
           input: "select",
@@ -554,7 +557,7 @@ rC.current = [ // rowsAndColumns
         })
         .then((result) => {
           if (result.isConfirmed) {
-            playSound({ file: aF.menu })
+            if (allowSound.current) playSound({ file: aF.menu })
             basicOptions()
             userHasStartedThisRound.current = false
             clickBlocked.current = true
@@ -584,7 +587,7 @@ rC.current = [ // rowsAndColumns
   const buttonNewGameHandler = () => {
     //stopConfetti()
     stopConfetti()
-    playSound({ file: aF.menu })
+    if (allowSound.current) playSound({ file: aF.menu })
     removeFlowPopUp() // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
     removeButtonAnimation()
     if (newGameStarted/*  || gameEndRoundsBoolean.current */) {
@@ -667,7 +670,7 @@ rC.current = [ // rowsAndColumns
   const startsIn = () => {
     setTimeout(() => {
       //playSound(countDown2, -400)
-      playSound({ file: aF.countDownA, volume: 0.5 })
+      if (allowSound.current) playSound({ file: aF.countDownA, volume: 0.5 })
       Swal.fire({
         title: `STARTS IN\n3..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -680,7 +683,7 @@ rC.current = [ // rowsAndColumns
     }, 0)
     setTimeout(() => {
       //playSound(countDown2, -400)
-      playSound({ file: aF.countDownA, volume: 0.5 })
+      if (allowSound.current) playSound({ file: aF.countDownA, volume: 0.5 })
       Swal.fire({
         title: `STARTS IN\n2..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -693,7 +696,7 @@ rC.current = [ // rowsAndColumns
     }, 1000)
     setTimeout(() => {
       //playSound(countDown2, -400)
-      playSound({ file: aF.countDownA, volume: 0.5 })
+      if (allowSound.current) playSound({ file: aF.countDownA, volume: 0.5 })
       Swal.fire({
         title: `STARTS IN\n1..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -706,7 +709,7 @@ rC.current = [ // rowsAndColumns
     }, 2000)
     setTimeout(() => {
       //playSound(countDown2, 800)
-      playSound({ file: aF.countDownB, volume: 0.4 })
+      if (allowSound.current) playSound({ file: aF.countDownB, volume: 0.4 })
       Swal.fire({
         title: `GO !!!`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -823,40 +826,22 @@ rC.current = [ // rowsAndColumns
 
         // finalWinner === "XByTime" || 
         // finalWinner === "OByTime"
+        //if (allowSound.current) 
 
-        if (finalWinner === "X") {
-          ///* if (allowSound.current) */ playSound(taDah, 0, 0.8); // X win entire game
-          //playSound(taDah, 0, 0.8, !allowSound.current); // X win entire game
-          playSound({ file: aF.taDah, volume: 0.8 }); // X win entire game
-          startConfetti()
-          //totalFire()
-          // setTimeout(() => {
-          //   totalFire()
-          // }, 2000)
-          // setTimeout(() => {
-          //   totalFire()
-          // }, 4000)
-          // setTimeout(() => {
-          //   totalFire()
-          // }, 6000)
-          // setTimeout(() => {
-          //   totalFire()
-          // }, 8000)
-          //gameEndRoundsBoolean.current
-          // do {
-          //   totalFire()
-          //   setTimeout(() => {
-          //     console.log("ABASDBASDASDASDASDASD")
-          //     //totalFire()
-          //   }, 1000)
-          // } while (gameEndRoundsBoolean.current)
-    
+        if (finalWinner === "X") startConfetti()
+
+        if (allowSound.current) {
+          if (finalWinner === "X") {
+            playSound({ file: aF.taDah, volume: 0.8 }); // X win entire game
+          }
+          else if (finalWinner === "O") playSound({ file: aF.looser, volume: 0.7 }) // O win entire game
+          else if (finalWinner === "XByTime") playSound({ file: aF.XTime, volume: 1 }) // X win entire game by time
+          else if (finalWinner === "OByTime") playSound({ file: aF.OTime, volume: 1 }) // O win entire game by time
+          else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound({ file: aF.tiedWeird, volume: 0.9 }) // Tied by points & time & has at least a winning round, no way !
+          else playSound({ file: aF.tied }) // Normal tied game
         }
-        else if (finalWinner === "O") playSound({ file: aF.looser, volume: 0.7 }) // O win entire game
-        else if (finalWinner === "XByTime") playSound({ file: aF.XTime, volume: 1 }) // X win entire game by time
-        else if (finalWinner === "OByTime") playSound({ file: aF.OTime, volume: 1 }) // O win entire game by time
-        else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound({ file: aF.tiedWeird, volume: 0.9 }) // Tied by points & time & has at least a winning round, no way !
-        else playSound({ file: aF.tied }) // Normal tied game
+
+        
 
 
         
@@ -1360,16 +1345,19 @@ rC.current = [ // rowsAndColumns
         onClick={() => {
           //dispatch(setScoreShown(!scoreShown))
           //setScoreShown(!scoreShown)
-          dispatch(setMute(!mute))
+          dispatch(setAllowSound(!allowSoundState))
           allowSound.current = !allowSound.current
+          localStorage.setItem('allowSound', JSON.stringify(!allowSoundState))
+          if (!allowSound.current) soundsArray.forEach((e) => e.stop())
           //localStorage.setItem('scoreShown', JSON.stringify(!scoreShown))
         }}
       >
         
         {
-          mute ?
-          <VolumeOffIcon /> :
-          <VolumeUpIcon />
+          allowSoundState ?
+          <VolumeUpIcon /> :
+          <VolumeOffIcon />
+          
         }
       </Button>
     
@@ -1416,11 +1404,9 @@ rC.current = [ // rowsAndColumns
             // clearTimeout(timeoutId.current);
             // timeoutId.current = null
             //source.stop()
-            soundsArray.forEach((e) => {
-              e.stop()
-              //e.suspend()
+                   //e.suspend()
               //e.close()
-            })
+            soundsArray.forEach((e) => e.stop())
             //soundsArray = []
             arraySoundResetter()
             //arr[0].stop()

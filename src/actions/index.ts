@@ -5,9 +5,9 @@ export function setScoreShown(payload:boolean) {
   }
 };
 
-export function setMute(payload:boolean) {
+export function setAllowSound(payload:boolean) {
   return {
-    type: 'SET_MUTE',
+    type: 'ALLOW_SOUND',
     payload: payload
   }
 };

@@ -1,11 +1,11 @@
 interface initialStateI {
   scoreShown: boolean,
-  mute: boolean
+  allowSound: boolean
 }
 
 const initialState: initialStateI = {
   scoreShown: localStorage.getItem('scoreShown') !== null ? JSON.parse(localStorage.getItem('scoreShown')!) : false,
-  mute: localStorage.getItem('mute') !== null ? JSON.parse(localStorage.getItem('mute')!) : false,
+  allowSound: localStorage.getItem('allowSound') !== null ? JSON.parse(localStorage.getItem('allowSound')!) : true,
 }
 
 const reducer = (state = initialState, action: {type: string; payload: any}) => {
@@ -15,10 +15,10 @@ const reducer = (state = initialState, action: {type: string; payload: any}) => 
         ...state,
         scoreShown: action.payload
       };
-    case 'SET_MUTE':
+    case 'ALLOW_SOUND':
       return {
         ...state,
-        mute: action.payload
+        allowSound: action.payload
       };
     default:
       return state
