@@ -1,5 +1,6 @@
 export let context: any;
-let gain: any;
+export let gain: any;
+export let gainArray: any[] = [];
 let buffer: any;
 let bufferArray: any[] = []
 export let source: any;
@@ -29,6 +30,7 @@ export const playSound = async ({ file, pitch, volume, loop }: playSoundI) => {
 
       gain = context.createGain();
       gain.gain.value = volume ? volume : 1;
+      gainArray[file.i] = gain
       source.connect(gain);
       gain.connect(context.destination);
 

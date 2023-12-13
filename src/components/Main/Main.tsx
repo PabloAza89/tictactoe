@@ -18,8 +18,8 @@ import cross from '../../images/cross.png';
 import dash from '../../images/dash.png';
 import aF from '../../commons/aF';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
-import { playSound, soundsArray, context, source, arraySoundResetter } from '../../commons/playSound';
-import { setAllowBgSound, setAllowFXSound} from '../../actions';
+import { playSound, soundsArray, gain, gainArray, context, source, arraySoundResetter } from '../../commons/playSound';
+import { setAllowBgSound, setBgSoundValue, setAllowFXSound} from '../../actions';
 import silence from '../../audio/silence.mp3'
 import testTest from '../../audio/testTest.mp3'
 //const confetti = require('canvas-confetti');
@@ -47,6 +47,8 @@ const Main = () => {
   //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   const allowBgSoundState = useSelector((state: { allowBgSound: boolean }) => state.allowBgSound)
   let allowBgSound = useRef(allowBgSoundState)
+  const BgSoundValueState = useSelector((state: { BgSoundValue: boolean }) => state.BgSoundValue)
+
   const allowFXSoundState = useSelector((state: { allowFXSound: boolean }) => state.allowFXSound)
   let allowFXSound = useRef(allowFXSoundState)
   //const menuShown = useSelector((state: {menuShown:boolean}) => state.menuShown)
@@ -1093,7 +1095,12 @@ rC.current = [ // rowsAndColumns
     //setValue(newValue as number);
     setBgValue(parseInt(value, 10));
     console.log("123 value", value)
-    console.log("333 value", parseInt(value,10) /100)
+    console.log("333 value", parseInt(value,10) / 100)
+    //soundsArray[aF.bG.i].stop()
+    //soundsArray[aF.bG.i].gain.value = parseInt(value,10) / 100
+    //gain.gain.value = parseInt(value,10) / 100
+    if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = parseInt(value,10) / 100
+    setBgSoundValue(parseInt(value,10) / 100)
   }
 
   //console.log("handleBgValue", BgValue)
@@ -1359,7 +1366,7 @@ rC.current = [ // rowsAndColumns
             dispatch(setAllowBgSound(!allowBgSoundState))
             allowBgSound.current = !allowBgSound.current
             localStorage.setItem('allowBgSound', JSON.stringify(!allowBgSoundState))
-            if (!allowBgSound.current) soundsArray[aF.bG.i].stop()
+            if (!allowBgSound.current && soundsArray[aF.bG.i] !== undefined) soundsArray[aF.bG.i].stop()
           }}
         >
           {
