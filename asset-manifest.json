@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/tictactoe/static/css/main.64ef9df8.chunk.css",
-    "main.js": "/tictactoe/static/js/main.547e0f36.chunk.js",
-    "main.js.map": "/tictactoe/static/js/main.547e0f36.chunk.js.map",
+    "main.js": "/tictactoe/static/js/main.1fab8c32.chunk.js",
+    "main.js.map": "/tictactoe/static/js/main.1fab8c32.chunk.js.map",
     "runtime-main.js": "/tictactoe/static/js/runtime-main.68d2a3da.js",
     "runtime-main.js.map": "/tictactoe/static/js/runtime-main.68d2a3da.js.map",
     "static/js/2.5a09c688.chunk.js": "/tictactoe/static/js/2.5a09c688.chunk.js",
@@ -21,6 +21,7 @@
     "static/media/revealed.7ccf0a51.mp3": "/tictactoe/static/media/revealed.7ccf0a51.mp3",
     "static/media/roundLost.2e868e4f.mp3": "/tictactoe/static/media/roundLost.2e868e4f.mp3",
     "static/media/roundWin.f2e24fd6.mp3": "/tictactoe/static/media/roundWin.f2e24fd6.mp3",
+    "static/media/silence.e4c2a937.mp3": "/tictactoe/static/media/silence.e4c2a937.mp3",
     "static/media/startRound.a3ba4010.mp3": "/tictactoe/static/media/startRound.a3ba4010.mp3",
     "static/media/taDah.d4157f1d.mp3": "/tictactoe/static/media/taDah.d4157f1d.mp3",
     "static/media/testTest.2b170cb2.mp3": "/tictactoe/static/media/testTest.2b170cb2.mp3",
@@ -33,6 +34,6 @@
     "static/js/runtime-main.68d2a3da.js",
     "static/js/2.5a09c688.chunk.js",
     "static/css/main.64ef9df8.chunk.css",
-    "static/js/main.547e0f36.chunk.js"
+    "static/js/main.1fab8c32.chunk.js"
   ]
 }
