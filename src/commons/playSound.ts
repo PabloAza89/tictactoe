@@ -1,8 +1,8 @@
-//import { useRef } from 'react';
-
-export let context: any; // = new AudioContext();
+export let context: any;
+let gain: any;
 let buffer: any;
-export let source: any; // = context.createBufferSource();
+let bufferArray: any[] = []
+export let source: any;
 export let soundsArray: any[] = []
 
 interface playSoundI {
@@ -18,61 +18,56 @@ export const arraySoundResetter = () => {
 }
 
 export const playSound = async ({ file, buffered, pitch, volume, index }: playSoundI) => {
-  
+
   const playBuffer = async () => {
-      //context = new AudioContext();
-      
+
+    //if (asd) {soundsArray[file.i].start()}
+    //else {
       source = context.createBufferSource();
-      source.buffer = buffer
+      source.buffer = bufferArray[file.i]
       source.detune.value = pitch ? pitch : 0;
-      source.connect(context.destination);
-      //arr[0] = source.current
-      //soundsArray.push(source)
-      //soundsArray[0] = source
-      //if (index !== undefined) soundsArray[index] = source
+
+      gain = context.createGain();
+      gain.gain.value = volume ? volume : 1;
+      source.connect(gain);
+      gain.connect(context.destination);
+
       soundsArray[file.i] = source
+
       // soundsArray[file.i].onended = (e:any) => {
       //   //console.log(`123 FINISH SOUND ${file.f}`)
       //   //soundsArray[file.i].close()
       //   //soundsArray[file.i].disconnect()
       //   //soundsArray[file.i].stop()
+      //   source.disconnect(gain);
+
+      //   gain.disconnect(context.destination);
       //   //soundsArray = []
       // }
-      
+
       soundsArray[file.i].start()
-      console.log("LLLLEGO ACA")
+      //console.log("LLLLEGO ACA")
       return "done"
-      //console.log("123 EJECUTADO START")
-      //source.start()
-         
-    }
+    //}
+  }
 
-    //try {
-      console.log("123 EJECUTADO ELSE")
-      context = new AudioContext();
-      const response: any = await fetch(file.n)
-      //console.log("test123", response)
-      await context.decodeAudioData(await response.arrayBuffer(),  (buff: any) => {
-        buffer = buff;
-   
-          //console.log("123 EJECUTADO START")
-          //source.start()
-        
-        playBuffer()
-        
-        //.catch((e) => {console.log("THIS ERROR", e)})
-      })
-      //return context
-      return context
-      // .then(async function () { 
-      //   await playBuffer();
-      //   //return "done"
-      //  })
-      //  .then(() => { return "done" })
-      
-
-      
-      //return
-    // }
-    // catch(e) {console.log("THIS ERROR", e)}
+  if (!soundsArray[file.i]) {
+    console.log("333 PRIMERO")
+    context = new AudioContext();
+    
+    const response: any = await fetch(file.n)
+    //console.log("test123", response)
+    await context.decodeAudioData(await response.arrayBuffer(),  (buff: any) => {
+      //buffer = buff;
+      bufferArray[file.i] = buff;
+      playBuffer()
+    })
+    return context
+  } else {
+    console.log("333 SEGUNDO")
+    playBuffer()
+    //soundsArray[file.i].start()
+    //soundsArray[file.i].start()
+  }
+    
 }

@@ -1,5 +1,3 @@
-// aF === audioFiles
-
 import Xmove from '../audio/Xmove.mp3';
 import Omove from '../audio/Omove.mp3';
 import revealed from '../audio/revealed.mp3';
@@ -20,28 +18,7 @@ import OTime from '../audio/OTime.mp3';
 import testTest from '../audio/testTest.mp3';
 import silence from '../audio/silence.mp3';
 
-// const array: any = [
-//   { n: Xmove, i: 0 },
-//   { n: Omove, i: 1 },
-//   { n: revealed, i: 2 },
-//   { n: menu, i: 3 },
-//   { n: countDownA, i: 4 },
-//   { n: countDownB, i: 5 },
-//   { n: taDah, i: 6 },
-//   { n: looser, i: 7 },
-//   { n: roundWin, i: 8 },
-//   { n: roundLost, i: 9 },
-//   { n: trill, i: 10 },
-//   { n: ticTac3Sec, i: 11},
-//   { n: startRound, i: 12 },
-//   { n: tied, i: 13 },
-//   { n: tiedWeird, i: 14 },
-//   { n: XTime, i: 15 },
-//   { n: OTime, i: 16 },
-//   { n: testTest, i: 17 }
-// ]
-
-const array: any = {
+const aF: any = { // audioFiles
   Xmove: { n: Xmove, i: 0 },
   Omove: { n: Omove, i: 1 },
   revealed: { n: revealed, i: 2 },
@@ -63,4 +40,4 @@ const array: any = {
   silence: { n: silence, i: 18 }
 }
 
-export default array;
+export default aF;

@@ -164,21 +164,21 @@ const Main = () => {
     setTimeout(() => {
       $(`#${array[0].id}`)
         .css("background", "yellow");
-        playSound({ file: aF.revealed, pitch: -500 , volume: actionPoints === 100 ? 0.3 : 0.5 })
+        playSound({ file: aF.revealed, pitch: -400 , volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 400 : 300)
     //}, actionPoints === 100 ? 375 : 300)
     //}, actionPoints === 100 ? 400 : 300)
     setTimeout(() => {
       $(`#${array[1].id}`)
         .css("background", "yellow");
-        playSound({ file: aF.revealed, pitch: -100, volume: actionPoints === 100 ? 0.3 : 0.5 })
+        playSound({ file: aF.revealed, volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 700 : 600)
     //}, actionPoints === 100 ? 675 : 600)
     //}, actionPoints === 100 ? 700 : 600)
     setTimeout(() => {
       $(`#${array[2].id}`)
         .css("background", "yellow")
-        playSound({ file: aF.revealed, pitch: 200, volume: actionPoints === 100 ? 0.3 : 0.5 })
+        playSound({ file: aF.revealed, pitch: 300, volume: actionPoints === 100 ? 0.3 : 0.5 })
     }, actionPoints === 100 ? 1000 : 900)
     //}, actionPoints === 100 ? 975 : 900)
     //}, actionPoints === 100 ? 1000 : 900)
@@ -838,9 +838,9 @@ rC.current = [ // rowsAndColumns
 
         
           if (finalWinner === "X") {
-            playSound({ file: aF.taDah, volume: 0.8 }); // X win entire game
+            playSound({ file: aF.taDah, pitch: 100, volume: 0.8 }); // X win entire game
           }
-          else if (finalWinner === "O") playSound({ file: aF.looser, volume: 0.7 }) // O win entire game
+          else if (finalWinner === "O") playSound({ file: aF.looser, pitch: 125, volume: 0.7 }) // O win entire game
           else if (finalWinner === "XByTime") playSound({ file: aF.XTime, volume: 1 }) // X win entire game by time
           else if (finalWinner === "OByTime") playSound({ file: aF.OTime, volume: 1 }) // O win entire game by time
           else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound({ file: aF.tiedWeird, volume: 0.9 }) // Tied by points & time & has at least a winning round, no way !
@@ -1084,77 +1084,20 @@ rC.current = [ // rowsAndColumns
 
   // END CONFETTI //
 
-  // let context: any =  useRef();
-  // let buffer: any = useRef();
-  // let source: any = useRef();
- 
-  //console.log("test123", soundsArray)
-  //console.log("123 soundsArray", soundsArray)
-
-  // var audio = document.createElement("AUDIO")
-  // document.body.appendChild(audio);
-  // audio.src = '../../audio/testTest.mp3'
-
-  // document.body.addEventListener("mousemove", function () {
-  //     audio.play()
-  // })
-
-  let response: any = useRef()
-
   useEffect(() => { // FOR AUTOPLAY POLICY
-    
-    //do {
-     // setTimeout(() => {
-        playSound({ file: aF.testTest })
-        .then((res) => { 
-          console.log("RES RES", res.state);
-          //response.current = res.state
-          if (res.state === "suspended") {
-            document.addEventListener('click', () => {
-              playSound({ file: aF.testTest })
-            }, { once: true }) 
-          }
-
-        })
-      //}, 3000)
-
-    //   console.log("ANOTHER ROUND")
-    // } while (response.current === 'suspended')
-      
-    // suspended
-    // running
-
-
-
+    playSound({ file: aF.testTest, volume: 0.4 })
+    .then((res) => {
+      if (res.state === "suspended") {
+        document.addEventListener('click', () => {
+          playSound({ file: aF.testTest, volume: 0.4 })
+        }, { once: true })
+      }
+    })
   },[])
 
 
-  
-  // useEffect(() => { // FIRED ONLY WHEN TAB IS FOCUSED, CHECK VALID USER
-  //   const onFocusGoogle = () => {
-  //     setTimeout(() => {
-  //       console.log("123 FOCUS")
-  //       playSound({ file: aF.testTest })
-  //     }, 2000)
-        
-  //   }
-  //   window.addEventListener("load", onFocusGoogle);
-  //   return () => window.removeEventListener("load", onFocusGoogle);
-  // })
-
-
-
   return (
-    <div
-      //volume="0"
-      //muted={true}
-      className={`${css.background} ${com.noSelect}`}
-    >
-      {/* <p><a href='../../audio/testTest.mp3'>Play mp3</a></p> */}
-      {/* <embed src={testTest} autostart="true" loop={false}></embed> */}
-      {/* <div>
-        <embed src={testTest}/> 
-      </div> */}
+    <div className={`${css.background} ${com.noSelect}`}>
       <Button
         focusRipple={false}
         id={`buttonStart`}
@@ -1442,8 +1385,7 @@ rC.current = [ // rowsAndColumns
               //console.log("test123 play 1")
               //playTest({ file: aF.testTest })
 
-              // playSound({ file: aF.trill })
-              // playSound({ file: aF.taDah })
+            
 
               playSound({ file: aF.trill })
               
