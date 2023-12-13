@@ -650,26 +650,32 @@ div:nth-child(even of [id*="evenTarget"]) {
   background: violet;
 }
 
-#buttonMute {
-  /* margin-top: 250px; */
-  /* margin-top: 0px; */
-  /* display: flex; */
-  /* position: fixed; */
+#buttonMuteBackground {
   display: flex;
-  /* position: fixed; */
   position: absolute;
   top: 5px;
   left: 5px; /* DEFAULT RENDER */
-    z-index: 3001;
+  z-index: 3001;
   min-width: 35px !important;
   width: 35px !important;
   min-height: 35px !important;
   height: 35px !important;
   color: darkblue;
   border: 2px solid blue !important;
-  /* border-radius: 0px; */
-  /* background: lightblue; */ /* DEV */
-  /* background: violet !important; */ /* DEV */
+}
+
+#buttonMuteFX {
+  display: flex;
+  position: absolute;
+  top: 45px;
+  left: 5px; /* DEFAULT RENDER */
+  z-index: 3001;
+  min-width: 35px !important;
+  width: 35px !important;
+  min-height: 35px !important;
+  height: 35px !important;
+  color: darkblue;
+  border: 2px solid blue !important;
 }
 
 .buttonTypo {

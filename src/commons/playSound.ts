@@ -7,17 +7,16 @@ export let soundsArray: any[] = []
 
 interface playSoundI {
   file?: any,
-  buffered?: boolean,
   pitch?: number,
   volume?: number,
-  index?: number
+  loop?: boolean,
 }
 
 export const arraySoundResetter = () => {
   soundsArray = []
 }
 
-export const playSound = async ({ file, buffered, pitch, volume, index }: playSoundI) => {
+export const playSound = async ({ file, pitch, volume, loop }: playSoundI) => {
 
   const playBuffer = async () => {
 
@@ -26,6 +25,7 @@ export const playSound = async ({ file, buffered, pitch, volume, index }: playSo
       source = context.createBufferSource();
       source.buffer = bufferArray[file.i]
       source.detune.value = pitch ? pitch : 0;
+      source.loop = loop ? loop : false
 
       gain = context.createGain();
       gain.gain.value = volume ? volume : 1;

@@ -15,7 +15,7 @@ import tied from '../audio/tied.mp3';
 import tiedWeird from '../audio/tiedWeird.mp3';
 import XTime from '../audio/XTime.mp3';
 import OTime from '../audio/OTime.mp3';
-import testTest from '../audio/testTest.mp3';
+import bG from '../audio/bG.mp3';
 import silence from '../audio/silence.mp3';
 
 const aF: any = { // audioFiles
@@ -36,8 +36,26 @@ const aF: any = { // audioFiles
   tiedWeird: { n: tiedWeird, i: 14 },
   XTime: { n: XTime, i: 15 },
   OTime: { n: OTime, i: 16 },
-  testTest: { n: testTest, i: 17 },
+  bG: { n: bG, i: 17 },
   silence: { n: silence, i: 18 }
 }
 
 export default aF;
+
+// background:
+// 1  00:00 ***
+// 2  00:12
+// 3  00:24
+// 4  00:35
+// 5  00:47 ***
+// 6  00:59
+// 7  01:12
+// 8  01:24
+// 9  01:36 ***
+// 10 01:48
+// 11 01:59
+// 12 02:11
+// 13 02:23 ***
+// 14 02:35
+// 15 02:47
+// 16 02:59 // 03:12

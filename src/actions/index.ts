@@ -5,9 +5,16 @@ export function setScoreShown(payload:boolean) {
   }
 };
 
-export function setAllowSound(payload:boolean) {
+export function setAllowBackgroundSound(payload:boolean) {
   return {
-    type: 'ALLOW_SOUND',
+    type: 'ALLOW_BACKGROUND_SOUND',
+    payload: payload
+  }
+};
+
+export function setAllowFXSound(payload:boolean) {
+  return {
+    type: 'ALLOW_FX_SOUND',
     payload: payload
   }
 };
