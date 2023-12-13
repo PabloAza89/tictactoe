@@ -5,9 +5,9 @@ export function setScoreShown(payload:boolean) {
   }
 };
 
-export function setAllowBackgroundSound(payload:boolean) {
+export function setAllowBgSound(payload:boolean) {
   return {
-    type: 'ALLOW_BACKGROUND_SOUND',
+    type: 'ALLOW_BG_SOUND',
     payload: payload
   }
 };

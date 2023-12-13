@@ -7,7 +7,10 @@ import { Button } from '@mui/material/';
 import { easings } from '../../commons/easingsCSS';
 //import simulate from '../../commons/simulate';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import Stack from '@mui/material/Stack';
+import Slider from '@mui/material/Slider';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
 import check from '../../images/check.png';
@@ -16,7 +19,7 @@ import dash from '../../images/dash.png';
 import aF from '../../commons/aF';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
 import { playSound, soundsArray, context, source, arraySoundResetter } from '../../commons/playSound';
-import { setAllowBackgroundSound, setAllowFXSound} from '../../actions';
+import { setAllowBgSound, setAllowFXSound} from '../../actions';
 import silence from '../../audio/silence.mp3'
 import testTest from '../../audio/testTest.mp3'
 //const confetti = require('canvas-confetti');
@@ -42,8 +45,8 @@ const Main = () => {
 
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
   //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
-  const allowBackgroundSoundState = useSelector((state: { allowBackgroundSound: boolean }) => state.allowBackgroundSound)
-  let allowBackgroundSound = useRef(allowBackgroundSoundState)
+  const allowBgSoundState = useSelector((state: { allowBgSound: boolean }) => state.allowBgSound)
+  let allowBgSound = useRef(allowBgSoundState)
   const allowFXSoundState = useSelector((state: { allowFXSound: boolean }) => state.allowFXSound)
   let allowFXSound = useRef(allowFXSoundState)
   //const menuShown = useSelector((state: {menuShown:boolean}) => state.menuShown)
@@ -1071,18 +1074,33 @@ rC.current = [ // rowsAndColumns
   // END CONFETTI //
 
   useEffect(() => { // FOR AUTOPLAY POLICY
-    if (allowBackgroundSound.current) {
+    if (allowBgSound.current) {
       playSound({ file: aF.bG, volume: 0.4, loop: true })
       .then((res) => {
         if (res.state === "suspended") {
           document.addEventListener('click', () => {
-            if (allowBackgroundSound.current) playSound({ file: aF.bG, volume: 0.4, loop: true })
+            if (allowBgSound.current) playSound({ file: aF.bG, volume: 0.4, loop: true })
           }, { once: true })
         }
       })
     }  
   },[])
 
+  const [ BgValue, setBgValue ] = useState<number>(50)
+
+  const handleBgValue = (value: string) => {
+    //console.log("CHANGE E",value)
+    //setValue(newValue as number);
+    setBgValue(parseInt(value, 10));
+    console.log("123 value", value)
+    console.log("333 value", parseInt(value,10) /100)
+  }
+
+  //console.log("handleBgValue", BgValue)
+
+  interface targetI {
+    value?: number
+  }
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -1334,43 +1352,43 @@ rC.current = [ // rowsAndColumns
 
 
       </div>
-      <Button
-        id={css.buttonMuteBackground}
-        onClick={() => {
-          dispatch(setAllowBackgroundSound(!allowBackgroundSoundState))
-          allowBackgroundSound.current = !allowBackgroundSound.current
-          localStorage.setItem('allowSound', JSON.stringify(!allowBackgroundSoundState))
-          //if (!allowBackgroundSound.current) soundsArray.forEach((e) => e.stop())
-          if (!allowBackgroundSound.current) soundsArray[aF.bG.i].stop()
-          
-        }}
-      >
-        
-        {
-          allowBackgroundSoundState ?
-          <VolumeUpIcon /> :
-          <VolumeOffIcon />
-          
-        }
-      </Button>
+      <div id={css.bgAndSliderContainer}>
+        <Button
+          id={css.buttonMuteBackground}
+          onClick={() => {
+            dispatch(setAllowBgSound(!allowBgSoundState))
+            allowBgSound.current = !allowBgSound.current
+            localStorage.setItem('allowBgSound', JSON.stringify(!allowBgSoundState))
+            if (!allowBgSound.current) soundsArray[aF.bG.i].stop()
+          }}
+        >
+          {
+            allowBgSoundState ?
+            <VolumeUpIcon /> :
+            <VolumeOffIcon />
+          }
+        </Button>
+        <div className={css.divBackground}>
+          <VolumeDownIcon />
+            <Slider /* disabled */ /* defaultValue={50} */ value={BgValue} onChange={(e) => { handleBgValue((e.target as HTMLInputElement).value) }} />
+          <VolumeUpIcon />
+        </div>
+      </div>
       <Button
         id={css.buttonMuteFX}
         onClick={() => {
           dispatch(setAllowFXSound(!allowFXSoundState))
           allowFXSound.current = !allowFXSound.current
           localStorage.setItem('allowFXSound', JSON.stringify(!allowFXSoundState))
-          //if (!allowFXSound.current) soundsArray.forEach((e) => e.stop())
           if (!allowFXSound.current) soundsArray.forEach((e,index) => {
             if (aF.bG.i !== index) e.stop()
           })
         }}
       >
-        
         {
           allowFXSoundState ?
           <VolumeUpIcon /> :
           <VolumeOffIcon />
-          
         }
       </Button>
     
@@ -1446,7 +1464,9 @@ rC.current = [ // rowsAndColumns
         >
           TEST 3
         </Button>
-
+        <div>
+          This App it's currently on development. So you will see my work done in real time.. day by day..
+        </div>
     </div>
   );
 }

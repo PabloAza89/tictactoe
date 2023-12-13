@@ -1,12 +1,12 @@
 interface initialStateI {
   scoreShown: boolean,
-  allowBackgroundSound: boolean,
+  allowBgSound: boolean,
   allowFXSound: boolean
 }
 
 const initialState: initialStateI = {
   scoreShown: localStorage.getItem('scoreShown') !== null ? JSON.parse(localStorage.getItem('scoreShown')!) : false,
-  allowBackgroundSound: localStorage.getItem('allowBackgroundSound') !== null ? JSON.parse(localStorage.getItem('allowBackgroundSound')!) : true,
+  allowBgSound: localStorage.getItem('allowBgSound') !== null ? JSON.parse(localStorage.getItem('allowBgSound')!) : true,
   allowFXSound: localStorage.getItem('allowFXSound') !== null ? JSON.parse(localStorage.getItem('allowFXSound')!) : true,
 }
 
@@ -17,10 +17,10 @@ const reducer = (state = initialState, action: {type: string; payload: any}) => 
         ...state,
         scoreShown: action.payload
       };
-    case 'ALLOW_BACKGROUND_SOUND':
+    case 'ALLOW_BG_SOUND':
       return {
         ...state,
-        allowBackgroundSound: action.payload
+        allowBgSound: action.payload
       };
     case 'ALLOW_FX_SOUND':
       return {
