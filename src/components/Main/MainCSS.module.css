@@ -688,10 +688,13 @@ div:nth-child(even of [id*="evenTarget"]) {
 .divBackground {
   display: flex;
   position: absolute;
-  right: -302px;
-  width: 300px !important;
-  height: 35px;
+  right: -190px;
+  width: 160px !important;
+  height: 32.5px;
+  padding-left: 15px;
+  padding-right: 15px;
   background: lightcoral; /* DEV */
+  padding-top: 2.5px;
 }
 
 .buttonTypo {

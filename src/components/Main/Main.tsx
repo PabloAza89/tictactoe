@@ -18,7 +18,7 @@ import cross from '../../images/cross.png';
 import dash from '../../images/dash.png';
 import aF from '../../commons/aF';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
-import { playSound, soundsArray, gain, gainArray, contextArray, context, source, arraySoundResetter } from '../../commons/playSound';
+import { playSound, soundsArray, loadAllSounds, /* gain,  */gainArray, contextArray, /* context, source,  */arraySoundResetter } from '../../commons/playSound';
 import { setAllowBgSound, setBgSoundValue, setAllowFXSound} from '../../actions';
 import silence from '../../audio/silence.mp3'
 import testTest from '../../audio/testTest.mp3'
@@ -39,7 +39,7 @@ const Main = () => {
 
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
 
-
+  let allSoundsLoaded = useRef<boolean>(false)
 
   let score = useRef<any[]>([])
 
@@ -1075,19 +1075,46 @@ rC.current = [ // rowsAndColumns
 
   // END CONFETTI //
   //soundsArray[aF.bG.i].context.currentTime === 0
-  useEffect(() => { // FOR AUTOPLAY POLICY
-    if (allowBgSound.current && soundsArray[aF.bG.i] === undefined) {
-      playSound({ file: aF.bG, volume: BgSoundValueState, loop: true })
-      .then((res) => {
+  // useEffect(() => { // FOR AUTOPLAY POLICY
+  // //   if (allSoundsLoaded.current && allowBgSound.current) {
+  // //     console.log("se ejecuto este 1")
+  // //     /* if (allowBgSound.current)  */ playSound({ file: aF.bG, volume: BgSoundValueState, loop: true })
+  // //     .then((res: any) => {
+  // //       if (res.state === "suspended") {
+  // //         document.addEventListener('click', () => {
+  // //           //if (allowBgSound.current && soundsArray[aF.bG.i].context.currentTime === 0) playSound({ file: aF.bG, volume: 0.4, loop: true })
+  // //           if (allowBgSound.current) {
+  // //             console.log("se ejecuto este 2")
+  // //             contextArray[aF.bG.i].resume()
+  // //           }
+  // //         }, { once: true })
+  // //       }
+  // //     })
+  // //   }
+  // // //},[BgSoundValueState])
+
+  // 
+
+
+  // },[])
+
+  const playBackgroundSong = () => {
+    playSound({ file: aF.bG, volume: BgSoundValueState, loop: true })
+      // .then((res: any) => {
+      //   console.log("123 res", res)
+      // })
+     .then((res: any) => {
         if (res.state === "suspended") {
           document.addEventListener('click', () => {
             //if (allowBgSound.current && soundsArray[aF.bG.i].context.currentTime === 0) playSound({ file: aF.bG, volume: 0.4, loop: true })
-            if (allowBgSound.current) contextArray[aF.bG.i].resume()
+            if (allowBgSound.current) {
+              console.log("se ejecuto este 2")
+              contextArray[aF.bG.i].resume()
+            }
           }, { once: true })
         }
       })
-    }
-  },[])
+  }
 
   const [ BgValue, setBgValue ] = useState<number>(50)
 
@@ -1115,6 +1142,26 @@ rC.current = [ // rowsAndColumns
   interface targetI {
     value?: number
   }
+
+  useEffect(() => { // LOAD ALL SOUNDS
+    //console.log("aF.length", Object.keys(aF).length)
+    let fileCounter: number = 0;
+    Object.keys(aF).forEach( (e: any, i: any) => {
+      loadAllSounds({ file: aF[e] })
+      .then((res) => {
+        //console.log("res res", res)
+        fileCounter += 1
+      })
+      .then(() => {
+        //console.log("fileCounter", fileCounter)
+        if (fileCounter === 19) {
+          console.log("ALL SOUNDS LOADED")
+          allSoundsLoaded.current = true
+          if (allowBgSound.current) playBackgroundSong()
+        }
+      })
+    })
+  },[])
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -1373,11 +1420,15 @@ rC.current = [ // rowsAndColumns
             dispatch(setAllowBgSound(!allowBgSoundState))
             allowBgSound.current = !allowBgSound.current
             localStorage.setItem('allowBgSound', JSON.stringify(!allowBgSoundState))
-            if (!allowBgSound.current && soundsArray[aF.bG.i] !== undefined) {
+            if (allSoundsLoaded.current && !allowBgSound.current) {
+              console.log("MUTED se ejecuto este otro 1")
               soundsArray[aF.bG.i].stop()
             }
-            //else if (allowBgSound.current && soundsArray[aF.bG.i] !== undefined/*  && soundsArray[aF.bG.i].context.state !== "running" */) playSound({ file: aF.bG, volume: 0.4, loop: true })
-            else playSound({ file: aF.bG, volume: BgSoundValueState, loop: true })
+            else if (allSoundsLoaded.current && allowBgSound.current /* && soundsArray[aF.bG.i] !== undefined  */ /* && soundsArray[aF.bG.i].context.currentTime === 0 */) {
+              console.log("PLAY se ejecuto este otro 2")
+            playSound({ file: aF.bG, volume: BgSoundValueState, loop: true })
+              //playBackgroundSong()
+            }
           }}
         >
           {
@@ -1387,9 +1438,9 @@ rC.current = [ // rowsAndColumns
           }
         </Button>
         <div className={css.divBackground}>
-          <VolumeDownIcon />
-            <Slider /* disabled */ /* defaultValue={50} */ value={BgSoundValueState * 100} onChange={(e) => { handleBgValue((e.target as HTMLInputElement).value) }} />
-          <VolumeUpIcon />
+          {/* <VolumeDownIcon /> */}
+            <Slider /* style={{ padding: '15.5px 0' }} *//* disabled */ /* defaultValue={50} */ value={BgSoundValueState * 100} onChange={(e) => { handleBgValue((e.target as HTMLInputElement).value) }} />
+          {/* <VolumeUpIcon /> */}
         </div>
       </div>
       <Button
