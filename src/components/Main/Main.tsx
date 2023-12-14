@@ -18,7 +18,7 @@ import cross from '../../images/cross.png';
 import dash from '../../images/dash.png';
 import aF from '../../commons/aF';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
-import { playSound, soundsArray, gain, gainArray, context, source, arraySoundResetter } from '../../commons/playSound';
+import { playSound, soundsArray, gain, gainArray, contextArray, context, source, arraySoundResetter } from '../../commons/playSound';
 import { setAllowBgSound, setBgSoundValue, setAllowFXSound} from '../../actions';
 import silence from '../../audio/silence.mp3'
 import testTest from '../../audio/testTest.mp3'
@@ -47,7 +47,7 @@ const Main = () => {
   //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   const allowBgSoundState = useSelector((state: { allowBgSound: boolean }) => state.allowBgSound)
   let allowBgSound = useRef(allowBgSoundState)
-  const BgSoundValueState = useSelector((state: { BgSoundValue: boolean }) => state.BgSoundValue)
+  const BgSoundValueState = useSelector((state: { BgSoundValue: number }) => state.BgSoundValue)
 
   const allowFXSoundState = useSelector((state: { allowFXSound: boolean }) => state.allowFXSound)
   let allowFXSound = useRef(allowFXSoundState)
@@ -1074,18 +1074,19 @@ rC.current = [ // rowsAndColumns
   }
 
   // END CONFETTI //
-
+  //soundsArray[aF.bG.i].context.currentTime === 0
   useEffect(() => { // FOR AUTOPLAY POLICY
-    if (allowBgSound.current) {
-      playSound({ file: aF.bG, volume: 0.4, loop: true })
+    if (allowBgSound.current && soundsArray[aF.bG.i] === undefined) {
+      playSound({ file: aF.bG, volume: BgSoundValueState, loop: true })
       .then((res) => {
         if (res.state === "suspended") {
           document.addEventListener('click', () => {
-            if (allowBgSound.current) playSound({ file: aF.bG, volume: 0.4, loop: true })
+            //if (allowBgSound.current && soundsArray[aF.bG.i].context.currentTime === 0) playSound({ file: aF.bG, volume: 0.4, loop: true })
+            if (allowBgSound.current) contextArray[aF.bG.i].resume()
           }, { once: true })
         }
       })
-    }  
+    }
   },[])
 
   const [ BgValue, setBgValue ] = useState<number>(50)
@@ -1099,8 +1100,14 @@ rC.current = [ // rowsAndColumns
     //soundsArray[aF.bG.i].stop()
     //soundsArray[aF.bG.i].gain.value = parseInt(value,10) / 100
     //gain.gain.value = parseInt(value,10) / 100
+    //if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = parseInt(value,10) / 100
+    //if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = BgSoundValueState
     if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = parseInt(value,10) / 100
-    setBgSoundValue(parseInt(value,10) / 100)
+    //setBgSoundValue(parseInt(value,10) / 100)
+    dispatch(setBgSoundValue(parseInt(value,10) / 100))
+    localStorage.setItem('BgSoundValue', JSON.stringify(parseInt(value,10) / 100))
+    //console.log("contextARray", contextArray[aF.bG.i])
+    console.log("soundsArray", soundsArray[aF.bG.i])
   }
 
   //console.log("handleBgValue", BgValue)
@@ -1366,7 +1373,11 @@ rC.current = [ // rowsAndColumns
             dispatch(setAllowBgSound(!allowBgSoundState))
             allowBgSound.current = !allowBgSound.current
             localStorage.setItem('allowBgSound', JSON.stringify(!allowBgSoundState))
-            if (!allowBgSound.current && soundsArray[aF.bG.i] !== undefined) soundsArray[aF.bG.i].stop()
+            if (!allowBgSound.current && soundsArray[aF.bG.i] !== undefined) {
+              soundsArray[aF.bG.i].stop()
+            }
+            //else if (allowBgSound.current && soundsArray[aF.bG.i] !== undefined/*  && soundsArray[aF.bG.i].context.state !== "running" */) playSound({ file: aF.bG, volume: 0.4, loop: true })
+            else playSound({ file: aF.bG, volume: BgSoundValueState, loop: true })
           }}
         >
           {
@@ -1377,7 +1388,7 @@ rC.current = [ // rowsAndColumns
         </Button>
         <div className={css.divBackground}>
           <VolumeDownIcon />
-            <Slider /* disabled */ /* defaultValue={50} */ value={BgValue} onChange={(e) => { handleBgValue((e.target as HTMLInputElement).value) }} />
+            <Slider /* disabled */ /* defaultValue={50} */ value={BgSoundValueState * 100} onChange={(e) => { handleBgValue((e.target as HTMLInputElement).value) }} />
           <VolumeUpIcon />
         </div>
       </div>
@@ -1404,27 +1415,19 @@ rC.current = [ // rowsAndColumns
           variant="outlined"
           id={`mmb`}
           onClick={() => {
-            //timeoutId()
-            //startTest(testTest)
-            // startTest(trill)
-            // startTest(taDah)
-            
-           //playTest({ file: taDah })
-            ////playTest({ file: trill })
-            //if (!context) {
-              //console.log("test123 play 1")
-              //playTest({ file: aF.testTest })
+            //soundsArray[aF.bG.i].start()
+            //soundsArray[aF.bG.i].start()
 
-            
+            //contextArray[aF.bG.i].resume()
+            //playSound({ file: aF.bG, volume: 0.4, loop: true })
 
-              playSound({ file: aF.trill })
-              
-              //playTest({ file: trill, index: 1 })
-              
-            // } else /* if (context.state !== `running`) */ {
-            //   console.log("test123 play 2")
-            //   playTest({ buffered: true })
-            // }
+            //soundsArray[aF.bG.i].start()
+
+            contextArray[aF.bG.i].resume()
+            //soundsArray[aF.bG.i].start()
+            //soundsArray[aF.bG.i].resume()            
+            //if (allowBgSound.current) playSound({ file: aF.bG, volume: 0.4, loop: true })
+            //soundsArray[aF.bG.i].start(0)
 
           }}
         >
@@ -1434,26 +1437,18 @@ rC.current = [ // rowsAndColumns
           focusRipple={false}
           variant="outlined"
           onClick={() => {
-            //source.current.stop()
-            //source.current.disconnect()
-            //source.current.suspended() // THIS MAKE "suspended" THE CONTEXT NW
-            //source.current.close() // THIS MAKE "closed" THE CONTEXT NW
-            // if (context && context.state === `running`) {
-            //   //context.current.close() // THIS MAKE "closed" THE CONTEXT NW
-            //   source.stop()
-            // }
+            //soundsArray[aF.bG.i].stop()
+            //soundsArray[aF.bG.i].close()
+            //soundsArray[aF.bG.i].pause()
+            //contextArray[aF.bG.i].suspend()
 
-            // clearTimeout(timeoutId.current);
-            // timeoutId.current = null
-            //source.stop()
-                   //e.suspend()
-              //e.close()
-            soundsArray.forEach((e) => e.stop())
-            //soundsArray = []
-            //arraySoundResetter()
-            //arr[0].stop()
-            //context.current.suspend()
-            //context.current.suspend() // NW
+            //contextArray[aF.bG.i].suspend()
+            //contextArray[aF.bG.i].close()
+            contextArray[aF.bG.i].close()
+            //soundsArray[aF.bG.i].stop()
+
+            //soundsArray[aF.bG.i].stop()
+            //contextArray[aF.bG.i].close()
           }}
         >
           TEST 2

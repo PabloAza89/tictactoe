@@ -1,4 +1,5 @@
 export let context: any;
+export let contextArray: any[] = [];
 export let gain: any;
 export let gainArray: any[] = [];
 let buffer: any;
@@ -23,18 +24,19 @@ export const playSound = async ({ file, pitch, volume, loop }: playSoundI) => {
 
     //if (asd) {soundsArray[file.i].start()}
     //else {
-      source = context.createBufferSource();
-      source.buffer = bufferArray[file.i]
-      source.detune.value = pitch ? pitch : 0;
-      source.loop = loop ? loop : false
+      soundsArray[file.i] = contextArray[file.i].createBufferSource();
+      soundsArray[file.i].buffer = bufferArray[file.i]
+      soundsArray[file.i].detune.value = pitch ? pitch : 0;
+      soundsArray[file.i].loop = loop ? loop : false
 
-      gain = context.createGain();
+      gain = contextArray[file.i].createGain();
       gain.gain.value = volume ? volume : 1;
+      
       gainArray[file.i] = gain
-      source.connect(gain);
-      gain.connect(context.destination);
+      soundsArray[file.i].connect(gain);
+      gain.connect(contextArray[file.i].destination);
 
-      soundsArray[file.i] = source
+      //soundsArray[file.i] = source
 
       // soundsArray[file.i].onended = (e:any) => {
       //   //console.log(`123 FINISH SOUND ${file.f}`)
@@ -47,24 +49,31 @@ export const playSound = async ({ file, pitch, volume, loop }: playSoundI) => {
       //   //soundsArray = []
       // }
 
+      //soundsArray[file.i].start()
+
+      //if (soundsArray[file.i].context.state !== 'running') soundsArray[file.i].start()
       soundsArray[file.i].start()
+
       //console.log("LLLLEGO ACA")
-      return "done"
+      //return "done"
     //}
   }
 
   if (!soundsArray[file.i]) {
     console.log("333 PRIMERO")
-    context = new AudioContext();
-    
+    //context = new AudioContext();
+
+    //contextArray[file.i] = context
+    contextArray[file.i] = new AudioContext();
+
     const response: any = await fetch(file.n)
     //console.log("test123", response)
-    await context.decodeAudioData(await response.arrayBuffer(),  (buff: any) => {
+    await contextArray[file.i].decodeAudioData(await response.arrayBuffer(),  (buff: any) => {
       //buffer = buff;
       bufferArray[file.i] = buff;
       playBuffer()
     })
-    return context
+    return contextArray[file.i]
   } else {
     console.log("333 SEGUNDO")
     playBuffer()

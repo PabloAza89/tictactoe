@@ -8,7 +8,7 @@ interface initialStateI {
 const initialState: initialStateI = {
   scoreShown: localStorage.getItem('scoreShown') !== null ? JSON.parse(localStorage.getItem('scoreShown')!) : false,
   allowBgSound: localStorage.getItem('allowBgSound') !== null ? JSON.parse(localStorage.getItem('allowBgSound')!) : true,
-  BgSoundValue: localStorage.getItem('BgSoundValue') !== null ? parseInt(localStorage.getItem('BgSoundValue')!, 10) : 50,
+  BgSoundValue: localStorage.getItem('BgSoundValue') !== null ? parseFloat(localStorage.getItem('BgSoundValue')!) : 0.4,
   allowFXSound: localStorage.getItem('allowFXSound') !== null ? JSON.parse(localStorage.getItem('allowFXSound')!) : true,
 }
 
