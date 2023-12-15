@@ -658,7 +658,15 @@ div:nth-child(even of [id*="evenTarget"]) {
   left: 5px; /* DEFAULT RENDER */
 }
 
-#buttonMuteBackground {
+#fxAndSliderContainer {
+  display: flex;
+  position: absolute;
+  z-index: 3001;
+  top: 45px;
+  left: 5px; /* DEFAULT RENDER */
+}
+
+#buttonMute {
   display: flex;
   position: relative;
   /* top: 5px; */
@@ -669,6 +677,9 @@ div:nth-child(even of [id*="evenTarget"]) {
   height: 35px !important;
   color: darkblue;
   border: 2px solid blue !important;
+  background: lightblue;
+  box-shadow: -10px 0px 0px 0px lightblue; /* DEV */
+  border-radius: 4px 0px 0px 4px;
 }
 
 #buttonMuteFX {
@@ -685,16 +696,58 @@ div:nth-child(even of [id*="evenTarget"]) {
   border: 2px solid blue !important;
 }
 
-.divBackground {
+.sliderBGContainer {
   display: flex;
-  position: absolute;
-  right: -190px;
-  width: 160px !important;
-  height: 32.5px;
-  padding-left: 15px;
-  padding-right: 15px;
+  position: fixed;
+  top: 5px;
+  right: 200px;
+  /* position: relative; */
+  /* position: absolute; */
+  /* right: 280px; */
+  /* right: -135px; */
+  /* right: 0px; */
+  /* right: 100px; */
+  width: 190px !important;
+  height: 35px;
+  /* height: 32.5px; */
+  /* padding-left: 15px;
+  padding-right: 15px; */
   background: lightcoral; /* DEV */
-  padding-top: 2.5px;
+  /* padding-top: 2.5px; */
+  /* justify-content: center; */
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0px 4px 4px 0px;
+}
+
+.slider {
+  display: flex;
+  position: relative;
+  /* left: -35px; */
+  /* background: yellow; */ /* DEV */
+  /* width: 135px !important; */
+  width: 150px !important;
+  /* height: 35px !important; */
+  /* padding: 0px 10px !important; */
+  /* margin: 0px 20px !important; */
+  margin-left: 20px !important;
+  margin-right: 15px !important;
+}
+
+#buttonBGSlider {
+  display: flex;
+  position: relative;
+  min-width: 35px !important;
+  width: 35px !important;
+  min-height: 35px !important;
+  height: 35px !important;
+  /* background: yellow !important; */ /* DEV */
+
+  color: darkblue;
+  border: 2px solid blue !important;
+  /* right: 0px; */
+  /* left: 170px; */
+  border-radius: 0px 4px 4px 0px;
 }
 
 .buttonTypo {

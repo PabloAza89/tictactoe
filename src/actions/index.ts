@@ -25,3 +25,10 @@ export function setAllowFXSound(payload:boolean) {
     payload: payload
   }
 };
+
+export function setFXSoundValue(payload:number) {
+  return {
+    type: 'FX_SOUND_VALUE',
+    payload: payload
+  }
+};

@@ -19,25 +19,26 @@ import bG from '../audio/bG.mp3';
 import silence from '../audio/silence.mp3';
 
 const aF: any = { // audioFiles
-  Xmove: { n: Xmove, i: 0 },
-  Omove: { n: Omove, i: 1 },
-  revealed: { n: revealed, i: 2 },
-  menu: { n: menu, i: 3 },
-  countDownA: { n: countDownA, i: 4 },
-  countDownB: { n: countDownB, i: 5 },
-  taDah: { n: taDah, i: 6 },
-  looser: { n: looser, i: 7 },
-  roundWin: { n: roundWin, i: 8 },
-  roundLost: { n: roundLost, i: 9 },
-  trill: { n: trill, i: 10 },
-  ticTac3Sec: { n: ticTac3Sec, i: 11},
-  startRound: { n: startRound, i: 12 },
-  tied: { n: tied, i: 13 },
-  tiedWeird: { n: tiedWeird, i: 14 },
-  XTime: { n: XTime, i: 15 },
-  OTime: { n: OTime, i: 16 },
-  bG: { n: bG, i: 17 },
-  silence: { n: silence, i: 18 }
+  Xmove: { n: Xmove, i: 0, mV: 0.6 }, // n = name
+  Omove: { n: Omove, i: 1, mV: 0.6 }, // i = index
+  revealedOne: { n: revealed, i: 2, mV: 0.3 }, // mV = maxVolume
+  revealedTwo: { n: revealed, i: 3, mV: 0.5 },
+  menu: { n: menu, i: 4, mV: 0.5 },
+  countDownA: { n: countDownA, i: 5, mV: 0.5 },
+  countDownB: { n: countDownB, i: 6, mV: 0.4 },
+  taDah: { n: taDah, i: 7, mV: 0.8 },
+  looser: { n: looser, i: 8, mV: 0.7 },
+  roundWin: { n: roundWin, i: 9, mV: 1.0 },
+  roundLost: { n: roundLost, i: 10, mV: 0.6 },
+  trill: { n: trill, i: 11, mV: 0.9 },
+  ticTac3Sec: { n: ticTac3Sec, i: 12, mV: 0.1 },
+  startRound: { n: startRound, i: 13, mV: 0.2 },
+  tied: { n: tied, i: 14, mV: 1.0 },
+  tiedWeird: { n: tiedWeird, i: 15, mV: 0.9 },
+  XTime: { n: XTime, i: 16, mV: 1.0 },
+  OTime: { n: OTime, i: 17, mV: 1.0 },
+  bG: { n: bG, i: 18, mV: 1.0 },
+  silence: { n: silence, i: 19, mV: 1.0 }
 }
 
 export default aF;

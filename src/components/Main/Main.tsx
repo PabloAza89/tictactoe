@@ -9,6 +9,9 @@ import { easings } from '../../commons/easingsCSS';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import AudiotrackIcon from '@mui/icons-material/Audiotrack';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import { ReactComponent as FXSvg } from '../../images/fxIcon.svg';
 import Stack from '@mui/material/Stack';
 import Slider from '@mui/material/Slider';
 import Swal from 'sweetalert2';
@@ -18,8 +21,8 @@ import cross from '../../images/cross.png';
 import dash from '../../images/dash.png';
 import aF from '../../commons/aF';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
-import { playSound, soundsArray, loadAllSounds, /* gain,  */gainArray, contextArray, /* context, source,  */arraySoundResetter } from '../../commons/playSound';
-import { setAllowBgSound, setBgSoundValue, setAllowFXSound} from '../../actions';
+import { playSound, soundsArray, loadAllSounds, /* gain,  */gainArray, gainMain, contextArray, /* context, source,  */arraySoundResetter } from '../../commons/playSound';
+import { setAllowBgSound, setBgSoundValue, setAllowFXSound, setFXSoundValue } from '../../actions';
 import silence from '../../audio/silence.mp3'
 import testTest from '../../audio/testTest.mp3'
 //const confetti = require('canvas-confetti');
@@ -45,14 +48,18 @@ const Main = () => {
 
   //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
   //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
+
   const allowBgSoundState = useSelector((state: { allowBgSound: boolean }) => state.allowBgSound)
   let allowBgSound = useRef(allowBgSoundState)
   const BgSoundValueState = useSelector((state: { BgSoundValue: number }) => state.BgSoundValue)
 
   const allowFXSoundState = useSelector((state: { allowFXSound: boolean }) => state.allowFXSound)
   let allowFXSound = useRef(allowFXSoundState)
+  const FXSoundValueState = useSelector((state: { FXSoundValue: number }) => state.FXSoundValue)
+
   //const menuShown = useSelector((state: {menuShown:boolean}) => state.menuShown)
-  const [ scoreShown, setScoreShown ] = useState<boolean>(true)
+  const [ scoreShown, setScoreShown ] = useState<boolean>(false)
+  const [ BGMusicShown, setBGMusicShown ] = useState<boolean>(false)
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -88,7 +95,7 @@ const Main = () => {
           if (rC.current[AIRandomGridIndex.current].value === "") {
             rC.current[AIRandomGridIndex.current].value = "O"
             //Omove.play()
-            if (allowFXSound.current) playSound({ file: aF.Omove, volume: 0.6})
+            if (allowFXSound.current) playSound({ file: aF.Omove })
             success = true
             setShouldAIstartState(false)
             setUserPlaying(true)
@@ -106,7 +113,7 @@ const Main = () => {
       rC.current[target].value = "X"
       //Omove.play()
       //Xmove.play()
-      if (allowFXSound.current) playSound({ file: aF.Xmove, volume: 0.6 })
+      if (allowFXSound.current) playSound({ file: aF.Xmove })
       setUserPlaying(false)
       validClick.current = true
       clickBlocked.current = true
@@ -124,7 +131,7 @@ const Main = () => {
       if (showCountdownRound.current) { // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
         setShowCountdownRoundState(true)
         setCountdownRound(3)
-        if (allowFXSound.current) playSound({ file: aF.ticTac3Sec, volume: 0.1 })
+        if (allowFXSound.current) playSound({ file: aF.ticTac3Sec })
       }
     }, 3000)
     setTimeout(() => {
@@ -136,7 +143,7 @@ const Main = () => {
     setTimeout(() => {
       if (showCountdownRound.current) {
         setCountdownRound(0) // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
-        if (allowFXSound.current) playSound({ file: aF.startRound, volume: 0.2 })
+        if (allowFXSound.current) playSound({ file: aF.startRound })
       }
     }, 6000)
     setTimeout(() => {
@@ -171,18 +178,22 @@ const Main = () => {
     setTimeout(() => {
       $(`#${array[0].id}`)
         .css("background", "yellow");
-        if (allowFXSound.current) playSound({ file: aF.revealed, pitch: -400 , volume: actionPoints === 100 ? 0.3 : 0.5 })
+        if (allowFXSound.current) playSound({ file: actionPoints === 100 ? aF.revealedOne : aF.revealedTwo , pitch: -400 })
     }, actionPoints === 100 ? 400 : 300)
     setTimeout(() => {
       $(`#${array[1].id}`)
         .css("background", "yellow");
-        if (allowFXSound.current) playSound({ file: aF.revealed, volume: actionPoints === 100 ? 0.3 : 0.5 })
+        if (allowFXSound.current) playSound({ file: actionPoints === 100 ? aF.revealedOne : aF.revealedTwo })
     }, actionPoints === 100 ? 700 : 600)
     setTimeout(() => {
       $(`#${array[2].id}`)
         .css("background", "yellow");
-        if (allowFXSound.current) playSound({ file: aF.revealed, pitch: 300, volume: actionPoints === 100 ? 0.3 : 0.5 })
+        if (allowFXSound.current) playSound({ file: actionPoints === 100 ? aF.revealedOne : aF.revealedTwo, pitch: 300 })
     }, actionPoints === 100 ? 1000 : 900)
+
+    // console.log("123 actionPoints", actionPoints)
+    // if (actionPoints === 100) setTimeout(() => { $(`#${array[2].id}`).css("background", "blue") }, 1000)
+    // else setTimeout(() => { $(`#${array[2].id}`).css("background", "gray") }, 900)
 
     setTimeout(() => {
       let copyPoints: pointsI = {...points}
@@ -193,11 +204,6 @@ const Main = () => {
         setWinnerRoundState(`${letter}`) // SYNC WITH POP-UP
       }, 300)
     }, 1200)
-
-    // setTimeout(() => { // TEST
-    //     //setWinnerRoundState(`${letter}`) // SYNC WITH POP-UP
-    //     setWinnerGameState(`${letter}`) // SYNC WITH POP-UP
-    // }, 1800) // WINNER SIGN AFTER FINAL POPUP (1700ms)
 
   }
 
@@ -267,10 +273,7 @@ const Main = () => {
       if (e.every((e: eachBoxI) => e.value === 'O')) highlighter({ array: e, letter: "O" })
     })
 
-    if (
-      rC.current.filter(e => e.value === '').length === 0
-      && !roundEnd.current
-    ) {
+    if (rC.current.filter(e => e.value === '').length === 0 && !roundEnd.current) {
       roundEnd.current = true // STOP GAME WHEN NO MORE STEPS AVAILABLE
       setTimeout(() => {
         winnerRound.current = "TIED"
@@ -294,8 +297,8 @@ const Main = () => {
 
           if (allowFXSound.current) {
             if (winnerRound.current === "X") playSound({ file: aF.roundWin })
-            else if (winnerRound.current === "O") playSound({ file: aF.roundLost, volume: 0.6 })
-            else playSound({ file: aF.trill, volume: 0.9 })
+            else if (winnerRound.current === "O") playSound({ file: aF.roundLost })
+            else playSound({ file: aF.trill })
           }
             
           
@@ -393,27 +396,27 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
-    score.current = []
-//   score.current = [
-//   {
-//     id: 0,
-//     timeX: `10:34:112`,
-//     scoreX: 100,
-//     X: "✔️",
-//     O: "❌",
-//     scoreO: 0,
-//     timeO: `00:00:000`
-//   },
-//   {
-//     id: 1,
-//     timeX: `00:00:000`,
-//     scoreX: 0,
-//     X: "❌",
-//     O: "✔️",
-//     scoreO: 100,
-//     timeO: `10:34:112`
-//   }
-// ]
+    //score.current = []
+  score.current = [
+  {
+    id: 0,
+    timeX: `10:34:112`,
+    scoreX: 100,
+    X: "✔️",
+    O: "❌",
+    scoreO: 0,
+    timeO: `00:00:000`
+  },
+  {
+    id: 1,
+    timeX: `00:00:000`,
+    scoreX: 0,
+    X: "❌",
+    O: "✔️",
+    scoreO: 100,
+    timeO: `10:34:112`
+  }
+]
 
 
 
@@ -435,15 +438,27 @@ const Main = () => {
     //rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
 
     // CONTINUE CHECK OF DOUBLE SOUND GAME WHEN 200 POINTS
+// rC.current = [ // rowsAndColumns
+// { id: 0, value: 'X' },
+// { id: 1, value: 'O' },
+// { id: 2, value: 'X' },
+// { id: 3, value: 'X' },
+// { id: 4, value: 'X' },
+// { id: 5, value: 'O' },
+// { id: 6, value: '' },
+// { id: 7, value: 'O' },
+// { id: 8, value: 'O' }
+// ]
+
 rC.current = [ // rowsAndColumns
 { id: 0, value: 'X' },
-{ id: 1, value: 'O' },
+{ id: 1, value: '' },
 { id: 2, value: 'X' },
-{ id: 3, value: 'X' },
+{ id: 3, value: 'O' },
 { id: 4, value: 'X' },
 { id: 5, value: 'O' },
-{ id: 6, value: '' },
-{ id: 7, value: 'O' },
+{ id: 6, value: 'O' },
+{ id: 7, value: 'X' },
 { id: 8, value: 'O' }
 ]
 
@@ -674,7 +689,7 @@ rC.current = [ // rowsAndColumns
 
   const startsIn = () => {
     setTimeout(() => {
-      if (allowFXSound.current) playSound({ file: aF.countDownA, volume: 0.5 })
+      if (allowFXSound.current) playSound({ file: aF.countDownA })
       Swal.fire({
         title: `STARTS IN\n3..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -686,7 +701,7 @@ rC.current = [ // rowsAndColumns
       })
     }, 0)
     setTimeout(() => {
-      if (allowFXSound.current) playSound({ file: aF.countDownA, volume: 0.5 })
+      if (allowFXSound.current) playSound({ file: aF.countDownA })
       Swal.fire({
         title: `STARTS IN\n2..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -698,7 +713,7 @@ rC.current = [ // rowsAndColumns
       })
     }, 1000)
     setTimeout(() => {
-      if (allowFXSound.current) playSound({ file: aF.countDownA, volume: 0.5 })
+      if (allowFXSound.current) playSound({ file: aF.countDownA })
       Swal.fire({
         title: `STARTS IN\n1..`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -710,7 +725,7 @@ rC.current = [ // rowsAndColumns
       })
     }, 2000)
     setTimeout(() => {
-      if (allowFXSound.current) playSound({ file: aF.countDownB, volume: 0.4 })
+      if (allowFXSound.current) playSound({ file: aF.countDownB })
       Swal.fire({
         title: `GO !!!`,
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
@@ -829,11 +844,11 @@ rC.current = [ // rowsAndColumns
         if (finalWinner === "X") startConfetti()
 
         if (allowFXSound.current) {
-          if (finalWinner === "X") playSound({ file: aF.taDah, pitch: 100, volume: 0.8 }); // X win entire game
-          else if (finalWinner === "O") playSound({ file: aF.looser, pitch: 125, volume: 0.7 }) // O win entire game
-          else if (finalWinner === "XByTime") playSound({ file: aF.XTime, volume: 1 }) // X win entire game by time
-          else if (finalWinner === "OByTime") playSound({ file: aF.OTime, volume: 1 }) // O win entire game by time
-          else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound({ file: aF.tiedWeird, volume: 0.9 }) // Tied by points & time & has at least a winning round, no way !
+          if (finalWinner === "X") playSound({ file: aF.taDah, pitch: 100 }); // X win entire game
+          else if (finalWinner === "O") playSound({ file: aF.looser, pitch: 125 }) // O win entire game
+          else if (finalWinner === "XByTime") playSound({ file: aF.XTime }) // X win entire game by time
+          else if (finalWinner === "OByTime") playSound({ file: aF.OTime }) // O win entire game by time
+          else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound({ file: aF.tiedWeird }) // Tied by points & time & has at least a winning round, no way !
           else playSound({ file: aF.tied }) // Normal tied game
         }
         
@@ -958,6 +973,33 @@ rC.current = [ // rowsAndColumns
       }
     })
   },[scoreShown])
+
+  useEffect(() => { // SHOW/HIDE SCORE HANDLER
+    $(function() {
+      if (BGMusicShown) { // show --> hidden
+        $(`.buttonBGSlider`)
+          .on("click", function() {
+            $(`#divBGSlider`)
+              .stop() // ↓↓ ABSOLUTE ↓↓
+              .animate( { left: '-117px' }, { queue: false, easing: 'easeOutCubic', duration: 800 }) // INITIAL POSITION
+        })
+        $(`#divBGSlider`)
+          //.css("left", "auto")
+          .css("left", "35px") // DIV WIDTH
+      }
+      else if (!BGMusicShown) { // hidden -> show
+        $(`.buttonBGSlider`)
+          .on("click", function() {
+            $(`#divBGSlider`)
+              .stop() // DIV WIDTH
+              .animate( { left: '35px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
+          })
+        $(`#divBGSlider`)
+          //.css("left", "auto")
+          .css("left", "-117px") // ABSOLUTE
+      }
+    })
+  },[BGMusicShown])
 
   const [ height, setHeight ] = useState<number>(window.innerHeight)
 
@@ -1099,7 +1141,7 @@ rC.current = [ // rowsAndColumns
   // },[])
 
   const playBackgroundSong = () => {
-    playSound({ file: aF.bG, volume: BgSoundValueState, loop: true })
+    playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
       // .then((res: any) => {
       //   console.log("123 res", res)
       // })
@@ -1117,27 +1159,45 @@ rC.current = [ // rowsAndColumns
   }
 
   const [ BgValue, setBgValue ] = useState<number>(50)
+  const [ FXValue, setFXValue ] = useState<number>(50)
 
   const handleBgValue = (value: string) => {
-    //console.log("CHANGE E",value)
-    //setValue(newValue as number);
     setBgValue(parseInt(value, 10));
-    console.log("123 value", value)
-    console.log("333 value", parseInt(value,10) / 100)
-    //soundsArray[aF.bG.i].stop()
-    //soundsArray[aF.bG.i].gain.value = parseInt(value,10) / 100
-    //gain.gain.value = parseInt(value,10) / 100
-    //if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = parseInt(value,10) / 100
-    //if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = BgSoundValueState
+    //console.log("123 value", value)
+    //console.log("333 value", parseInt(value,10) / 100)
     if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = parseInt(value,10) / 100
-    //setBgSoundValue(parseInt(value,10) / 100)
-    dispatch(setBgSoundValue(parseInt(value,10) / 100))
+    dispatch(setBgSoundValue(parseInt(value, 10) / 100))
     localStorage.setItem('BgSoundValue', JSON.stringify(parseInt(value,10) / 100))
-    //console.log("contextARray", contextArray[aF.bG.i])
-    console.log("soundsArray", soundsArray[aF.bG.i])
+    //console.log("soundsArray", soundsArray[aF.bG.i])
   }
 
-  //console.log("handleBgValue", BgValue)
+  const handleFXValue = (value: string) => {
+    setFXValue(parseInt(value, 10));
+    //console.log("123 value", value)
+    //console.log("333 value", parseInt(value,10) / 100)
+
+    //if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = parseInt(value,10) / 100
+    //if (soundsArray[aF.bG.i] !== undefined) {
+      //gainMain[aF.bG.i].gain.value = parseInt(value,10) / 100
+      //console.log("se ejecuto EL HANDLER")
+      console.log("gainArray", gainArray)
+
+        gainArray.forEach((e, idx) => {
+          if (idx !== aF.bG.i) e.gain.value = e.maxVolume * parseInt(value, 10) / 100
+        })
+
+      
+   // }
+
+    //console.log("gainMain[3]", gainMain[3])
+    //console.log("gainArray[3]", gainArray[3])
+
+    dispatch(setFXSoundValue(parseInt(value,10) / 100))
+    localStorage.setItem('FXSoundValue', JSON.stringify(parseInt(value,10) / 100))
+    //console.log("soundsArray", soundsArray[aF.bG.i])
+  }
+
+  
 
   interface targetI {
     value?: number
@@ -1148,13 +1208,13 @@ rC.current = [ // rowsAndColumns
     let fileCounter: number = 0;
     Object.keys(aF).forEach( (e: any, i: any) => {
       loadAllSounds({ file: aF[e] })
-      .then((res) => {
+      .then(() => {
         //console.log("res res", res)
         fileCounter += 1
       })
       .then(() => {
         //console.log("fileCounter", fileCounter)
-        if (fileCounter === 19) {
+        if (fileCounter === Object.keys(aF).length) {
           console.log("ALL SOUNDS LOADED")
           allSoundsLoaded.current = true
           if (allowBgSound.current) playBackgroundSong()
@@ -1413,9 +1473,24 @@ rC.current = [ // rowsAndColumns
 
 
       </div>
+
+      <div id={`divBGSlider`} className={css.sliderBGContainer}>
+        <Slider
+          className={css.slider}
+          value={BgSoundValueState * 100}
+          onChange={(e) => { handleBgValue((e.target as HTMLInputElement).value) }}
+        />
+        <Button
+          id={css.buttonBGSlider}
+          className={`buttonBGSlider`}
+          onClick={() => { setBGMusicShown(!BGMusicShown) }}
+        >
+          <MusicNoteIcon />
+        </Button>
+      </div>
       <div id={css.bgAndSliderContainer}>
         <Button
-          id={css.buttonMuteBackground}
+          id={css.buttonMute}
           onClick={() => {
             dispatch(setAllowBgSound(!allowBgSoundState))
             allowBgSound.current = !allowBgSound.current
@@ -1424,10 +1499,9 @@ rC.current = [ // rowsAndColumns
               console.log("MUTED se ejecuto este otro 1")
               soundsArray[aF.bG.i].stop()
             }
-            else if (allSoundsLoaded.current && allowBgSound.current /* && soundsArray[aF.bG.i] !== undefined  */ /* && soundsArray[aF.bG.i].context.currentTime === 0 */) {
+            else if (allSoundsLoaded.current && allowBgSound.current) {
               console.log("PLAY se ejecuto este otro 2")
-            playSound({ file: aF.bG, volume: BgSoundValueState, loop: true })
-              //playBackgroundSong()
+            playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
             }
           }}
         >
@@ -1437,29 +1511,43 @@ rC.current = [ // rowsAndColumns
             <VolumeOffIcon />
           }
         </Button>
+        
+        
+      </div>
+
+      {/* <div><FXSvg/></div> */}
+
+      <div id={css.fxAndSliderContainer}>
+        <Button
+          id={css.buttonMute}
+          onClick={() => {
+            dispatch(setAllowFXSound(!allowFXSoundState))
+            allowFXSound.current = !allowFXSound.current
+            localStorage.setItem('allowFXSound', JSON.stringify(!allowFXSoundState))
+            if (allSoundsLoaded.current && !allowFXSound.current) {
+              console.log("MUTED se ejecuto este otro 1")
+              //soundsArray[aF.bG.i].stop()
+              soundsArray.forEach((e,index) => {
+                if (aF.bG.i !== index && e.context.state === 'running') e.stop()
+              })
+            }
+          }}
+        >
+          {
+            allowFXSoundState ?
+            <VolumeUpIcon /> :
+            <VolumeOffIcon />
+          }
+        </Button>
         <div className={css.divBackground}>
-          {/* <VolumeDownIcon /> */}
-            <Slider /* style={{ padding: '15.5px 0' }} *//* disabled */ /* defaultValue={50} */ value={BgSoundValueState * 100} onChange={(e) => { handleBgValue((e.target as HTMLInputElement).value) }} />
-          {/* <VolumeUpIcon /> */}
+          <Slider
+            className={css.slider}
+            //classes={`${css.testStyle}`}
+            value={FXSoundValueState * 100}
+            onChange={(e) => { handleFXValue((e.target as HTMLInputElement).value) }}
+          />
         </div>
       </div>
-      <Button
-        id={css.buttonMuteFX}
-        onClick={() => {
-          dispatch(setAllowFXSound(!allowFXSoundState))
-          allowFXSound.current = !allowFXSound.current
-          localStorage.setItem('allowFXSound', JSON.stringify(!allowFXSoundState))
-          if (!allowFXSound.current) soundsArray.forEach((e,index) => {
-            if (aF.bG.i !== index) e.stop()
-          })
-        }}
-      >
-        {
-          allowFXSoundState ?
-          <VolumeUpIcon /> :
-          <VolumeOffIcon />
-        }
-      </Button>
     
         <Button
           focusRipple={false}
@@ -1474,7 +1562,8 @@ rC.current = [ // rowsAndColumns
 
             //soundsArray[aF.bG.i].start()
 
-            contextArray[aF.bG.i].resume()
+            //contextArray[aF.bG.i].resume()
+            console.log("soundsArray 333", soundsArray)
             //soundsArray[aF.bG.i].start()
             //soundsArray[aF.bG.i].resume()            
             //if (allowBgSound.current) playSound({ file: aF.bG, volume: 0.4, loop: true })
