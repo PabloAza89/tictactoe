@@ -1166,80 +1166,75 @@ rC.current = [ // rowsAndColumns
 
   const playBackgroundSong = () => {
     playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-      // .then((res: any) => {
-      //   console.log("123 res", res)
-      // })
-     .then((res: any) => {
-        if (res.state === "suspended") {
-          document.addEventListener('click', () => {
-            //if (allowBgSound.current && soundsArray[aF.bG.i].context.currentTime === 0) playSound({ file: aF.bG, volume: 0.4, loop: true })
-            if (allowBgSound.current) {
-              console.log("se ejecuto este 2")
-              contextArray[aF.bG.i].resume()
-            }
-          }, { once: true })
-        }
-      })
+    .then((res: any) => {
+      if (res.state === "suspended") {
+        document.addEventListener('click', () => {
+          if (allowBgSound.current) {
+            console.log("se ejecuto este 2")
+            contextArray[aF.bG.i].resume()
+          }
+        }, { once: true })
+      }
+    })
   }
 
-  const [ BgValue, setBgValue ] = useState<number>(50)
-  const [ FXValue, setFXValue ] = useState<number>(50)
+  //const [ BgValue, setBgValue ] = useState<number>(50)
+  //const [ FXValue, setFXValue ] = useState<number>(50)
 
   const handleBgValue = (value: string) => {
-    setBgValue(parseInt(value, 10));
-    //console.log("123 value", value)
-    //console.log("333 value", parseInt(value,10) / 100)
+    clearTimeout(timeoutBG)
+    setTimeoutBG(setTimeout(autoHideBG, 5000))
+    //setBgValue(parseInt(value, 10));
     if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = parseInt(value,10) / 100
     dispatch(setBgSoundValue(parseInt(value, 10) / 100))
     localStorage.setItem('BgSoundValue', JSON.stringify(parseInt(value,10) / 100))
-    //console.log("soundsArray", soundsArray[aF.bG.i])
   }
 
   const handleFXValue = (value: string) => {
-    setFXValue(parseInt(value, 10));
-    //console.log("123 value", value)
-    //console.log("333 value", parseInt(value,10) / 100)
-
-    //if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = parseInt(value,10) / 100
-    //if (soundsArray[aF.bG.i] !== undefined) {
-      //gainMain[aF.bG.i].gain.value = parseInt(value,10) / 100
-      //console.log("se ejecuto EL HANDLER")
-      console.log("gainArray", gainArray)
-
+    clearTimeout(timeoutFX)
+    setTimeoutFX(setTimeout(autoHideFX, 5000))
+    //setFXValue(parseInt(value, 10));
+      //console.log("gainArray", gainArray)
         gainArray.forEach((e, idx) => {
           if (idx !== aF.bG.i) e.gain.value = e.maxVolume * parseInt(value, 10) / 100
         })
-
-      
-   // }
-
-    //console.log("gainMain[3]", gainMain[3])
-    //console.log("gainArray[3]", gainArray[3])
-
     dispatch(setFXSoundValue(parseInt(value,10) / 100))
     localStorage.setItem('FXSoundValue', JSON.stringify(parseInt(value,10) / 100))
-    //console.log("soundsArray", soundsArray[aF.bG.i])
   }
+
+  // interface targetI {
+  //   value?: number
+  // }
 
   
 
-  interface targetI {
-    value?: number
+  const autoHideBG = () => {
+    $(function() {
+      $(`.buttonBGSlider`)
+        .trigger( "click" )
+    })
   }
 
+  const autoHideFX = () => {
+    $(function() {
+      $(`.buttonFXSlider`)
+        .trigger( "click" )
+    })
+  }
+
+  const [ timeoutBG, setTimeoutBG ] = useState<ReturnType<typeof setTimeout>>()
+  const [ timeoutFX, setTimeoutFX ] = useState<ReturnType<typeof setTimeout>>()
+
+
   useEffect(() => { // LOAD ALL SOUNDS
-    //console.log("aF.length", Object.keys(aF).length)
     let fileCounter: number = 0;
-    Object.keys(aF).forEach( (e: any, i: any) => {
+    Object.keys(aF).forEach((e: any, i: any) => {
       loadAllSounds({ file: aF[e] })
       .then(() => {
-        //console.log("res res", res)
         fileCounter += 1
       })
       .then(() => {
-        //console.log("fileCounter", fileCounter)
         if (fileCounter === Object.keys(aF).length) {
-          console.log("ALL SOUNDS LOADED")
           allSoundsLoaded.current = true
           if (allowBgSound.current) playBackgroundSong()
         }
@@ -1507,7 +1502,11 @@ rC.current = [ // rowsAndColumns
         <Button
           id={css.buttonBGSlider}
           className={`buttonBGSlider`}
-          onClick={() => { setBGMusicShown(!BGMusicShown) }}
+          onClick={() => {
+            clearTimeout(timeoutBG)
+            if (!BGMusicShown) setTimeoutBG(setTimeout(autoHideBG, 5000))
+            setBGMusicShown(!BGMusicShown)
+          }}
         >
           <MusicNoteIcon />
         </Button>
@@ -1545,10 +1544,12 @@ rC.current = [ // rowsAndColumns
         <Button
           id={css.buttonFXSlider}
           className={`buttonFXSlider`}
-          onClick={() => { setFXMusicShown(!FXMusicShown) }}
+          onClick={() => {
+            clearTimeout(timeoutFX)
+            if (!FXMusicShown) setTimeoutFX(setTimeout(autoHideFX, 5000))
+            setFXMusicShown(!FXMusicShown)
+          }}
         >
-          {/* <div><FXSvg/></div> */}
-          {/* <FXSvg style={{ width: '31px', height: '35px' }}/> */}
           <FXSvg style={{ width: '23px', height: '23px' }}/>
         </Button>
       </div>
@@ -1564,11 +1565,7 @@ rC.current = [ // rowsAndColumns
               soundsArray.forEach((e,index) => {
                 if (aF.bG.i !== index && e.context.state === 'running') e.stop()
               })
-            } 
-            // else if (allSoundsLoaded.current && allowBgSound.current) {
-            //   console.log("PLAY se ejecuto este otro 2")
-            //   playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-            // }
+            }
           }}
         >
           {
@@ -1580,7 +1577,17 @@ rC.current = [ // rowsAndColumns
       </div>
 
       
-
+      <Button
+          focusRipple={false}
+          variant="outlined"
+          id={`mmb`}
+          onClick={() => {
+            //console.log("soundsArray 333", soundsArray)
+            autoHideBG()
+          }}
+        >
+          TEST BUTTON
+        </Button>
     
     
         {/* <Button
