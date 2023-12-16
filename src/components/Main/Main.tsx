@@ -31,7 +31,8 @@ const Main = () => {
   let allSoundsLoaded = useRef<boolean>(false)
   let score = useRef<any[]>([])
 
-  const [ gameMode, setGameMode ] = useState<string>("easy")
+  //const [ gameMode, setGameMode ] = useState<string>("easy")
+  const [ gameMode, setGameMode ] = useState<string>("hard")
 
   const allowBgSoundState = useSelector((state: { allowBgSound: boolean }) => state.allowBgSound)
   let allowBgSound = useRef(allowBgSoundState)
@@ -69,22 +70,84 @@ const Main = () => {
   let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
   const AIAction = async () => {
-
     let randomTimes = [ 700, 800, 900, 1000, 1100 ]
     setTimeout(() => {
       if (rC.current.filter((e: any) => e.value === '').length >= 1) {
         let success = false
-        do {
-          AIRandomGridIndex.current = Math.floor(Math.random() * 9)
-          if (rC.current[AIRandomGridIndex.current].value === "") {
-            rC.current[AIRandomGridIndex.current].value = "O"
-            //Omove.play()
-            if (allowFXSound.current) playSound({ file: aF.Omove })
-            success = true
-            setShouldAIstartState(false)
-            setUserPlaying(true)
+
+        if (gameMode === 'easy') {
+          do {
+            AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+            if (rC.current[AIRandomGridIndex.current].value === "") {
+              rC.current[AIRandomGridIndex.current].value = "O"
+              //Omove.play()
+              if (allowFXSound.current) playSound({ file: aF.Omove })
+              success = true
+              setShouldAIstartState(false)
+              setUserPlaying(true)
+            }
+          } while (success === false)
+        } else { // BEGINS EVIL STRATEGY >-)
+
+          // BEGIN TRY TO MATCH ALL 3 O POSSIBLE //
+          if (rC.current[0].value === "O" && rC.current[2].value === "O" && rC.current[1].value === "") rC.current[1].value = "O"      // O • O
+          else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // O • O
+          else if (rC.current[6].value === "O" && rC.current[8].value === "O" && rC.current[7].value === "") rC.current[7].value = "O" // O • O
+
+          else if (rC.current[0].value === "O" && rC.current[1].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O O •
+          else if (rC.current[3].value === "O" && rC.current[4].value === "O" && rC.current[5].value === "") rC.current[5].value = "O" // O O •
+          else if (rC.current[6].value === "O" && rC.current[7].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // O O •
+
+          else if (rC.current[1].value === "O" && rC.current[2].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • O O
+          else if (rC.current[4].value === "O" && rC.current[5].value === "O" && rC.current[3].value === "") rC.current[3].value = "O" // • O O
+          else if (rC.current[7].value === "O" && rC.current[8].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // • O O
+
+          else if (rC.current[0].value === "O" && rC.current[6].value === "O" && rC.current[3].value === "") rC.current[3].value = "O" // O O O
+          else if (rC.current[1].value === "O" && rC.current[7].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • •
+          else if (rC.current[2].value === "O" && rC.current[8].value === "O" && rC.current[5].value === "") rC.current[5].value = "O" // O O O
+
+          else if (rC.current[0].value === "O" && rC.current[3].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // O O O
+          else if (rC.current[1].value === "O" && rC.current[4].value === "O" && rC.current[7].value === "") rC.current[7].value = "O" // O O O
+          else if (rC.current[2].value === "O" && rC.current[5].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // • • •
+
+          else if (rC.current[3].value === "O" && rC.current[6].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • • •
+          else if (rC.current[4].value === "O" && rC.current[7].value === "O" && rC.current[1].value === "") rC.current[1].value = "O" // O O O
+          else if (rC.current[5].value === "O" && rC.current[8].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O O O
+
+          else if (rC.current[0].value === "O" && rC.current[8].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // O • • // O • • // • • •
+          else if (rC.current[0].value === "O" && rC.current[4].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // • • • // • O • // • O •
+          else if (rC.current[4].value === "O" && rC.current[8].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • • O // • • • // • • O
+
+          else if (rC.current[2].value === "O" && rC.current[6].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • O // • • O // • • •
+          else if (rC.current[2].value === "O" && rC.current[4].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // • • • // • O • // • O •
+          else if (rC.current[4].value === "O" && rC.current[6].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O • • // • • • // O • •
+          // END TRY TO MATCH ALL 3 O POSSIBLE //
+
+          // BEGIN TRY TO BLOCK 3 XXX FROM HUMAN ENEMY //
+          else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // X • •
+          else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • •
+          else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • •
+
+
+          // END TRY TO BLOCK 3 XXX FROM HUMAN ENEMY //
+
+          else if (rC.current[4].value === "") rC.current[4].value = "O" // TRY MARK CENTER
+
+          else if (rC.current[4].value === "O") { // IF CENTER IS "O" TRY DIAGONALS: 0+4+8 // 2+4+6
+            if (rC.current[0].value === "O" && rC.current[8].value === "") rC.current[8].value = "O"
+            else if (rC.current[2].value === "O" && rC.current[6].value === "") rC.current[6].value = "O"
+            else if (rC.current[0].value === "") rC.current[0].value = "O"
+            else if (rC.current[2].value === "") rC.current[2].value = "O"
           }
-        } while (success === false)
+
+
+          if (allowFXSound.current) playSound({ file: aF.Omove })
+          success = true
+          setShouldAIstartState(false)
+          setUserPlaying(true)
+        }
+          
+
       }
       checkRoundWinner()
       .then(() => { if (!roundEnd.current) clickBlocked.current = false })
@@ -419,7 +482,7 @@ const Main = () => {
     addFlowPopUp()
     stopTimer()
     resetTimer()
-    
+
     rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
 
     // CONTINUE CHECK OF DOUBLE SOUND GAME WHEN 200 POINTS
