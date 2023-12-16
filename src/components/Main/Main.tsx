@@ -1,18 +1,14 @@
 
 import css from './MainCSS.module.css';
 import com from '../../commons/commonsCSS.module.css';
-import { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@mui/material/';
 import { easings } from '../../commons/easingsCSS';
-//import simulate from '../../commons/simulate';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
-import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import { ReactComponent as FXSvg } from '../../images/fxIcon.svg';
-import Stack from '@mui/material/Stack';
 import Slider from '@mui/material/Slider';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
@@ -21,33 +17,21 @@ import cross from '../../images/cross.png';
 import dash from '../../images/dash.png';
 import aF from '../../commons/aF';
 import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfaces/interfaces';
-import { playSound, soundsArray, loadAllSounds, /* gain,  */gainArray, gainMain, contextArray, /* context, source,  */arraySoundResetter } from '../../commons/playSound';
+import { playSound, soundsArray, loadAllSounds, gainArray, contextArray } from '../../commons/playSound';
 import { setAllowBgSound, setBgSoundValue, setAllowFXSound, setFXSoundValue } from '../../actions';
-import silence from '../../audio/silence.mp3'
-import testTest from '../../audio/testTest.mp3'
-//const confetti = require('canvas-confetti');
 import confetti from 'canvas-confetti';
-//import  confetti from 'canvas-confetti';
 
 const Main = () => {
 
   easings() // JQuery easings..
   const dispatch = useDispatch()
 
-  //let Omove = new Audio('/assets/Omove.mp3');
-  //let Xmove = new Audio(XmoveImp);
-  //let Omove = new Audio(OmoveImp);
-
-  //const scoreShown = useSelector((state: { scoreShown: boolean }) => state.scoreShown)
-
   let rC = useRef<eachBoxI[]>(Array.from({length: 9}, (e,i) => ({ id: i, value: '' }))) // rowsAndColumns
 
   let allSoundsLoaded = useRef<boolean>(false)
-
   let score = useRef<any[]>([])
 
-  //const [ animateButton, setAnimateButton ] = useState<boolean>(false)
-  //const [ scoreShown, setScoreShown ] = useState<boolean>(false)
+  const [ gameMode, setGameMode ] = useState<string>("easy")
 
   const allowBgSoundState = useSelector((state: { allowBgSound: boolean }) => state.allowBgSound)
   let allowBgSound = useRef(allowBgSoundState)
@@ -57,7 +41,6 @@ const Main = () => {
   let allowFXSound = useRef(allowFXSoundState)
   const FXSoundValueState = useSelector((state: { FXSoundValue: number }) => state.FXSoundValue)
 
-  //const menuShown = useSelector((state: {menuShown:boolean}) => state.menuShown)
   const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   const [ BGMusicShown, setBGMusicShown ] = useState<boolean>(false)
   const [ FXMusicShown, setFXMusicShown ] = useState<boolean>(false)
@@ -397,27 +380,27 @@ const Main = () => {
   }
 
   const hardResetGame = () => {
-    //score.current = []
-  score.current = [
-  {
-    id: 0,
-    timeX: `10:34:112`,
-    scoreX: 100,
-    X: "✔️",
-    O: "❌",
-    scoreO: 0,
-    timeO: `00:00:000`
-  },
-  {
-    id: 1,
-    timeX: `00:00:000`,
-    scoreX: 0,
-    X: "❌",
-    O: "✔️",
-    scoreO: 100,
-    timeO: `10:34:112`
-  }
-]
+    score.current = []
+//   score.current = [
+//   {
+//     id: 0,
+//     timeX: `10:34:112`,
+//     scoreX: 100,
+//     X: "✔️",
+//     O: "❌",
+//     scoreO: 0,
+//     timeO: `00:00:000`
+//   },
+//   {
+//     id: 1,
+//     timeX: `00:00:000`,
+//     scoreX: 0,
+//     X: "❌",
+//     O: "✔️",
+//     scoreO: 100,
+//     timeO: `10:34:112`
+//   }
+// ]
 
 
 
@@ -436,7 +419,8 @@ const Main = () => {
     addFlowPopUp()
     stopTimer()
     resetTimer()
-    //rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
+    
+    rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
 
     // CONTINUE CHECK OF DOUBLE SOUND GAME WHEN 200 POINTS
 // rC.current = [ // rowsAndColumns
@@ -451,17 +435,17 @@ const Main = () => {
 // { id: 8, value: 'O' }
 // ]
 
-rC.current = [ // rowsAndColumns
-{ id: 0, value: 'X' },
-{ id: 1, value: '' },
-{ id: 2, value: 'X' },
-{ id: 3, value: 'O' },
-{ id: 4, value: 'X' },
-{ id: 5, value: 'O' },
-{ id: 6, value: 'O' },
-{ id: 7, value: 'X' },
-{ id: 8, value: 'O' }
-]
+// rC.current = [ // rowsAndColumns
+// { id: 0, value: 'X' },
+// { id: 1, value: '' },
+// { id: 2, value: 'X' },
+// { id: 3, value: 'O' },
+// { id: 4, value: 'X' },
+// { id: 5, value: 'O' },
+// { id: 6, value: 'O' },
+// { id: 7, value: 'X' },
+// { id: 8, value: 'O' }
+// ]
 
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 });
@@ -1140,29 +1124,6 @@ rC.current = [ // rowsAndColumns
   }
 
   // END CONFETTI //
-  //soundsArray[aF.bG.i].context.currentTime === 0
-  // useEffect(() => { // FOR AUTOPLAY POLICY
-  // //   if (allSoundsLoaded.current && allowBgSound.current) {
-  // //     console.log("se ejecuto este 1")
-  // //     /* if (allowBgSound.current)  */ playSound({ file: aF.bG, volume: BgSoundValueState, loop: true })
-  // //     .then((res: any) => {
-  // //       if (res.state === "suspended") {
-  // //         document.addEventListener('click', () => {
-  // //           //if (allowBgSound.current && soundsArray[aF.bG.i].context.currentTime === 0) playSound({ file: aF.bG, volume: 0.4, loop: true })
-  // //           if (allowBgSound.current) {
-  // //             console.log("se ejecuto este 2")
-  // //             contextArray[aF.bG.i].resume()
-  // //           }
-  // //         }, { once: true })
-  // //       }
-  // //     })
-  // //   }
-  // // //},[BgSoundValueState])
-
-  // 
-
-
-  // },[])
 
   const playBackgroundSong = () => {
     playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
@@ -1177,14 +1138,10 @@ rC.current = [ // rowsAndColumns
       }
     })
   }
-
-  //const [ BgValue, setBgValue ] = useState<number>(50)
-  //const [ FXValue, setFXValue ] = useState<number>(50)
-
+  
   const handleBgValue = (value: string) => {
     clearTimeout(timeoutBG)
     setTimeoutBG(setTimeout(autoHideBG, 5000))
-    //setBgValue(parseInt(value, 10));
     if (soundsArray[aF.bG.i] !== undefined) gainArray[aF.bG.i].gain.value = parseInt(value,10) / 100
     dispatch(setBgSoundValue(parseInt(value, 10) / 100))
     localStorage.setItem('BgSoundValue', JSON.stringify(parseInt(value,10) / 100))
@@ -1193,20 +1150,12 @@ rC.current = [ // rowsAndColumns
   const handleFXValue = (value: string) => {
     clearTimeout(timeoutFX)
     setTimeoutFX(setTimeout(autoHideFX, 5000))
-    //setFXValue(parseInt(value, 10));
-      //console.log("gainArray", gainArray)
-        gainArray.forEach((e, idx) => {
-          if (idx !== aF.bG.i) e.gain.value = e.maxVolume * parseInt(value, 10) / 100
-        })
+    gainArray.forEach((e, idx) => {
+      if (idx !== aF.bG.i) e.gain.value = e.maxVolume * parseInt(value, 10) / 100
+    })
     dispatch(setFXSoundValue(parseInt(value,10) / 100))
     localStorage.setItem('FXSoundValue', JSON.stringify(parseInt(value,10) / 100))
   }
-
-  // interface targetI {
-  //   value?: number
-  // }
-
-  
 
   const autoHideBG = () => {
     $(function() {
@@ -1242,6 +1191,8 @@ rC.current = [ // rowsAndColumns
     })
   },[])
 
+  console.log("111 GAME MODE", gameMode)
+
   return (
     <div className={`${css.background} ${com.noSelect}`}>
       <Button
@@ -1271,7 +1222,6 @@ rC.current = [ // rowsAndColumns
           <div className={css.points}><div className={css.innerPoints}> {points.O} </div></div>
         </div>
         <div
-          //id={`finalWinnerBox`}
           className={css.finalWinner}
         >
           <div id={`finalWinnerBox`}>
@@ -1324,11 +1274,7 @@ rC.current = [ // rowsAndColumns
                 key={index}
                 id={`${index}`}
                 onClick={(e) => {
-                  //Omove.play()
-                  //Audio(Omove).play();
-                  if (!clickBlocked.current) {
-                    handleSequence({ target: index })
-                  }
+                  if (!clickBlocked.current) handleSequence({ target: index })
                 }}
                 className={css.eachBox}
               >
@@ -1359,11 +1305,7 @@ rC.current = [ // rowsAndColumns
       <Button
         className={`buttonShow`}
         id={css.buttonShow}
-        onClick={() => {
-          //dispatch(setScoreShown(!scoreShown))
-          setScoreShown(!scoreShown)
-          //localStorage.setItem('scoreShown', JSON.stringify(!scoreShown))
-        }}
+        onClick={() => setScoreShown(!scoreShown) }
       >
         <div className={css.buttonTypo}>
           { `TOTAL SCORE` }
@@ -1577,16 +1519,26 @@ rC.current = [ // rowsAndColumns
       </div>
 
       
-      <Button
+        <Button
           focusRipple={false}
           variant="outlined"
           id={`mmb`}
           onClick={() => {
-            //console.log("soundsArray 333", soundsArray)
-            autoHideBG()
+            setGameMode("easy")
           }}
         >
-          TEST BUTTON
+          EASY MODE
+        </Button>
+
+        <Button
+          focusRipple={false}
+          variant="outlined"
+          id={`mmb`}
+          onClick={() => {
+            setGameMode("hard")
+          }}
+        >
+          HARD MODE
         </Button>
     
     
