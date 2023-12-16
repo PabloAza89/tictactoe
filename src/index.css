@@ -7,6 +7,7 @@
 /* background: #eeeeee */ /* DEFAULT BACKGROUND COLOR */
 
 body {
+  background: lightblue;
   display: flex;
   /* background: lightblue; */
   position: absolute;

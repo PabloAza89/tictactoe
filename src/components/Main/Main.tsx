@@ -60,6 +60,7 @@ const Main = () => {
   //const menuShown = useSelector((state: {menuShown:boolean}) => state.menuShown)
   const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   const [ BGMusicShown, setBGMusicShown ] = useState<boolean>(false)
+  const [ FXMusicShown, setFXMusicShown ] = useState<boolean>(false)
   let clickBlocked = useRef(true)
   let validClick = useRef(false)
   let continueFlowPopUp = useRef(true)
@@ -974,32 +975,55 @@ rC.current = [ // rowsAndColumns
     })
   },[scoreShown])
 
-  useEffect(() => { // SHOW/HIDE SCORE HANDLER
+  useEffect(() => { // SHOW/HIDE BG SLIDER
     $(function() {
       if (BGMusicShown) { // show --> hidden
         $(`.buttonBGSlider`)
           .on("click", function() {
             $(`#divBGSlider`)
-              .stop() // ↓↓ ABSOLUTE ↓↓
+              .stop()
               .animate( { left: '-117px' }, { queue: false, easing: 'easeOutCubic', duration: 800 }) // INITIAL POSITION
         })
         $(`#divBGSlider`)
-          //.css("left", "auto")
-          .css("left", "35px") // DIV WIDTH
+          .css("left", "35px")
       }
       else if (!BGMusicShown) { // hidden -> show
         $(`.buttonBGSlider`)
           .on("click", function() {
             $(`#divBGSlider`)
-              .stop() // DIV WIDTH
+              .stop()
               .animate( { left: '35px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
           })
         $(`#divBGSlider`)
-          //.css("left", "auto")
           .css("left", "-117px") // ABSOLUTE
       }
     })
   },[BGMusicShown])
+
+  useEffect(() => { // SHOW/HIDE FX SLIDER
+    $(function() {
+      if (FXMusicShown) { // show --> hidden
+        $(`.buttonFXSlider`)
+          .on("click", function() {
+            $(`#divFXSlider`)
+              .stop()
+              .animate( { left: '-117px' }, { queue: false, easing: 'easeOutCubic', duration: 800 }) // INITIAL POSITION
+        })
+        $(`#divFXSlider`)
+          .css("left", "35px")
+      }
+      else if (!FXMusicShown) { // hidden -> show
+        $(`.buttonFXSlider`)
+          .on("click", function() {
+            $(`#divFXSlider`)
+              .stop()
+              .animate( { left: '35px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
+          })
+        $(`#divFXSlider`)
+          .css("left", "-117px") // ABSOLUTE
+      }
+    })
+  },[FXMusicShown])
 
   const [ height, setHeight ] = useState<number>(window.innerHeight)
 
@@ -1498,10 +1522,9 @@ rC.current = [ // rowsAndColumns
             if (allSoundsLoaded.current && !allowBgSound.current) {
               console.log("MUTED se ejecuto este otro 1")
               soundsArray[aF.bG.i].stop()
-            }
-            else if (allSoundsLoaded.current && allowBgSound.current) {
+            } else if (allSoundsLoaded.current && allowBgSound.current) {
               console.log("PLAY se ejecuto este otro 2")
-            playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+              playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
             }
           }}
         >
@@ -1511,12 +1534,24 @@ rC.current = [ // rowsAndColumns
             <VolumeOffIcon />
           }
         </Button>
-        
-        
       </div>
 
-      {/* <div><FXSvg/></div> */}
-
+      <div id={`divFXSlider`} className={css.sliderFXContainer}>
+        <Slider
+          className={css.slider}
+          value={FXSoundValueState * 100}
+          onChange={(e) => { handleFXValue((e.target as HTMLInputElement).value) }}
+        />
+        <Button
+          id={css.buttonFXSlider}
+          className={`buttonFXSlider`}
+          onClick={() => { setFXMusicShown(!FXMusicShown) }}
+        >
+          {/* <div><FXSvg/></div> */}
+          {/* <FXSvg style={{ width: '31px', height: '35px' }}/> */}
+          <FXSvg style={{ width: '23px', height: '23px' }}/>
+        </Button>
+      </div>
       <div id={css.fxAndSliderContainer}>
         <Button
           id={css.buttonMute}
@@ -1526,11 +1561,14 @@ rC.current = [ // rowsAndColumns
             localStorage.setItem('allowFXSound', JSON.stringify(!allowFXSoundState))
             if (allSoundsLoaded.current && !allowFXSound.current) {
               console.log("MUTED se ejecuto este otro 1")
-              //soundsArray[aF.bG.i].stop()
               soundsArray.forEach((e,index) => {
                 if (aF.bG.i !== index && e.context.state === 'running') e.stop()
               })
-            }
+            } 
+            // else if (allSoundsLoaded.current && allowBgSound.current) {
+            //   console.log("PLAY se ejecuto este otro 2")
+            //   playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+            // }
           }}
         >
           {
@@ -1539,17 +1577,13 @@ rC.current = [ // rowsAndColumns
             <VolumeOffIcon />
           }
         </Button>
-        <div className={css.divBackground}>
-          <Slider
-            className={css.slider}
-            //classes={`${css.testStyle}`}
-            value={FXSoundValueState * 100}
-            onChange={(e) => { handleFXValue((e.target as HTMLInputElement).value) }}
-          />
-        </div>
       </div>
+
+      
+
     
-        <Button
+    
+        {/* <Button
           focusRipple={false}
           variant="outlined"
           id={`mmb`}
@@ -1605,7 +1639,7 @@ rC.current = [ // rowsAndColumns
           }}
         >
           TEST 3
-        </Button>
+        </Button> */}
         <div>
           This App it's currently on development. So you will see my work done in real time.. day by day..
         </div>
