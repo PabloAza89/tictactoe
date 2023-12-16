@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/tictactoe/static/css/main.ae3cf77c.chunk.css",
-    "main.js": "/tictactoe/static/js/main.6d1cd507.chunk.js",
-    "main.js.map": "/tictactoe/static/js/main.6d1cd507.chunk.js.map",
+    "main.css": "/tictactoe/static/css/main.dd37c474.chunk.css",
+    "main.js": "/tictactoe/static/js/main.eaf59d51.chunk.js",
+    "main.js.map": "/tictactoe/static/js/main.eaf59d51.chunk.js.map",
     "runtime-main.js": "/tictactoe/static/js/runtime-main.68d2a3da.js",
     "runtime-main.js.map": "/tictactoe/static/js/runtime-main.68d2a3da.js.map",
-    "static/js/2.e6031b73.chunk.js": "/tictactoe/static/js/2.e6031b73.chunk.js",
-    "static/js/2.e6031b73.chunk.js.map": "/tictactoe/static/js/2.e6031b73.chunk.js.map",
+    "static/js/2.5ec19d03.chunk.js": "/tictactoe/static/js/2.5ec19d03.chunk.js",
+    "static/js/2.5ec19d03.chunk.js.map": "/tictactoe/static/js/2.5ec19d03.chunk.js.map",
     "index.html": "/tictactoe/index.html",
-    "static/css/main.ae3cf77c.chunk.css.map": "/tictactoe/static/css/main.ae3cf77c.chunk.css.map",
-    "static/js/2.e6031b73.chunk.js.LICENSE.txt": "/tictactoe/static/js/2.e6031b73.chunk.js.LICENSE.txt",
+    "static/css/main.dd37c474.chunk.css.map": "/tictactoe/static/css/main.dd37c474.chunk.css.map",
+    "static/js/2.5ec19d03.chunk.js.LICENSE.txt": "/tictactoe/static/js/2.5ec19d03.chunk.js.LICENSE.txt",
     "static/media/OTime.1a4a4639.mp3": "/tictactoe/static/media/OTime.1a4a4639.mp3",
     "static/media/Omove.7092c42c.mp3": "/tictactoe/static/media/Omove.7092c42c.mp3",
     "static/media/XTime.3cddf66b.mp3": "/tictactoe/static/media/XTime.3cddf66b.mp3",
@@ -17,6 +17,7 @@
     "static/media/bG.2b170cb2.mp3": "/tictactoe/static/media/bG.2b170cb2.mp3",
     "static/media/countDownA.2e00440d.mp3": "/tictactoe/static/media/countDownA.2e00440d.mp3",
     "static/media/countDownB.c2dfa531.mp3": "/tictactoe/static/media/countDownB.c2dfa531.mp3",
+    "static/media/fxIcon.4bfa77e1.svg": "/tictactoe/static/media/fxIcon.4bfa77e1.svg",
     "static/media/looser.2a98477b.mp3": "/tictactoe/static/media/looser.2a98477b.mp3",
     "static/media/menu.29e022df.mp3": "/tictactoe/static/media/menu.29e022df.mp3",
     "static/media/revealed.7ccf0a51.mp3": "/tictactoe/static/media/revealed.7ccf0a51.mp3",
@@ -32,8 +33,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.68d2a3da.js",
-    "static/js/2.e6031b73.chunk.js",
-    "static/css/main.ae3cf77c.chunk.css",
-    "static/js/main.6d1cd507.chunk.js"
+    "static/js/2.5ec19d03.chunk.js",
+    "static/css/main.dd37c474.chunk.css",
+    "static/js/main.eaf59d51.chunk.js"
   ]
 }
