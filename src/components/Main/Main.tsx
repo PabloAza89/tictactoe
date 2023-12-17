@@ -89,56 +89,98 @@ const Main = () => {
           } while (success === false)
         } else { // BEGINS EVIL STRATEGY >-)
 
-          // BEGIN TRY TO MATCH ALL 3 O POSSIBLE //
-          if (rC.current[0].value === "O" && rC.current[2].value === "O" && rC.current[1].value === "") rC.current[1].value = "O"      // O • O
-          else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // O • O
-          else if (rC.current[6].value === "O" && rC.current[8].value === "O" && rC.current[7].value === "") rC.current[7].value = "O" // O • O
+          // BEGIN TRY TO MATCH ALL 3 "O" POSSIBLE //
+          if (rC.current[0].value === "O" && rC.current[2].value === "O" && rC.current[1].value === "") rC.current[1].value = "O"      // O • O // → → →
+          else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // O • O // → → →
+          else if (rC.current[6].value === "O" && rC.current[8].value === "O" && rC.current[7].value === "") rC.current[7].value = "O" // O • O // → → →
 
-          else if (rC.current[0].value === "O" && rC.current[1].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O O •
-          else if (rC.current[3].value === "O" && rC.current[4].value === "O" && rC.current[5].value === "") rC.current[5].value = "O" // O O •
-          else if (rC.current[6].value === "O" && rC.current[7].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // O O •
+          else if (rC.current[0].value === "O" && rC.current[1].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O O • // → → →
+          else if (rC.current[3].value === "O" && rC.current[4].value === "O" && rC.current[5].value === "") rC.current[5].value = "O" // O O • // → → →
+          else if (rC.current[6].value === "O" && rC.current[7].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // O O • // → → →
 
-          else if (rC.current[1].value === "O" && rC.current[2].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • O O
-          else if (rC.current[4].value === "O" && rC.current[5].value === "O" && rC.current[3].value === "") rC.current[3].value = "O" // • O O
-          else if (rC.current[7].value === "O" && rC.current[8].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // • O O
+          else if (rC.current[1].value === "O" && rC.current[2].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • O O // → → →
+          else if (rC.current[4].value === "O" && rC.current[5].value === "O" && rC.current[3].value === "") rC.current[3].value = "O" // • O O // → → →
+          else if (rC.current[7].value === "O" && rC.current[8].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // • O O // → → →
 
-          else if (rC.current[0].value === "O" && rC.current[6].value === "O" && rC.current[3].value === "") rC.current[3].value = "O" // O O O
-          else if (rC.current[1].value === "O" && rC.current[7].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • •
-          else if (rC.current[2].value === "O" && rC.current[8].value === "O" && rC.current[5].value === "") rC.current[5].value = "O" // O O O
+          else if (rC.current[0].value === "O" && rC.current[6].value === "O" && rC.current[3].value === "") rC.current[3].value = "O" // O O O // ↓ ↓ ↓
+          else if (rC.current[1].value === "O" && rC.current[7].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • • // ↓ ↓ ↓
+          else if (rC.current[2].value === "O" && rC.current[8].value === "O" && rC.current[5].value === "") rC.current[5].value = "O" // O O O // ↓ ↓ ↓
 
-          else if (rC.current[0].value === "O" && rC.current[3].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // O O O
-          else if (rC.current[1].value === "O" && rC.current[4].value === "O" && rC.current[7].value === "") rC.current[7].value = "O" // O O O
-          else if (rC.current[2].value === "O" && rC.current[5].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // • • •
+          else if (rC.current[0].value === "O" && rC.current[3].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // O O O // ↓ ↓ ↓
+          else if (rC.current[1].value === "O" && rC.current[4].value === "O" && rC.current[7].value === "") rC.current[7].value = "O" // O O O // ↓ ↓ ↓
+          else if (rC.current[2].value === "O" && rC.current[5].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // • • • // ↓ ↓ ↓
 
-          else if (rC.current[3].value === "O" && rC.current[6].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • • •
-          else if (rC.current[4].value === "O" && rC.current[7].value === "O" && rC.current[1].value === "") rC.current[1].value = "O" // O O O
-          else if (rC.current[5].value === "O" && rC.current[8].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O O O
+          else if (rC.current[3].value === "O" && rC.current[6].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • • • // ↓ ↓ ↓
+          else if (rC.current[4].value === "O" && rC.current[7].value === "O" && rC.current[1].value === "") rC.current[1].value = "O" // O O O // ↓ ↓ ↓
+          else if (rC.current[5].value === "O" && rC.current[8].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O O O // ↓ ↓ ↓
 
-          else if (rC.current[0].value === "O" && rC.current[8].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // O • • // O • • // • • •
-          else if (rC.current[0].value === "O" && rC.current[4].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // • • • // • O • // • O •
-          else if (rC.current[4].value === "O" && rC.current[8].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • • O // • • • // • • O
+          else if (rC.current[0].value === "O" && rC.current[8].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // O • • // O • • // • • • // ↘ • •
+          else if (rC.current[0].value === "O" && rC.current[4].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // • • • // • O • // • O • // • ↘ •
+          else if (rC.current[4].value === "O" && rC.current[8].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • • O // • • • // • • O // • • ↘
 
-          else if (rC.current[2].value === "O" && rC.current[6].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • O // • • O // • • •
-          else if (rC.current[2].value === "O" && rC.current[4].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // • • • // • O • // • O •
-          else if (rC.current[4].value === "O" && rC.current[6].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O • • // • • • // O • •
-          // END TRY TO MATCH ALL 3 O POSSIBLE //
+          else if (rC.current[2].value === "O" && rC.current[6].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • O // • • O // • • • // • • ↙
+          else if (rC.current[2].value === "O" && rC.current[4].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // • • • // • O • // • O • // • ↙ •
+          else if (rC.current[4].value === "O" && rC.current[6].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O • • // • • • // O • • // ↙ • •
+          // END TRY TO MATCH ALL 3 "O" POSSIBLE //
 
-          // BEGIN TRY TO BLOCK 3 XXX FROM HUMAN ENEMY //
-          else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // X • •
-          else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • •
-          else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • •
+          // BEGIN TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
+          else if (rC.current[0].value === "X" && rC.current[2].value === "X" && rC.current[1].value === "") rC.current[1].value = "O" // X O X // → → →
+          else if (rC.current[3].value === "X" && rC.current[5].value === "X" && rC.current[4].value === "") rC.current[4].value = "O" // X O X // → → →
+          else if (rC.current[6].value === "X" && rC.current[8].value === "X" && rC.current[7].value === "") rC.current[7].value = "O" // X O X // → → →
 
+          else if (rC.current[0].value === "X" && rC.current[1].value === "X" && rC.current[2].value === "") rC.current[2].value = "O" // X X O // → → →
+          else if (rC.current[3].value === "X" && rC.current[4].value === "X" && rC.current[5].value === "") rC.current[5].value = "O" // X X O // → → →
+          else if (rC.current[6].value === "X" && rC.current[7].value === "X" && rC.current[8].value === "") rC.current[8].value = "O" // X X O // → → →
 
-          // END TRY TO BLOCK 3 XXX FROM HUMAN ENEMY //
+          else if (rC.current[1].value === "X" && rC.current[2].value === "X" && rC.current[0].value === "") rC.current[0].value = "O" // O X X // → → →
+          else if (rC.current[4].value === "X" && rC.current[5].value === "X" && rC.current[3].value === "") rC.current[3].value = "O" // O X X // → → →
+          else if (rC.current[7].value === "X" && rC.current[8].value === "X" && rC.current[6].value === "") rC.current[6].value = "O" // O X X // → → →
 
-          else if (rC.current[4].value === "") rC.current[4].value = "O" // TRY MARK CENTER
+          else if (rC.current[0].value === "X" && rC.current[6].value === "X" && rC.current[3].value === "") rC.current[3].value = "O" // X X X // ↓ ↓ ↓
+          else if (rC.current[1].value === "X" && rC.current[7].value === "X" && rC.current[4].value === "") rC.current[4].value = "O" // O O O // ↓ ↓ ↓
+          else if (rC.current[2].value === "X" && rC.current[8].value === "X" && rC.current[5].value === "") rC.current[5].value = "O" // X X X // ↓ ↓ ↓
 
-          else if (rC.current[4].value === "O") { // IF CENTER IS "O" TRY DIAGONALS: 0+4+8 // 2+4+6
-            if (rC.current[0].value === "O" && rC.current[8].value === "") rC.current[8].value = "O"
-            else if (rC.current[2].value === "O" && rC.current[6].value === "") rC.current[6].value = "O"
-            else if (rC.current[0].value === "") rC.current[0].value = "O"
-            else if (rC.current[2].value === "") rC.current[2].value = "O"
-          }
+          else if (rC.current[0].value === "X" && rC.current[3].value === "X" && rC.current[6].value === "") rC.current[6].value = "O" // X X X // ↓ ↓ ↓
+          else if (rC.current[1].value === "X" && rC.current[4].value === "X" && rC.current[7].value === "") rC.current[7].value = "O" // X X X // ↓ ↓ ↓
+          else if (rC.current[2].value === "X" && rC.current[5].value === "X" && rC.current[8].value === "") rC.current[8].value = "O" // O O O // ↓ ↓ ↓
+
+          else if (rC.current[3].value === "X" && rC.current[6].value === "X" && rC.current[0].value === "") rC.current[0].value = "O" // O O O // ↓ ↓ ↓
+          else if (rC.current[4].value === "X" && rC.current[7].value === "X" && rC.current[1].value === "") rC.current[1].value = "O" // X X X // ↓ ↓ ↓
+          else if (rC.current[5].value === "X" && rC.current[8].value === "X" && rC.current[2].value === "") rC.current[2].value = "O" // X X X // ↓ ↓ ↓
+
+          else if (rC.current[0].value === "X" && rC.current[8].value === "X" && rC.current[4].value === "") rC.current[4].value = "O" // X • • // X • • // O • • // ↘ • •
+          else if (rC.current[0].value === "X" && rC.current[4].value === "X" && rC.current[8].value === "") rC.current[8].value = "O" // • O • // • X • // • X • // • ↘ •
+          else if (rC.current[4].value === "X" && rC.current[8].value === "X" && rC.current[0].value === "") rC.current[0].value = "O" // • • X // • • O // • • X // • • ↘
+
+          else if (rC.current[2].value === "X" && rC.current[6].value === "X" && rC.current[4].value === "") rC.current[4].value = "O" // • • X // • • X // • • O // • • ↙
+          else if (rC.current[2].value === "X" && rC.current[4].value === "X" && rC.current[6].value === "") rC.current[6].value = "O" // • O • // • X • // • X • // • ↙ •
+          else if (rC.current[4].value === "X" && rC.current[6].value === "X" && rC.current[2].value === "") rC.current[2].value = "O" // X • • // O • • // X • • // ↙ • •
+          // END TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
+
+          // BEGIN TRY MARK CENTER //
+          else if (rC.current[4].value === "") rC.current[4].value = "O"
+          // END TRY MARK CENTER //
+
+          // BEGIN TRY TO BEGIN "TRIANGLE" //
+          else if (rC.current[4].value === "O" && rC.current[0].value === "" && rC.current[2].value === "") rC.current[0].value = "O" // O • • // • • O // • • • // • • •
+          else if (rC.current[4].value === "O" && rC.current[2].value === "" && rC.current[8].value === "") rC.current[2].value = "O" // • O • // • O • // • O • // • O •
+          else if (rC.current[4].value === "O" && rC.current[8].value === "" && rC.current[6].value === "") rC.current[8].value = "O" // • • • // • • • // • • O // O • •
+          else if (rC.current[4].value === "O" && rC.current[6].value === "" && rC.current[0].value === "") rC.current[6].value = "O"
+          // END TRY TO BEGIN "TRIANGLE" //
+
+          // BEGIN TRY TO END "TRIANGLE" //
+          else if (rC.current[4].value === "O" && rC.current[0].value === "O" && rC.current[2].value === "") rC.current[2].value = "O"  // O • O // • • O // • • • // O • •
+          else if (rC.current[4].value === "O" && rC.current[2].value === "O" && rC.current[8].value === "") rC.current[8].value = "O"  // • O • // • O • // • O • // • O •
+          else if (rC.current[4].value === "O" && rC.current[8].value === "O" && rC.current[6].value === "") rC.current[6].value = "O"  // • • • // • • O // O • O // O • •
+          else if (rC.current[4].value === "O" && rC.current[6].value === "O" && rC.current[0].value === "") rC.current[0].value = "O"
+          // END TRY TO END "TRIANGLE" //
+
+          // else if (rC.current[4].value === "O") { // IF CENTER IS "O" TRY DIAGONALS: 0+4+8 // 2+4+6
+          //   if (rC.current[0].value === "O" && rC.current[8].value === "") rC.current[8].value = "O"
+          //   else if (rC.current[2].value === "O" && rC.current[6].value === "") rC.current[6].value = "O"
+          //   // else if (rC.current[0].value === "") rC.current[0].value = "O"
+          //   // else if (rC.current[2].value === "") rC.current[2].value = "O"
+          // }
 
 
           if (allowFXSound.current) playSound({ file: aF.Omove })
