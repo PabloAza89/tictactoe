@@ -23,6 +23,108 @@ import confetti from 'canvas-confetti';
 
 const Main = () => {
 
+  const welcomeTicTacToe = () => {
+    return Swal.fire({
+      title: `WELCOME TO TIC-TAC-TOE !`,
+      text: 'Please, select who start first..',
+      heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
+      showDenyButton: true,
+      confirmButtonText: 'LET ME START !',
+      denyButtonText: `    AI STARTS !   `,
+      confirmButtonColor: '#800080', // LEFT OPTION
+      denyButtonColor: '#008000', // RIGHT OPTION
+    })
+  }
+
+  const selectDifficulty = () => {
+    return Swal.fire({
+      title: "Select difficulty:",
+      heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
+      showDenyButton: true,
+      confirmButtonText: 'EASY',
+      denyButtonText: `HARD`,
+      //confirmButtonColor: '#0000ff', // LEFT OPTION
+      confirmButtonColor: '#6060e0', // LEFT OPTION
+      denyButtonColor: '#ff4500', // RIGHT OPTION
+    })
+  }
+
+  const selectNumberOfRounds = () => {
+    return Swal.fire({
+      title: "Select number of rounds:",
+      input: "select",
+      heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
+      inputValue: roundsValueLS !== null ? parseInt(roundsValueLS, 10) + 1 : "3", // DEFAULT VALUE
+      inputOptions: {
+        1: " 1",
+        2: " 2",
+        3: " 3",
+        4: " 4",
+        5: " 5",
+        10: "10",
+        15: "15",
+        20: "20"
+      },
+      confirmButtonText: 'GO !',
+      confirmButtonColor: '#2e8b57',
+      showCancelButton: false,
+      inputValidator: (value) => {
+        //console.log("123123 value", value)
+        gameEndRoundsNumber.current = parseInt(value, 10) - 1 // ONLY SEND WHEN result.isConfirmed
+        localStorage.setItem('roundsValue', JSON.stringify(parseInt(value, 10) - 1))
+      }
+    })
+  }
+
+  const selectNumberOfRoundsUser = () => {
+    selectNumberOfRounds()
+    .then((result) => {
+      if (result.isConfirmed) {
+        if (allowFXSound.current) playSound({ file: aF.menu })
+        basicOptions()
+        userHasStartedThisRound.current = true
+        setShouldAIstartState(false)
+        setTimeout(() => {
+          startTimer()
+          clickBlocked.current = false
+          showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
+        }, 4300) // SYNC WITH POP-UP CLOSES
+      }
+      else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
+        //console.log("123123 rejected")
+        if (allowFXSound.current) playSound({ file: aF.menu })
+        setTimeout(function() {
+          addButtonAnimation()
+        },300);
+      }
+    })
+  }
+
+  const selectNumberOfRoundsAI = () => {
+    selectNumberOfRounds()
+    .then((result) => {
+      if (result.isConfirmed) {
+        if (allowFXSound.current) playSound({ file: aF.menu })
+        basicOptions()
+        userHasStartedThisRound.current = false
+        clickBlocked.current = true
+        setShouldAIstartState(true)
+        setTimeout(() => {
+          startTimer()
+          AIAction()
+          showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
+        }, 4300) // SYNC WITH POP-UP CLOSES
+      }
+      else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
+        //console.log("123123 rejected")
+        if (allowFXSound.current) playSound({ file: aF.menu })
+        setTimeout(function() {
+          addButtonAnimation()
+        },300);
+      }
+    })
+  }
+
   easings() // JQuery easings..
   const dispatch = useDispatch()
 
@@ -31,8 +133,8 @@ const Main = () => {
   let allSoundsLoaded = useRef<boolean>(false)
   let score = useRef<any[]>([])
 
-  //const [ gameMode, setGameMode ] = useState<string>("easy")
-  const [ gameMode, setGameMode ] = useState<string>("hard")
+  const [ gameMode, setGameMode ] = useState<string>("easy")
+  //const [ gameMode, setGameMode ] = useState<string>("hard")
 
   const allowBgSoundState = useSelector((state: { allowBgSound: boolean }) => state.allowBgSound)
   let allowBgSound = useRef(allowBgSoundState)
@@ -70,7 +172,7 @@ const Main = () => {
   let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
   const AIAction = async () => {
-    let randomTimes = [ 700, 800, 900, 1000, 1100 ]
+    let randomTimes = [ 700, 900, 1100, 1300, 1500 ]
     setTimeout(() => {
       if (rC.current.filter((e: any) => e.value === '').length >= 1) {
         let success = false
@@ -157,9 +259,21 @@ const Main = () => {
           else if (rC.current[4].value === "X" && rC.current[6].value === "X" && rC.current[2].value === "") rC.current[2].value = "O" // X • • // O • • // X • • // ↙ • •
           // END TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
 
-          // BEGIN TRY MARK CENTER //
-          else if (rC.current[4].value === "") rC.current[4].value = "O"
-          // END TRY MARK CENTER //
+          // // BEGIN TRY MARK CENTER //
+          // else if (rC.current[4].value === "") rC.current[4].value = "O"
+          // // END TRY MARK CENTER //
+
+          // BEGIN FIRST RANDOM MOVEMENT //
+          else if (!rC.current.some(e => e.value === "O")) {
+            do {
+              AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+              if (rC.current[AIRandomGridIndex.current].value === "") {
+                rC.current[AIRandomGridIndex.current].value = "O"
+                success = true
+              }
+            } while (success === false)
+          }
+          // END FIRST RANDOM MOVEMENT //
 
           // BEGIN TRY TO BEGIN "TRIANGLE" //
           else if (rC.current[4].value === "O" && rC.current[0].value === "" && rC.current[2].value === "") rC.current[0].value = "O" // O • • // • • O // • • • // • • •
@@ -175,12 +289,40 @@ const Main = () => {
           else if (rC.current[4].value === "O" && rC.current[6].value === "O" && rC.current[0].value === "") rC.current[0].value = "O"
           // END TRY TO END "TRIANGLE" //
 
-          // else if (rC.current[4].value === "O") { // IF CENTER IS "O" TRY DIAGONALS: 0+4+8 // 2+4+6
-          //   if (rC.current[0].value === "O" && rC.current[8].value === "") rC.current[8].value = "O"
-          //   else if (rC.current[2].value === "O" && rC.current[6].value === "") rC.current[6].value = "O"
-          //   // else if (rC.current[0].value === "") rC.current[0].value = "O"
-          //   // else if (rC.current[2].value === "") rC.current[2].value = "O"
-          // }
+          // BEGIN "DOUBLE SIDES" STRATEGY //
+          else if (rC.current[0].value === ""  && rC.current[1].value === "" && rC.current[2].value === "" && rC.current[5].value === "" && rC.current[8].value === "" ) rC.current[0].value = "O" // O • • /→/ O • • /→/ O • O
+          else if (rC.current[0].value === "O" && rC.current[1].value === "" && rC.current[2].value === "" && rC.current[5].value === "" && rC.current[8].value === "" ) rC.current[8].value = "O" // • • • /→/ • • • /→/ • • •
+          else if (rC.current[0].value === "O" && rC.current[1].value === "" && rC.current[2].value === "" && rC.current[5].value === "" && rC.current[8].value === "O") rC.current[2].value = "O" // • • • /→/ • • O /→/ • • O
+
+          else if (rC.current[2].value === ""  && rC.current[5].value === "" && rC.current[8].value === "" && rC.current[7].value === "" && rC.current[6].value === "" ) rC.current[2].value = "O" // • • O /→/ • • O /→/ • • O
+          else if (rC.current[2].value === "O" && rC.current[5].value === "" && rC.current[8].value === "" && rC.current[7].value === "" && rC.current[6].value === "" ) rC.current[6].value = "O" // • • • /→/ • • • /→/ • • •
+          else if (rC.current[2].value === "O" && rC.current[5].value === "" && rC.current[8].value === "" && rC.current[7].value === "" && rC.current[6].value === "O") rC.current[8].value = "O" // • • • /→/ O • • /→/ O • O
+
+          else if (rC.current[8].value === ""  && rC.current[7].value === "" && rC.current[6].value === "" && rC.current[3].value === "" && rC.current[0].value === "" ) rC.current[8].value = "O" // • • • /→/ O • • /→/ O • •
+          else if (rC.current[8].value === "O" && rC.current[7].value === "" && rC.current[6].value === "" && rC.current[3].value === "" && rC.current[0].value === "" ) rC.current[0].value = "O" // • • • /→/ • • • /→/ • • •
+          else if (rC.current[8].value === "O" && rC.current[7].value === "" && rC.current[6].value === "" && rC.current[3].value === "" && rC.current[0].value === "O") rC.current[6].value = "O" // • • O /→/ • • O /→/ O • O
+
+          else if (rC.current[6].value === ""  && rC.current[3].value === "" && rC.current[0].value === "" && rC.current[1].value === "" && rC.current[2].value === "" ) rC.current[6].value = "O" // • • • /→/ • • O /→/ O • O
+          else if (rC.current[6].value === "O" && rC.current[3].value === "" && rC.current[0].value === "" && rC.current[1].value === "" && rC.current[2].value === "" ) rC.current[2].value = "O" // • • • /→/ • • • /→/ • • •
+          else if (rC.current[6].value === "O" && rC.current[3].value === "" && rC.current[0].value === "" && rC.current[1].value === "" && rC.current[2].value === "O") rC.current[0].value = "O" // O • • /→/ O • • /→/ O • •
+          // END "DOUBLE SIDES" STRATEGY  //
+
+
+          else { // WHEN NO STRATEGY AVAILABLE === LAST MOVEMENT
+            do {
+              AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+              if (rC.current[AIRandomGridIndex.current].value === "") {
+                rC.current[AIRandomGridIndex.current].value = "O"
+                //Omove.play()
+                //if (allowFXSound.current) playSound({ file: aF.Omove })
+                success = true
+                //setShouldAIstartState(false)
+                //setUserPlaying(true)
+              }
+            } while (success === false)
+          }
+
+      
 
 
           if (allowFXSound.current) playSound({ file: aF.Omove })
@@ -576,113 +718,34 @@ const Main = () => {
     removeButtonAnimation()
     setNewGameStarted(false) // REMOVE TIMER FROM SCREEN
     gameEndRoundsBoolean.current = false
-    // roundEnd.current = false
-    // setWinnerGameState("")
-    // setWinnerRoundState("")
-    // removeFinalWinnerChangeColor()
-    Swal.fire({
-      title: `WELCOME TO TIC-TAC-TOE !`,
-      text: 'Please, select who start first..',
-      heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
-      showDenyButton: true,
-      confirmButtonText: 'LET ME START !',
-      denyButtonText: `    AI STARTS !   `,
-      confirmButtonColor: '#800080', // LEFT OPTION
-      denyButtonColor: '#008000', // RIGHT OPTION
-    })
+    welcomeTicTacToe()
     .then((result) => {
       //console.log("123123 result", result)
       if (result.isConfirmed) { // START USER
         if (allowFXSound.current) playSound({ file: aF.menu })
-        Swal.fire({
-          title: "Select number of rounds:",
-          input: "select",
-          heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
-          inputValue: roundsValueLS !== null ? parseInt(roundsValueLS, 10) + 1 : "3", // DEFAULT VALUE
-          inputOptions: {
-            1: " 1",
-            2: " 2",
-            3: " 3",
-            4: " 4",
-            5: " 5",
-            10: "10",
-            15: "15",
-            20: "20"
-          },
-          confirmButtonText: 'GO !',
-          confirmButtonColor: '#2e8b57',
-          showCancelButton: false,
-          inputValidator: (value) => {
-            //console.log("123123 value", value)
-            gameEndRoundsNumber.current = parseInt(value, 10) - 1 // ONLY SEND WHEN result.isConfirmed
-            localStorage.setItem('roundsValue', JSON.stringify(parseInt(value, 10) - 1))
-          }
-        })
+        selectDifficulty()
         .then((result) => {
           if (result.isConfirmed) {
-            if (allowFXSound.current) playSound({ file: aF.menu })
-            basicOptions()
-            userHasStartedThisRound.current = true
-            setShouldAIstartState(false)
-            setTimeout(() => {
-              startTimer()
-              clickBlocked.current = false
-              showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
-            }, 4300) // SYNC WITH POP-UP CLOSES
+            setGameMode("easy")
+            selectNumberOfRoundsUser()
           }
-          else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-            //console.log("123123 rejected")
-            if (allowFXSound.current) playSound({ file: aF.menu })
-            setTimeout(function() {
-              addButtonAnimation()
-            },300);
+          else if (result.isDenied) {
+            setGameMode("hard")
+            selectNumberOfRoundsUser()
           }
         })
       }
       else if (result.isDenied) { // START AI
         if (allowFXSound.current) playSound({ file: aF.menu })
-        Swal.fire({
-          title: "Select number of rounds:",
-          input: "select",
-          heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
-          inputValue: roundsValueLS !== null ? parseInt(roundsValueLS, 10) + 1 : "3", // DEFAULT VALUE
-          inputOptions: {
-            1: " 1",
-            2: " 2",
-            3: " 3",
-            4: " 4",
-            5: " 5",
-            10: "10",
-            15: "15",
-            20: "20"
-          },
-          confirmButtonText: 'GO !',
-          confirmButtonColor: '#2e8b57',
-          showCancelButton: false,
-          inputValidator: (value) => {
-            gameEndRoundsNumber.current = parseInt(value, 10) - 1
-            localStorage.setItem('roundsValue', JSON.stringify(parseInt(value, 10) - 1))
-          }
-        })
+        selectDifficulty()
         .then((result) => {
           if (result.isConfirmed) {
-            if (allowFXSound.current) playSound({ file: aF.menu })
-            basicOptions()
-            userHasStartedThisRound.current = false
-            clickBlocked.current = true
-            setShouldAIstartState(true)
-            setTimeout(() => {
-              startTimer()
-              AIAction()
-              showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
-            }, 4300) // SYNC WITH POP-UP CLOSES
+            setGameMode("easy")
+            selectNumberOfRoundsAI()
           }
-          else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-            //console.log("123123 rejected")
-            if (allowFXSound.current) playSound({ file: aF.menu })
-            setTimeout(function() {
-              addButtonAnimation()
-            },300);
+          else if (result.isDenied) {
+            setGameMode("hard")
+            selectNumberOfRoundsAI()
           }
         })
       }
@@ -1622,9 +1685,17 @@ const Main = () => {
           }
         </Button>
       </div>
-
+      <div className={css.gameMode}>
+        {
+          (newGameStarted && gameMode === "easy") || (gameEndRoundsBoolean.current && gameMode === "easy") ?
+          `Mode: Easy` :
+          (newGameStarted && gameMode === "hard") || (gameEndRoundsBoolean.current && gameMode === "hard") ?
+          `Mode: Hard` :
+          null
+        }
+      </div>
       
-        <Button
+        {/* <Button
           focusRipple={false}
           variant="outlined"
           id={`mmb`}
@@ -1644,7 +1715,7 @@ const Main = () => {
           }}
         >
           HARD MODE
-        </Button>
+        </Button> */}
     
     
         {/* <Button
