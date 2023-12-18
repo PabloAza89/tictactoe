@@ -133,7 +133,8 @@ const Main = () => {
   let allSoundsLoaded = useRef<boolean>(false)
   let score = useRef<any[]>([])
 
-  const [ gameMode, setGameMode ] = useState<string>("easy")
+  //const [ gameMode, setGameMode ] = useState<string>("easy")
+  const gameMode = useRef("easy")
   //const [ gameMode, setGameMode ] = useState<string>("hard")
 
   const allowBgSoundState = useSelector((state: { allowBgSound: boolean }) => state.allowBgSound)
@@ -177,7 +178,8 @@ const Main = () => {
       if (rC.current.filter((e: any) => e.value === '').length >= 1) {
         let success = false
 
-        if (gameMode === 'easy') {
+        if (gameMode.current === 'easy') {
+          console.log("ENTRO MODO EASY")
           do {
             AIRandomGridIndex.current = Math.floor(Math.random() * 9)
             if (rC.current[AIRandomGridIndex.current].value === "") {
@@ -190,7 +192,7 @@ const Main = () => {
             }
           } while (success === false)
         } else { // BEGINS EVIL STRATEGY >-)
-
+          console.log("ENTRO MODO HARD")
           // BEGIN TRY TO MATCH ALL 3 "O" POSSIBLE //
           if (rC.current[0].value === "O" && rC.current[2].value === "O" && rC.current[1].value === "") rC.current[1].value = "O"      // O • O // → → →
           else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // O • O // → → →
@@ -260,34 +262,154 @@ const Main = () => {
           // END TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
 
           // // BEGIN TRY MARK CENTER //
-          // else if (rC.current[4].value === "") rC.current[4].value = "O"
+          else if (rC.current[4].value === "") {
+            console.log("AI: FIRST RANDOM ACTION")
+            rC.current[0].value = "O"
+            //success = true
+          }
           // // END TRY MARK CENTER //
 
           // BEGIN FIRST RANDOM MOVEMENT //
-          else if (!rC.current.some(e => e.value === "O")) {
-            do {
-              AIRandomGridIndex.current = Math.floor(Math.random() * 9)
-              if (rC.current[AIRandomGridIndex.current].value === "") {
-                rC.current[AIRandomGridIndex.current].value = "O"
-                success = true
-              }
-            } while (success === false)
-          }
+          // else if (!rC.current.some(e => e.value === "O")) {
+          //   console.log("ENTRO EN EL RANDOM DEL MEDIO")
+          //   do {
+          //     AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+          //     if (rC.current[AIRandomGridIndex.current].value === "") {
+          //       rC.current[AIRandomGridIndex.current].value = "O"
+          //       success = true
+          //     }
+          //   } while (success === false)
+          // }
           // END FIRST RANDOM MOVEMENT //
 
+          // randomTimes[Math.floor(Math.random() * 5)]
+
           // BEGIN TRY TO BEGIN "TRIANGLE" //
-          else if (rC.current[4].value === "O" && rC.current[0].value === "" && rC.current[2].value === "") rC.current[0].value = "O" // O • • // • • O // • • • // • • •
-          else if (rC.current[4].value === "O" && rC.current[2].value === "" && rC.current[8].value === "") rC.current[2].value = "O" // • O • // • O • // • O • // • O •
-          else if (rC.current[4].value === "O" && rC.current[8].value === "" && rC.current[6].value === "") rC.current[8].value = "O" // • • • // • • • // • • O // O • •
-          else if (rC.current[4].value === "O" && rC.current[6].value === "" && rC.current[0].value === "") rC.current[6].value = "O"
+          // O • • // • • O // • • • // • • •
+          // • O • // • O • // • O • // • O •
+          // • • • // • • • // • • O // O • •
+          
+          
           // END TRY TO BEGIN "TRIANGLE" //
 
-          // BEGIN TRY TO END "TRIANGLE" //
-          else if (rC.current[4].value === "O" && rC.current[0].value === "O" && rC.current[2].value === "") rC.current[2].value = "O"  // O • O // • • O // • • • // O • •
-          else if (rC.current[4].value === "O" && rC.current[2].value === "O" && rC.current[8].value === "") rC.current[8].value = "O"  // • O • // • O • // • O • // • O •
-          else if (rC.current[4].value === "O" && rC.current[8].value === "O" && rC.current[6].value === "") rC.current[6].value = "O"  // • • • // • • O // O • O // O • •
-          else if (rC.current[4].value === "O" && rC.current[6].value === "O" && rC.current[0].value === "") rC.current[0].value = "O"
-          // END TRY TO END "TRIANGLE" //
+          // BEGIN FIRST TRIANGLE STRATEGY //
+          // else if (rC.current[4].value === "O" && rC.current.filter(e => e.value === "O").length === 1) {
+          //   const randomSecondMovTriangle = () => {
+          //     console.log("AI: SECOND RANDOM ACTION")
+          //     let targetIndexes = [0,2,6,8] // CORNERS
+          //     do {
+          //       AIRandomGridIndex.current = Math.floor(Math.random() * 4) // TILL INDEX 3
+          //       if (rC.current[targetIndexes[AIRandomGridIndex.current]].value === "") {
+          //         rC.current[targetIndexes[AIRandomGridIndex.current]].value = "O"
+          //         success = true
+          //       }
+          //     } while (success === false)
+          //   }
+          //   randomSecondMovTriangle()
+          // }
+          // END FIRST TRIANGLE STRATEGY //
+
+          // BEGIN "L" OR "TRIANGLE" STRATEGY IF X ISN'T ON CORNERS //
+          // • X O /or/ • X • /or/ • X • // (IN ANY POSITION)
+          // • O • /or/ • O O /or/ • O • // (IN ANY POSITION)
+          // • - • /or/ • - • /or/ • - O // (IN ANY POSITION)
+          else if (
+            rC.current[4].value === "O" &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current.filter(e => e.value === "X").length === 1 &&
+            (rC.current[1].value === "X" || rC.current[3].value === "X" || rC.current[5].value === "X" || rC.current[7].value === "X")
+          ) {
+           
+            const random6Places = (targetIndexes: any) => {
+              do {
+                AIRandomGridIndex.current = Math.floor(Math.random() * 6)
+                if (rC.current[targetIndexes[AIRandomGridIndex.current]].value === "") {
+                  rC.current[targetIndexes[AIRandomGridIndex.current]].value = "O"
+                  success = true
+                }
+              } while (success === false)
+            }
+            console.log("AI: SECOND RANDOM ACTION")
+            if (rC.current[1].value === "X" || rC.current[7].value === "X") { // DONT TOUCH 1 OR 7
+              let targetIndexes = [0,2,3,5,6,8]
+              random6Places(targetIndexes)
+            } else if (rC.current[5].value === "X" || rC.current[3].value === "X") { // DONT TOUCH 3 OR 5
+              let targetIndexes = [0,1,2,6,7,8]
+              random6Places(targetIndexes)
+            }
+            
+          }
+          // END "L" OR "TRIANGLE" STRATEGY //
+
+          // BEGIN TIE OR WIN STRATEGY IF X IS ON CORNERS //
+          else if (
+            rC.current[4].value === "O" &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current.filter(e => e.value === "X").length === 1 &&
+            (rC.current[0].value === "X" || rC.current[2].value === "X" || rC.current[6].value === "X" || rC.current[8].value === "X")
+          ) {
+            
+            if (rC.current[0].value === "X") rC.current[8].value = "O"
+            else if (rC.current[2].value === "X") rC.current[6].value = "O"
+            else if (rC.current[8].value === "X") rC.current[0].value = "O"
+            else if (rC.current[6].value === "X") rC.current[2].value = "O"
+            
+          }
+          // END TIE OR WIN STRATEGY IF X IS ON CORNERS //
+
+          // BEGIN IF X FIRST IS ON CENTER //
+          else if (
+            rC.current[4].value === "X" &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current.filter(e => e.value === "X").length === 1 &&
+            (rC.current[0].value === "O" || rC.current[2].value === "O" || rC.current[6].value === "O" || rC.current[8].value === "O")
+          ) {
+            if (rC.current[0].value === "0") rC.current[8].value = "O"
+            else if (rC.current[2].value === "0") rC.current[6].value = "O"
+            else if (rC.current[8].value === "0") rC.current[0].value = "O"
+            else if (rC.current[6].value === "0") rC.current[2].value = "O"
+          }
+          // END IF X FIRST IS ON CENTER //
+
+
+
+
+          // BEGIN TRY TO END "L" OR "TRIANGLE" STRATEGY //
+          // • X O /or/ • X O // (IN ANY POSITION)
+          // • O O /or/ • O • // (IN ANY POSITION)
+          // • - • /or/ • - O // (IN ANY POSITION)
+          else if (rC.current[4].value === "O" && rC.current.filter(e => e.value === "O").length === 2) {
+            const random3Places = (targetIndexes: any) => {
+              do {
+                AIRandomGridIndex.current = Math.floor(Math.random() * 3)
+                if (rC.current[targetIndexes[AIRandomGridIndex.current]].value === "") {
+                  rC.current[targetIndexes[AIRandomGridIndex.current]].value = "O"
+                  success = true
+                }
+              } while (success === false)
+            }
+            if ((rC.current[3].value === "X" || rC.current[5].value === "X") && (rC.current[0].value === "O" || rC.current[1].value === "O" || rC.current[2].value === "O")) {
+              let targetIndexes = [0,1,2]
+              random3Places(targetIndexes)
+            }
+            else if ((rC.current[3].value === "X" || rC.current[5].value === "X") && (rC.current[6].value === "O" || rC.current[7].value === "O" || rC.current[8].value === "O")) {
+              let targetIndexes = [6,7,8]
+              random3Places(targetIndexes)
+            }
+            else if ((rC.current[1].value === "X" || rC.current[7].value === "X") && (rC.current[2].value === "O" || rC.current[5].value === "O" || rC.current[8].value === "O")) {
+              let targetIndexes = [2,5,8]
+              random3Places(targetIndexes)
+            }
+            else if ((rC.current[1].value === "X" || rC.current[7].value === "X") && (rC.current[0].value === "O" || rC.current[3].value === "O" || rC.current[6].value === "O")) {
+              let targetIndexes = [0,3,6]
+              random3Places(targetIndexes)
+            }
+          }
+          // END TRY TO END "L" OR "TRIANGLE" STRATEGY //
+
+          
+
+
 
           // BEGIN "DOUBLE SIDES" STRATEGY //
           else if (rC.current[0].value === ""  && rC.current[1].value === "" && rC.current[2].value === "" && rC.current[5].value === "" && rC.current[8].value === "" ) rC.current[0].value = "O" // O • • /→/ O • • /→/ O • O
@@ -309,15 +431,12 @@ const Main = () => {
 
 
           else { // WHEN NO STRATEGY AVAILABLE === LAST MOVEMENT
+            console.log("ENTRO ACA LAST MOVEMENT")
             do {
               AIRandomGridIndex.current = Math.floor(Math.random() * 9)
               if (rC.current[AIRandomGridIndex.current].value === "") {
                 rC.current[AIRandomGridIndex.current].value = "O"
-                //Omove.play()
-                //if (allowFXSound.current) playSound({ file: aF.Omove })
                 success = true
-                //setShouldAIstartState(false)
-                //setUserPlaying(true)
               }
             } while (success === false)
           }
@@ -726,11 +845,13 @@ const Main = () => {
         selectDifficulty()
         .then((result) => {
           if (result.isConfirmed) {
-            setGameMode("easy")
+            //setGameMode("easy")
+            gameMode.current = "easy"
             selectNumberOfRoundsUser()
           }
           else if (result.isDenied) {
-            setGameMode("hard")
+            //setGameMode("hard")
+            gameMode.current = "hard"
             selectNumberOfRoundsUser()
           }
         })
@@ -740,11 +861,13 @@ const Main = () => {
         selectDifficulty()
         .then((result) => {
           if (result.isConfirmed) {
-            setGameMode("easy")
+            //setGameMode("easy")
+            gameMode.current = "easy"
             selectNumberOfRoundsAI()
           }
           else if (result.isDenied) {
-            setGameMode("hard")
+            //setGameMode("hard")
+            gameMode.current = "hard"
             selectNumberOfRoundsAI()
           }
         })
@@ -1359,7 +1482,7 @@ const Main = () => {
     })
   },[])
 
-  console.log("111 GAME MODE", gameMode)
+  //console.log("111 GAME MODE", gameMode)
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -1687,9 +1810,9 @@ const Main = () => {
       </div>
       <div className={css.gameMode}>
         {
-          (newGameStarted && gameMode === "easy") || (gameEndRoundsBoolean.current && gameMode === "easy") ?
+          (newGameStarted && gameMode.current === "easy") || (gameEndRoundsBoolean.current && gameMode.current === "easy") ?
           `Mode: Easy` :
-          (newGameStarted && gameMode === "hard") || (gameEndRoundsBoolean.current && gameMode === "hard") ?
+          (newGameStarted && gameMode.current === "hard") || (gameEndRoundsBoolean.current && gameMode.current === "hard") ?
           `Mode: Hard` :
           null
         }
