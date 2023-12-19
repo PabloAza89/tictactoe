@@ -172,54 +172,26 @@ const Main = () => {
   const [ newGameStarted, setNewGameStarted ] = useState(false)
   let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
-  let randomStrategyIndex = useRef<any>()
-
-  let targetIndexes = useRef<any[]>()
-
   const AIAction = async () => {
     let randomTimes = [ 700, 900, 1100, 1300, 1500 ]
     setTimeout(() => {
       if (rC.current.filter((e: any) => e.value === '').length >= 1) {
         let success = false
 
-        const selectRandomPlace = (array: any) => {
+        const randomPlaces = (targetIndexes: any) => {
           do {
-            AIRandomGridIndex.current = Math.floor(Math.random() * array.length)
-            if (rC.current[array[AIRandomGridIndex.current]].value === "") {
-              rC.current[array[AIRandomGridIndex.current]].value = "O"
+            AIRandomGridIndex.current = Math.floor(Math.random() * targetIndexes.length)
+            if (rC.current[targetIndexes[AIRandomGridIndex.current]].value === "") {
+              rC.current[targetIndexes[AIRandomGridIndex.current]].value = "O"
               success = true
             }
           } while (success === false)
         }
 
-        const checkIfPlaceIsAvailable = (array: any) => {
-          let result: any[] = []
-          array.forEach((e: any) => {
-            result.push(rC.current[e].value)
-          })
-          //return result.some(e => e === "") ? true : false
-          if (result.some(e => e === "")) {
-            targetIndexes.current = array
-            return true
-          } else {
-            targetIndexes.current = []
-            return false
-          }
-        }
-
-        const executeRandomStrategy = (array: any[]) => {
-          if (checkIfPlaceIsAvailable(array)) {
-            selectRandomPlace(targetIndexes.current)
-            return true
-          } else {
-            return false
-          }
-        }
-
         if (gameMode.current === 'easy') {
           console.log("ENTRO MODO EASY")
           let targetIndexes = [0,1,2,3,4,5,6,7,8]
-          selectRandomPlace(targetIndexes)
+          randomPlaces(targetIndexes)
           if (allowFXSound.current) playSound({ file: aF.Omove })
           setShouldAIstartState(false)
           setUserPlaying(true)
@@ -298,28 +270,28 @@ const Main = () => {
           // END TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
 
           // // BEGIN TRY MARK CENTER //
-          // else if (rC.current[0].value === "") {
-          //   console.log("AI: FIRST RANDOM ACTION")
-          //   //rC.current[4].value = "O"
-          //   rC.current[0].value = "O"
-          //   //rC.current[5].value = "O"
+          else if (rC.current[1].value === "") {
+            console.log("AI: FIRST RANDOM ACTION")
+            //rC.current[4].value = "O"
+            rC.current[1].value = "O"
+            //rC.current[5].value = "O"
             
-          //   //success = true
-          // }
+            //success = true
+          }
           // // END TRY MARK CENTER //
 
-         // BEGIN FIRST RANDOM MOVEMENT //
-          else if (!rC.current.some(e => e.value === "O")) {
-            console.log("ENTRO EN EL RANDOM DEL MEDIO")
-            do {
-              AIRandomGridIndex.current = Math.floor(Math.random() * 9)
-              if (rC.current[AIRandomGridIndex.current].value === "") {
-                rC.current[AIRandomGridIndex.current].value = "O"
-                success = true
-              }
-            } while (success === false)
-          }
-         // END FIRST RANDOM MOVEMENT //
+          // BEGIN FIRST RANDOM MOVEMENT //
+          // else if (!rC.current.some(e => e.value === "O")) {
+          //   console.log("ENTRO EN EL RANDOM DEL MEDIO")
+          //   do {
+          //     AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+          //     if (rC.current[AIRandomGridIndex.current].value === "") {
+          //       rC.current[AIRandomGridIndex.current].value = "O"
+          //       success = true
+          //     }
+          //   } while (success === false)
+          // }
+          // END FIRST RANDOM MOVEMENT //
 
           // randomTimes[Math.floor(Math.random() * 5)]
 
@@ -348,57 +320,269 @@ const Main = () => {
           // }
           // END FIRST TRIANGLE STRATEGY //
 
+          
+          // 0 CENTER, X RECT, THEN "L" OR "TRIANGLE" STRATEGY (100% AI WIN)
+          // • X O /or/ • X • /or/ • X • // (IN ANY POSITION)
+          // • O • /or/ • O O /or/ • O • // (IN ANY POSITION)
+          // • - • /or/ • - • /or/ • - O // (IN ANY POSITION)
           else if (
-            rC.current.filter(e => e.value === "O").length <= 2 &&
-            rC.current.filter(e => e.value === "X").length <= 2
+            rC.current[4].value === "O" &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current.filter(e => e.value === "X").length === 1 &&
+            (rC.current[1].value === "X" || rC.current[3].value === "X" || rC.current[5].value === "X" || rC.current[7].value === "X")
           ) {
-            let randomStrategies = [[0,2,4],[2,4,8],[4,6,8],[0,4,6],[0,1,4],[1,2,4],[2,4,5],[4,5,8],
-                                    [4,7,8],[4,6,7],[3,4,6],[0,3,4],[0,2,8],[2,6,8],[0,6,8],[0,2,6]]
-            do {
-              randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
-              
-              if (executeRandomStrategy(randomStrategies[randomStrategyIndex.current])) {
-                //executeRandomStrategy(randomStrategies)
-                //rC.current[array[AIRandomGridIndex.current]].value = "O"
-                success = true
-              }
-            } while (success === false)
-
+            console.log(`// 0 CENTER, X RECT, THEN "L" OR "TRIANGLE" STRATEGY (100% AI WIN)`)
+            if (rC.current[1].value === "X" || rC.current[7].value === "X") { // DONT TOUCH 1 OR 7
+              let targetIndexes = [0,2,3,5,6,8]
+              randomPlaces(targetIndexes)
+            } else if (rC.current[5].value === "X" || rC.current[3].value === "X") { // DONT TOUCH 3 OR 5
+              let targetIndexes = [0,1,2,6,7,8]
+              randomPlaces(targetIndexes)
+            }
             
-            // 1st STRATEGY //
-            // 0 • 0 // 0 = AI
-            // - 0 - // • = TARGET AVAILABLE SPACE
-            // • - • // - = UNUSED
-            // if (checkIfPlaceIsAvailable([0,2,4])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([2,4,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([4,6,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([0,4,6])) selectRandomPlace(targetIndexes.current)
-            // 1st STRATEGY //
-
-            // 2nd STRATEGY //
-            // • 0 0 // 0 = AI
-            // - 0 - // • = TARGET AVAILABLE SPACE
-            // • - • // - = UNUSED
-            // else if (checkIfPlaceIsAvailable([0,1,4])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([1,2,4])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([2,4,5])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([4,5,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([4,7,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([4,6,7])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([3,4,6])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([0,3,4])) selectRandomPlace(targetIndexes.current)
-            // 2nd STRATEGY //
-
-            // 3rd STRATEGY //
-            // 0 • 0 // 0 = AI
-            // - • - // • = TARGET AVAILABLE SPACE
-            // • - 0 // - = UNUSED
-            // else if (checkIfPlaceIsAvailable([0,2,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([2,6,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([0,6,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([0,2,6])) selectRandomPlace(targetIndexes.current)
-            // 3rd STRATEGY //
           }
+          // END "L" OR "TRIANGLE" STRATEGY //
+
+          // 1º O CENTER, 2º X CORNER, THEN O FRONT CORNER: (50% AI WIN, 50% AI TIE) //
+          else if (
+            rC.current[4].value === "O" &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current.filter(e => e.value === "X").length === 1 &&
+            (rC.current[0].value === "X" || rC.current[2].value === "X" || rC.current[6].value === "X" || rC.current[8].value === "X")
+          ) {
+            console.log(`// 1º O CENTER, 2º X CORNER, THEN O FRONT CORNER: (50% AI WIN, 50% AI TIE) //`)
+            if (rC.current[0].value === "X") rC.current[8].value = "O"
+            else if (rC.current[2].value === "X") rC.current[6].value = "O"
+            else if (rC.current[8].value === "X") rC.current[0].value = "O"
+            else if (rC.current[6].value === "X") rC.current[2].value = "O"
+          }
+          // 1º O CENTER, 2º X CORNER, THEN O FRONT CORNER: (50% AI WIN, 50% AI TIE) //
+
+          // 1º O CORNER, 2º X CENTER, THEN 3º O ON THE OTHER CORNER: (50% AI WIN, 50% AI TIE) //
+          else if (
+            rC.current[4].value === "X" &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current.filter(e => e.value === "X").length === 1 &&
+            (rC.current[0].value === "O" || rC.current[2].value === "O" || rC.current[6].value === "O" || rC.current[8].value === "O")
+          ) {
+            console.log(`// 1º O CORNER, 2º X CENTER, THEN 3º O ON THE OTHER CORNER: (50% AI WIN, 50% AI TIE) //`)
+            if (rC.current[0].value === "O") rC.current[8].value = "O"
+            else if (rC.current[2].value === "O") rC.current[6].value = "O"
+            else if (rC.current[8].value === "O") rC.current[0].value = "O"
+            else if (rC.current[6].value === "O") rC.current[2].value = "O"
+            
+          }
+          // 1º O CORNER, 2º X CENTER, THEN 3º O ON THE OTHER CORNER: (50% AI WIN, 50% AI TIE) //
+
+          // 1º O RECT, 2º X CENTER, THEN 3º O ON THE OTHER CORNER: (50% AI WIN, 50% AI TIE) //
+          else if (
+            rC.current[4].value === "X" &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current.filter(e => e.value === "X").length === 1 &&
+            (rC.current[1].value === "O" || rC.current[3].value === "O" || rC.current[5].value === "O" || rC.current[7].value === "O")
+          ) {
+            console.log(`// 1º O RECT, 2º X CENTER, THEN 3º O ON THE OTHER CORNER: (50% AI WIN, 50% AI TIE) //`)
+            const randomPlaces = (targetIndexes: any) => {
+              do {
+                AIRandomGridIndex.current = Math.floor(Math.random() * targetIndexes.length)
+                if (rC.current[targetIndexes[AIRandomGridIndex.current]].value === "") {
+                  rC.current[targetIndexes[AIRandomGridIndex.current]].value = "O"
+                  success = true
+                }
+              } while (success === false)
+            }
+            if (rC.current[1].value === "O") {
+              let targetIndexes = [6,8]
+              //rC.current[8].value = "O"
+              randomPlaces(targetIndexes)
+            }
+            else if (rC.current[5].value === "O") {
+              let targetIndexes = [0,6]
+              //rC.current[8].value = "O"
+              randomPlaces(targetIndexes)
+            }
+            else if (rC.current[7].value === "O") {
+              let targetIndexes = [0,2]
+              //rC.current[8].value = "O"
+              randomPlaces(targetIndexes)
+            }
+            else if (rC.current[3].value === "O") {
+              let targetIndexes = [2,8]
+              //rC.current[8].value = "O"
+              randomPlaces(targetIndexes)
+            }
+          }
+          // 1º O RECT, 2º X CENTER, THEN 3º O ON THE OTHER CORNER: (50% AI WIN, 50% AI TIE) //
+
+          // 1º O RECT, 2º X CENTER, 3º 0 FRONT CORNER, 4º X STUCK, THEN: (50% AI WIN, 50% AI TIE) //
+          else if (
+            rC.current[4].value === "X" &&
+            rC.current.filter(e => e.value === "O").length === 2 &&
+            rC.current.filter(e => e.value === "X").length === 2 &&
+            (
+              (rC.current[1].value === "O" && (rC.current[8].value === "O" || rC.current[6].value === "O")) ||
+              (rC.current[5].value === "O" && (rC.current[0].value === "O" || rC.current[6].value === "O")) ||
+              (rC.current[7].value === "O" && (rC.current[0].value === "O" || rC.current[2].value === "O")) ||
+              (rC.current[3].value === "O" && (rC.current[2].value === "O" || rC.current[8].value === "O"))
+            )
+          ) {
+            console.log(`// 1º O RECT, 2º X CENTER, 3º 0 FRONT CORNER, 4º X STUCK, THEN: (50% AI WIN, 50% AI TIE) //`)
+            // 1st KIND STUCK //
+            if (rC.current[0].value === "" && rC.current[1].value === "" && rC.current[5].value === "" && rC.current[8].value === "") {
+              let targetIndexes = [0,1,5,8]
+              randomPlaces(targetIndexes)
+            }
+            else if (rC.current[2].value === "" && rC.current[5].value === "" && rC.current[7].value === "" && rC.current[6].value === "") {
+              let targetIndexes = [2,5,7,6]
+              randomPlaces(targetIndexes)
+            }
+            else if (rC.current[8].value === "" && rC.current[7].value === "" && rC.current[3].value === "" && rC.current[0].value === "") {
+              let targetIndexes = [8,7,3,0]
+              randomPlaces(targetIndexes)
+            }
+            else if (rC.current[6].value === "" && rC.current[3].value === "" && rC.current[1].value === "" && rC.current[2].value === "") {
+              let targetIndexes = [6,3,1,2]
+              randomPlaces(targetIndexes)
+            }
+            // 1st KIND STUCK //
+            // 2nd KIND STUCK //
+            else if (rC.current[8].value === "O" && rC.current[1].value === "O" && rC.current[2].value === "" && rC.current[5].value === "") {
+              rC.current[2].value = "O"
+            }
+            else if (rC.current[6].value === "O" && rC.current[1].value === "O" && rC.current[0].value === "" && rC.current[3].value === "") {
+              rC.current[0].value = "O"
+            }
+            else if (rC.current[5].value === "O" && rC.current[6].value === "O" && rC.current[7].value === "" && rC.current[8].value === "") {
+              rC.current[8].value = "O"
+            }
+            else if (rC.current[5].value === "O" && rC.current[0].value === "O" && rC.current[1].value === "" && rC.current[2].value === "") {
+              rC.current[2].value = "O"
+            }
+            else if (rC.current[7].value === "O" && rC.current[0].value === "O" && rC.current[3].value === "" && rC.current[6].value === "") {
+              rC.current[6].value = "O"
+            }
+            else if (rC.current[2].value === "O" && rC.current[7].value === "O" && rC.current[5].value === "" && rC.current[8].value === "") {
+              rC.current[8].value = "O"
+            }
+            else if (rC.current[2].value === "O" && rC.current[3].value === "O" && rC.current[0].value === "" && rC.current[1].value === "") {
+              rC.current[0].value = "O"
+            }
+            else if (rC.current[8].value === "O" && rC.current[3].value === "O" && rC.current[6].value === "" && rC.current[7].value === "") {
+              rC.current[6].value = "O"
+            }
+            // 2nd KIND STUCK //
+          }
+          // 1º O RECT, 2º X CENTER, 3º 0 FRONT CORNER, 4º X STUCK, THEN: (50% AI WIN, 50% AI TIE) //
+
+          // 1º O CORNER, 2º X RECT OR CORNER, THEN: (50% AI WIN, 50% AI TIE) //
+          else if (
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current.filter(e => e.value === "X").length === 1 &&
+            (rC.current[0].value === "O" || rC.current[2].value === "O" || rC.current[6].value === "O" || rC.current[8].value === "O") &&
+            rC.current[4].value !== "X"
+          ) {
+            console.log(`// 1º O CORNER, 2º X RECT OR CORNER, THEN: (50% AI WIN, 50% AI TIE) //`)
+            if (rC.current[0].value === "O" && (rC.current[1].value === "X" || rC.current[2].value === "X" || rC.current[5].value === "X")) {
+              rC.current[6].value = "O"
+            }
+            else if (rC.current[2].value === "O" && (rC.current[5].value === "X" || rC.current[8].value === "X" || rC.current[7].value === "X")) {
+              rC.current[0].value = "O"
+            }
+            else if (rC.current[8].value === "O" && (rC.current[7].value === "X" || rC.current[6].value === "X" || rC.current[3].value === "X")) {
+              rC.current[2].value = "O"
+            }
+            else if (rC.current[6].value === "O" && (rC.current[3].value === "X" || rC.current[0].value === "X" || rC.current[1].value === "X")) {
+              rC.current[8].value = "O"
+            }
+            else if ((rC.current[0].value === "O" && rC.current[8].value === "X") || (rC.current[0].value === "X" && rC.current[8].value === "O")) {
+              let targetIndexes = [2,6]
+              randomPlaces(targetIndexes)
+            }
+            else if ((rC.current[2].value === "O" && rC.current[6].value === "X") || (rC.current[2].value === "X" && rC.current[6].value === "O")) {
+              let targetIndexes = [0,8]
+              randomPlaces(targetIndexes)
+            }
+    
+          }
+          // 1º O CORNER, 2º X RECT OR CORNER, THEN: (50% AI WIN, 50% AI TIE) //
+
+          // 1º O RECT, 2º X (50% AI WIN, 50% AI TIE) //
+          // 1º O RECT, 2º X (50% AI WIN, 50% AI TIE) //
+
+
+          // BEGIN IF X FIRST IS ON CENTER //
+          else if (
+            rC.current[4].value === "X" &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current.filter(e => e.value === "X").length === 1 &&
+            (rC.current[0].value === "O" || rC.current[2].value === "O" || rC.current[6].value === "O" || rC.current[8].value === "O")
+          ) {
+            console.log(`// BEGIN IF X FIRST IS ON CENTER //`)
+            if (rC.current[0].value === "0") rC.current[8].value = "O"
+            else if (rC.current[2].value === "0") rC.current[6].value = "O"
+            else if (rC.current[8].value === "0") rC.current[0].value = "O"
+            else if (rC.current[6].value === "0") rC.current[2].value = "O"
+          }
+          // END IF X FIRST IS ON CENTER //
+
+
+
+
+          // BEGIN TRY TO END "L" OR "TRIANGLE" STRATEGY //
+          // • X O /or/ • X O // (IN ANY POSITION)
+          // • O O /or/ • O • // (IN ANY POSITION)
+          // • - • /or/ • - O // (IN ANY POSITION)
+          else if (rC.current[4].value === "O" && rC.current.filter(e => e.value === "O").length === 2) {
+            console.log(`// BEGIN TRY TO END "L" OR "TRIANGLE" STRATEGY //`)
+            const random3Places = (targetIndexes: any) => {
+              do {
+                AIRandomGridIndex.current = Math.floor(Math.random() * 3)
+                if (rC.current[targetIndexes[AIRandomGridIndex.current]].value === "") {
+                  rC.current[targetIndexes[AIRandomGridIndex.current]].value = "O"
+                  success = true
+                }
+              } while (success === false)
+            }
+            if ((rC.current[3].value === "X" || rC.current[5].value === "X") && (rC.current[0].value === "O" || rC.current[1].value === "O" || rC.current[2].value === "O")) {
+              let targetIndexes = [0,1,2]
+              random3Places(targetIndexes)
+            }
+            else if ((rC.current[3].value === "X" || rC.current[5].value === "X") && (rC.current[6].value === "O" || rC.current[7].value === "O" || rC.current[8].value === "O")) {
+              let targetIndexes = [6,7,8]
+              random3Places(targetIndexes)
+            }
+            else if ((rC.current[1].value === "X" || rC.current[7].value === "X") && (rC.current[2].value === "O" || rC.current[5].value === "O" || rC.current[8].value === "O")) {
+              let targetIndexes = [2,5,8]
+              random3Places(targetIndexes)
+            }
+            else if ((rC.current[1].value === "X" || rC.current[7].value === "X") && (rC.current[0].value === "O" || rC.current[3].value === "O" || rC.current[6].value === "O")) {
+              let targetIndexes = [0,3,6]
+              random3Places(targetIndexes)
+            }
+          }
+          // END TRY TO END "L" OR "TRIANGLE" STRATEGY //
+
+          
+
+
+
+          // BEGIN "DOUBLE SIDES" STRATEGY //
+          // else if (rC.current[0].value === ""  && rC.current[1].value === "" && rC.current[2].value === "" && rC.current[5].value === "" && rC.current[8].value === "" ) rC.current[0].value = "O" // O • • /→/ O • • /→/ O • O
+          // else if (rC.current[0].value === "O" && rC.current[1].value === "" && rC.current[2].value === "" && rC.current[5].value === "" && rC.current[8].value === "" ) rC.current[8].value = "O" // • • • /→/ • • • /→/ • • •
+          // else if (rC.current[0].value === "O" && rC.current[1].value === "" && rC.current[2].value === "" && rC.current[5].value === "" && rC.current[8].value === "O") rC.current[2].value = "O" // • • • /→/ • • O /→/ • • O
+
+          // else if (rC.current[2].value === ""  && rC.current[5].value === "" && rC.current[8].value === "" && rC.current[7].value === "" && rC.current[6].value === "" ) rC.current[2].value = "O" // • • O /→/ • • O /→/ • • O
+          // else if (rC.current[2].value === "O" && rC.current[5].value === "" && rC.current[8].value === "" && rC.current[7].value === "" && rC.current[6].value === "" ) rC.current[6].value = "O" // • • • /→/ • • • /→/ • • •
+          // else if (rC.current[2].value === "O" && rC.current[5].value === "" && rC.current[8].value === "" && rC.current[7].value === "" && rC.current[6].value === "O") rC.current[8].value = "O" // • • • /→/ O • • /→/ O • O
+
+          // else if (rC.current[8].value === ""  && rC.current[7].value === "" && rC.current[6].value === "" && rC.current[3].value === "" && rC.current[0].value === "" ) rC.current[8].value = "O" // • • • /→/ O • • /→/ O • •
+          // else if (rC.current[8].value === "O" && rC.current[7].value === "" && rC.current[6].value === "" && rC.current[3].value === "" && rC.current[0].value === "" ) rC.current[0].value = "O" // • • • /→/ • • • /→/ • • •
+          // else if (rC.current[8].value === "O" && rC.current[7].value === "" && rC.current[6].value === "" && rC.current[3].value === "" && rC.current[0].value === "O") rC.current[6].value = "O" // • • O /→/ • • O /→/ O • O
+
+          // else if (rC.current[6].value === ""  && rC.current[3].value === "" && rC.current[0].value === "" && rC.current[1].value === "" && rC.current[2].value === "" ) rC.current[6].value = "O" // • • • /→/ • • O /→/ O • O
+          // else if (rC.current[6].value === "O" && rC.current[3].value === "" && rC.current[0].value === "" && rC.current[1].value === "" && rC.current[2].value === "" ) rC.current[2].value = "O" // • • • /→/ • • • /→/ • • •
+          // else if (rC.current[6].value === "O" && rC.current[3].value === "" && rC.current[0].value === "" && rC.current[1].value === "" && rC.current[2].value === "O") rC.current[0].value = "O" // O • • /→/ O • • /→/ O • •
+          // END "DOUBLE SIDES" STRATEGY  //
 
 
           else { // WHEN NO STRATEGY AVAILABLE === LAST MOVEMENT
