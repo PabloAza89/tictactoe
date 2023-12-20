@@ -176,6 +176,10 @@ const Main = () => {
 
   let targetIndexes = useRef<any[]>()
 
+  //let success = useRef(false)
+  //let setO = new Set()
+  let setO = useRef(new Set())
+
   const AIAction = async () => {
     let randomTimes = [ 700, 900, 1100, 1300, 1500 ]
     setTimeout(() => {
@@ -193,17 +197,71 @@ const Main = () => {
         }
 
         const checkIfPlaceIsAvailable = (array: any) => {
-          let result: any[] = []
-          array.forEach((e: any) => {
-            result.push(rC.current[e].value)
-          })
-          //return result.some(e => e === "") ? true : false
-          if (result.some(e => e === "")) {
-            targetIndexes.current = array
-            return true
+          let primaryTarget: any[] = []
+          let secondaryTarget: any[] = []
+          if (array.length === 2) {
+            array[0].forEach((e: any) => {
+              primaryTarget.push(rC.current[e].value)
+            })
+            array[1].forEach((e: any) => {
+              secondaryTarget.push(rC.current[e].value)
+            })
+            if (
+              //rC.current.filter(e => e.value === "O").length === 1 &&
+              //primaryTarget.some(e => e === "O") &&
+              rC.current.filter(e => e.value === "O").length === 1 &&
+              primaryTarget.filter(e => e === "O").length === 1 &&
+              !primaryTarget.some(e => e === "X") &&
+              secondaryTarget.some(e => e === "")
+            ) {
+              targetIndexes.current = array[0]
+              return true
+            }
+
+            else if (
+              //rC.current.filter(e => e.value === "O").length === 1 &&
+              //primaryTarget.some(e => e === "O") &&
+              rC.current.filter(e => e.value === "O").length === 2 &&
+              primaryTarget.filter(e => e === "O").length === 2 &&
+              !primaryTarget.some(e => e === "X") &&
+              secondaryTarget.some(e => e === "")
+            ) {
+              targetIndexes.current = array[0]
+              return true
+            }
+
+
+
+            // else if (
+            //   rC.current.filter(e => e.value === "O").length === 1 &&
+            //   primaryTarget.some(e => e === "") &&
+            //   !primaryTarget.some(e => e === "X") &&
+            //   secondaryTarget.some(e => e === "")
+            // ) {
+            //   targetIndexes.current = array[0]
+            //   return true
+            // } 
+            else {
+              targetIndexes.current = []
+              return false
+            }
           } else {
-            targetIndexes.current = []
-            return false
+            array.forEach((e: any) => {
+              primaryTarget.push(rC.current[e].value)
+            })
+            console.log("entro aca 123 123 123")
+            if (
+              primaryTarget.some((e: any) => e === "") &&
+              primaryTarget.some((e: any) => e === "O") &&
+              !primaryTarget.some(e => e === "X")
+            ) {
+              
+              targetIndexes.current = array
+              return true
+            } else {
+              targetIndexes.current = []
+              return false
+            }
           }
         }
 
@@ -216,6 +274,31 @@ const Main = () => {
           }
         }
 
+        let targetPlaces = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+
+        const completeThreeO = () => {
+          for (let i = 0; i < targetPlaces.length; i++) {
+            if (targetPlaces[i].filter((i:any) => rC.current[i].value === "O").length === 2 && targetPlaces[i].filter((idx: any) => rC.current[idx].value === "").length === 1) {
+              console.log("TRUE TRUE COMPLETED")
+              rC.current[targetPlaces[i].filter((idx: any) => rC.current[idx].value === "")[0]].value = "O"
+              success = true
+              break;
+            }
+          }
+        }
+
+        const blockThreeX = () => {
+          for (let i = 0; i < targetPlaces.length; i++) {
+            if (targetPlaces[i].filter((i:any) => rC.current[i].value === "X").length === 2 && targetPlaces[i].filter((idx: any) => rC.current[idx].value === "").length === 1) {
+              console.log("TRUE TRUE BLOCKED")
+              rC.current[targetPlaces[i].filter((idx: any) => rC.current[idx].value === "")[0]].value = "O"
+              success = true
+              break;
+            }
+          }
+
+        }
+
         if (gameMode.current === 'easy') {
           console.log("ENTRO MODO EASY")
           let targetIndexes = [0,1,2,3,4,5,6,7,8]
@@ -224,101 +307,34 @@ const Main = () => {
           setShouldAIstartState(false)
           setUserPlaying(true)
         } else { // BEGINS EVIL STRATEGY >-)
-          console.log("ENTRO MODO HARD")
-
-          // BEGIN TRY TO MATCH ALL 3 "O" POSSIBLE //
+          //console.log("ENTRO MODO HARD")
           
-            //console.log("CHEQUEANDO GANADOR O")
-            if (rC.current[0].value === "O" && rC.current[2].value === "O" && rC.current[1].value === "") rC.current[1].value = "O"      // O • O // → → →
-            else if (rC.current[3].value === "O" && rC.current[5].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // O • O // → → →
-            else if (rC.current[6].value === "O" && rC.current[8].value === "O" && rC.current[7].value === "") rC.current[7].value = "O" // O • O // → → →
-
-            else if (rC.current[0].value === "O" && rC.current[1].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O O • // → → →
-            else if (rC.current[3].value === "O" && rC.current[4].value === "O" && rC.current[5].value === "") rC.current[5].value = "O" // O O • // → → →
-            else if (rC.current[6].value === "O" && rC.current[7].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // O O • // → → →
-
-            else if (rC.current[1].value === "O" && rC.current[2].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • O O // → → →
-            else if (rC.current[4].value === "O" && rC.current[5].value === "O" && rC.current[3].value === "") rC.current[3].value = "O" // • O O // → → →
-            else if (rC.current[7].value === "O" && rC.current[8].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // • O O // → → →
-
-            else if (rC.current[0].value === "O" && rC.current[6].value === "O" && rC.current[3].value === "") rC.current[3].value = "O" // O O O // ↓ ↓ ↓
-            else if (rC.current[1].value === "O" && rC.current[7].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • • // ↓ ↓ ↓
-            else if (rC.current[2].value === "O" && rC.current[8].value === "O" && rC.current[5].value === "") rC.current[5].value = "O" // O O O // ↓ ↓ ↓
-
-            else if (rC.current[0].value === "O" && rC.current[3].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // O O O // ↓ ↓ ↓
-            else if (rC.current[1].value === "O" && rC.current[4].value === "O" && rC.current[7].value === "") rC.current[7].value = "O" // O O O // ↓ ↓ ↓
-            else if (rC.current[2].value === "O" && rC.current[5].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // • • • // ↓ ↓ ↓
-
-            else if (rC.current[3].value === "O" && rC.current[6].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • • • // ↓ ↓ ↓
-            else if (rC.current[4].value === "O" && rC.current[7].value === "O" && rC.current[1].value === "") rC.current[1].value = "O" // O O O // ↓ ↓ ↓
-            else if (rC.current[5].value === "O" && rC.current[8].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O O O // ↓ ↓ ↓
-
-            else if (rC.current[0].value === "O" && rC.current[8].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // O • • // O • • // • • • // ↘ • •
-            else if (rC.current[0].value === "O" && rC.current[4].value === "O" && rC.current[8].value === "") rC.current[8].value = "O" // • • • // • O • // • O • // • ↘ •
-            else if (rC.current[4].value === "O" && rC.current[8].value === "O" && rC.current[0].value === "") rC.current[0].value = "O" // • • O // • • • // • • O // • • ↘
-
-            else if (rC.current[2].value === "O" && rC.current[6].value === "O" && rC.current[4].value === "") rC.current[4].value = "O" // • • O // • • O // • • • // • • ↙
-            else if (rC.current[2].value === "O" && rC.current[4].value === "O" && rC.current[6].value === "") rC.current[6].value = "O" // • • • // • O • // • O • // • ↙ •
-            else if (rC.current[4].value === "O" && rC.current[6].value === "O" && rC.current[2].value === "") rC.current[2].value = "O" // O • • // • • • // O • • // ↙ • •
+          if (!success) completeThreeO() // TRY TO MATCH ALL 3 "O" POSSIBLE //
           
-          // END TRY TO MATCH ALL 3 "O" POSSIBLE //
+          if (!success) blockThreeX() // TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
 
-          // BEGIN TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
-          else if (rC.current[0].value === "X" && rC.current[2].value === "X" && rC.current[1].value === "") rC.current[1].value = "O" // X O X // → → →
-          else if (rC.current[3].value === "X" && rC.current[5].value === "X" && rC.current[4].value === "") rC.current[4].value = "O" // X O X // → → →
-          else if (rC.current[6].value === "X" && rC.current[8].value === "X" && rC.current[7].value === "") rC.current[7].value = "O" // X O X // → → →
-
-          else if (rC.current[0].value === "X" && rC.current[1].value === "X" && rC.current[2].value === "") rC.current[2].value = "O" // X X O // → → →
-          else if (rC.current[3].value === "X" && rC.current[4].value === "X" && rC.current[5].value === "") rC.current[5].value = "O" // X X O // → → →
-          else if (rC.current[6].value === "X" && rC.current[7].value === "X" && rC.current[8].value === "") rC.current[8].value = "O" // X X O // → → →
-
-          else if (rC.current[1].value === "X" && rC.current[2].value === "X" && rC.current[0].value === "") rC.current[0].value = "O" // O X X // → → →
-          else if (rC.current[4].value === "X" && rC.current[5].value === "X" && rC.current[3].value === "") rC.current[3].value = "O" // O X X // → → →
-          else if (rC.current[7].value === "X" && rC.current[8].value === "X" && rC.current[6].value === "") rC.current[6].value = "O" // O X X // → → →
-
-          else if (rC.current[0].value === "X" && rC.current[6].value === "X" && rC.current[3].value === "") rC.current[3].value = "O" // X X X // ↓ ↓ ↓
-          else if (rC.current[1].value === "X" && rC.current[7].value === "X" && rC.current[4].value === "") rC.current[4].value = "O" // O O O // ↓ ↓ ↓
-          else if (rC.current[2].value === "X" && rC.current[8].value === "X" && rC.current[5].value === "") rC.current[5].value = "O" // X X X // ↓ ↓ ↓
-
-          else if (rC.current[0].value === "X" && rC.current[3].value === "X" && rC.current[6].value === "") rC.current[6].value = "O" // X X X // ↓ ↓ ↓
-          else if (rC.current[1].value === "X" && rC.current[4].value === "X" && rC.current[7].value === "") rC.current[7].value = "O" // X X X // ↓ ↓ ↓
-          else if (rC.current[2].value === "X" && rC.current[5].value === "X" && rC.current[8].value === "") rC.current[8].value = "O" // O O O // ↓ ↓ ↓
-
-          else if (rC.current[3].value === "X" && rC.current[6].value === "X" && rC.current[0].value === "") rC.current[0].value = "O" // O O O // ↓ ↓ ↓
-          else if (rC.current[4].value === "X" && rC.current[7].value === "X" && rC.current[1].value === "") rC.current[1].value = "O" // X X X // ↓ ↓ ↓
-          else if (rC.current[5].value === "X" && rC.current[8].value === "X" && rC.current[2].value === "") rC.current[2].value = "O" // X X X // ↓ ↓ ↓
-
-          else if (rC.current[0].value === "X" && rC.current[8].value === "X" && rC.current[4].value === "") rC.current[4].value = "O" // X • • // X • • // O • • // ↘ • •
-          else if (rC.current[0].value === "X" && rC.current[4].value === "X" && rC.current[8].value === "") rC.current[8].value = "O" // • O • // • X • // • X • // • ↘ •
-          else if (rC.current[4].value === "X" && rC.current[8].value === "X" && rC.current[0].value === "") rC.current[0].value = "O" // • • X // • • O // • • X // • • ↘
-
-          else if (rC.current[2].value === "X" && rC.current[6].value === "X" && rC.current[4].value === "") rC.current[4].value = "O" // • • X // • • X // • • O // • • ↙
-          else if (rC.current[2].value === "X" && rC.current[4].value === "X" && rC.current[6].value === "") rC.current[6].value = "O" // • O • // • X • // • X • // • ↙ •
-          else if (rC.current[4].value === "X" && rC.current[6].value === "X" && rC.current[2].value === "") rC.current[2].value = "O" // X • • // O • • // X • • // ↙ • •
-          // END TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
-
-          // // BEGIN TRY MARK CENTER //
-          // else if (rC.current[0].value === "") {
-          //   console.log("AI: FIRST RANDOM ACTION")
-          //   //rC.current[4].value = "O"
-          //   rC.current[0].value = "O"
-          //   //rC.current[5].value = "O"
+          // BEGIN TRY MARK CENTER //
+          if (rC.current[3].value === "" && !success) {
+            console.log("AI: FIRST RANDOM ACTION")
+            //rC.current[4].value = "O"
+            rC.current[3].value = "O"
+            //rC.current[5].value = "O"
             
-          //   //success = true
-          // }
-          // // END TRY MARK CENTER //
+            success = true
+          }
+          // END TRY MARK CENTER //
 
          // BEGIN FIRST RANDOM MOVEMENT //
-          else if (!rC.current.some(e => e.value === "O")) {
-            console.log("ENTRO EN EL RANDOM DEL MEDIO")
-            do {
-              AIRandomGridIndex.current = Math.floor(Math.random() * 9)
-              if (rC.current[AIRandomGridIndex.current].value === "") {
-                rC.current[AIRandomGridIndex.current].value = "O"
-                success = true
-              }
-            } while (success === false)
-          }
+          // if (!rC.current.some(e => e.value === "O")) {
+          //   console.log("ENTRO EN EL RANDOM DEL MEDIO")
+          //   do {
+          //     AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+          //     if (rC.current[AIRandomGridIndex.current].value === "") {
+          //       rC.current[AIRandomGridIndex.current].value = "O"
+          //       success = true
+          //     }
+          //   } while (success === false)
+          // }
          // END FIRST RANDOM MOVEMENT //
 
           // randomTimes[Math.floor(Math.random() * 5)]
@@ -348,71 +364,73 @@ const Main = () => {
           // }
           // END FIRST TRIANGLE STRATEGY //
 
-          else if (
-            rC.current.filter(e => e.value === "O").length <= 2 &&
-            rC.current.filter(e => e.value === "X").length <= 2
-          ) {
-            let randomStrategies = [[0,2,4],[2,4,8],[4,6,8],[0,4,6],[0,1,4],[1,2,4],[2,4,5],[4,5,8],
-                                    [4,7,8],[4,6,7],[3,4,6],[0,3,4],[0,2,8],[2,6,8],[0,6,8],[0,2,6]]
+          if (!success) { // EXECUTE PRIMARY STRATEGIES
+            //                              0                 1                 2                 3                 4                 5                 6                 7
+            let randomStrategies = [[[0,2,4],[1,6,8]],[[2,4,8],[0,5,6]],[[4,6,8],[0,2,7]],[[0,4,6],[2,3,8]],[[0,1,4],[2,7,8]],[[1,2,4],[0,6,7]],[[2,4,5],[3,6,8]],[[4,5,8],[0,2,3]],
+                                    [[4,7,8],[0,1,6]],[[4,6,7],[1,2,8]],[[3,4,6],[0,2,5]],[[0,3,4],[5,6,8]],[[0,2,8],[1,4,5]],[[2,6,8],[4,5,7]],[[0,6,8],[3,4,7]],[[0,2,6],[1,3,4]]]
+            //                              8                 9                 10                11                12                13                14                15
+            setO.current.clear()
             do {
               randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
-              
-              if (executeRandomStrategy(randomStrategies[randomStrategyIndex.current])) {
-                //executeRandomStrategy(randomStrategies)
-                //rC.current[array[AIRandomGridIndex.current]].value = "O"
-                success = true
+              //setO.add(Number(randomStrategyIndex.current))
+              console.log("set current", setO.current.entries())
+              if (!setO.current.has(randomStrategyIndex.current)) {
+                setO.current.add(randomStrategyIndex.current)
+                console.log("set current", setO.current.size)
+                console.log("set EJECUTANDO RANDOM STRATEGY")
+                if (executeRandomStrategy(randomStrategies[randomStrategyIndex.current])) {
+                  //executeRandomStrategy(randomStrategies)
+                  //rC.current[array[AIRandomGridIndex.current]].value = "O"
+                  console.log("set RANDOM STRATEGY EJECUTADA, index:", randomStrategyIndex.current)
+                  success = true
+                }
               }
-            } while (success === false)
-
-            
-            // 1st STRATEGY //
-            // 0 • 0 // 0 = AI
-            // - 0 - // • = TARGET AVAILABLE SPACE
-            // • - • // - = UNUSED
-            // if (checkIfPlaceIsAvailable([0,2,4])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([2,4,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([4,6,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([0,4,6])) selectRandomPlace(targetIndexes.current)
-            // 1st STRATEGY //
-
-            // 2nd STRATEGY //
-            // • 0 0 // 0 = AI
-            // - 0 - // • = TARGET AVAILABLE SPACE
-            // • - • // - = UNUSED
-            // else if (checkIfPlaceIsAvailable([0,1,4])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([1,2,4])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([2,4,5])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([4,5,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([4,7,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([4,6,7])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([3,4,6])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([0,3,4])) selectRandomPlace(targetIndexes.current)
-            // 2nd STRATEGY //
-
-            // 3rd STRATEGY //
-            // 0 • 0 // 0 = AI
-            // - • - // • = TARGET AVAILABLE SPACE
-            // • - 0 // - = UNUSED
-            // else if (checkIfPlaceIsAvailable([0,2,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([2,6,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([0,6,8])) selectRandomPlace(targetIndexes.current)
-            // else if (checkIfPlaceIsAvailable([0,2,6])) selectRandomPlace(targetIndexes.current)
-            // 3rd STRATEGY //
+            } while (success === false && setO.current.size < 16)
           }
 
+          // else if (!success) {
+          //   console.log("set NO HIZO NINGUNA ESTRATEGIA PRIMARIA")
+          // }
+          if (!success) { // EXECUTE SECONDARY STRATEGIES
+            //console.log("set NO HIZO NINGUNA ESTRATEGIA PRIMARIA")
+            //                         0       1       2       3       4       5       6       7
+            let randomStrategies = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+            setO.current.clear() // CLEAR FORMERLY SET
 
-          else { // WHEN NO STRATEGY AVAILABLE === LAST MOVEMENT
-            console.log("ENTRO ACA LAST MOVEMENT")
             do {
-              AIRandomGridIndex.current = Math.floor(Math.random() * 9)
-              if (rC.current[AIRandomGridIndex.current].value === "") {
-                rC.current[AIRandomGridIndex.current].value = "O"
-                success = true
+              randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
+              //setO.add(Number(randomStrategyIndex.current))
+              console.log("set 2 current", setO.current.entries())
+              if (!setO.current.has(randomStrategyIndex.current)) {
+                setO.current.add(randomStrategyIndex.current)
+                console.log("set 2 current", setO.current.size)
+                console.log("set 2 EJECUTANDO RANDOM STRATEGY")
+                if (executeRandomStrategy(randomStrategies[randomStrategyIndex.current])) {
+                  //executeRandomStrategy(randomStrategies)
+                  //rC.current[array[AIRandomGridIndex.current]].value = "O"
+                  console.log("set 2 RANDOM STRATEGY EJECUTADA, index:", randomStrategyIndex.current)
+                  success = true
+                }
               }
-            } while (success === false)
-          }
+            } while (success === false && setO.current.size < 8)
 
-      
+          }
+          //console.log("set NO HIZO NINGUNA ESTRATEGIA PRIMARIA")
+          // else { // WHEN NO STRATEGY AVAILABLE === LAST MOVEMENT
+          //   while (success === false) {
+          //     console.log("ENTRO ACA LAST MOVEMENT")
+          //     AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+          //     if (rC.current[AIRandomGridIndex.current].value === "") {
+          //       rC.current[AIRandomGridIndex.current].value = "O"
+          //       success = true
+          //     }
+          //   }
+          // }
+
+          else if (!success) {
+            //console.log("set NO HIZO NINGUNA ESTRATEGIA PRIMARIA")
+            console.log("set NI PRIMARIA NI SECUNDARIA")
+          }
 
 
           if (allowFXSound.current) playSound({ file: aF.Omove })
@@ -1540,6 +1558,7 @@ const Main = () => {
                 }}
                 className={css.eachBox}
               >
+                {<div style={{ fontSize: '10px', marginTop: '-25px', marginLeft: '-10px' }}> {index} </div>}
                 { rC.current[index].value }
               </div>
             )
