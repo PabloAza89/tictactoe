@@ -196,7 +196,7 @@ const Main = () => {
           } while (success === false)
         }
 
-        const checkIfPlaceIsAvailable = (array: any) => {
+        const checkIfStrategyWouldWork = (array: any) => {
           let primaryTarget: any[] = []
           let secondaryTarget: any[] = []
           if (array.length === 2) {
@@ -206,21 +206,8 @@ const Main = () => {
             array[1].forEach((e: any) => {
               secondaryTarget.push(rC.current[e].value)
             })
-            if (
-              //rC.current.filter(e => e.value === "O").length === 1 &&
-              //primaryTarget.some(e => e === "O") &&
-              rC.current.filter(e => e.value === "O").length === 1 &&
-              primaryTarget.filter(e => e === "O").length === 1 &&
-              !primaryTarget.some(e => e === "X") &&
-              secondaryTarget.some(e => e === "")
-            ) {
-              targetIndexes.current = array[0]
-              return true
-            }
 
-            else if (
-              //rC.current.filter(e => e.value === "O").length === 1 &&
-              //primaryTarget.some(e => e === "O") &&
+            if (
               rC.current.filter(e => e.value === "O").length === 2 &&
               primaryTarget.filter(e => e === "O").length === 2 &&
               !primaryTarget.some(e => e === "X") &&
@@ -229,18 +216,24 @@ const Main = () => {
               targetIndexes.current = array[0]
               return true
             }
-
-
-
-            // else if (
-            //   rC.current.filter(e => e.value === "O").length === 1 &&
-            //   primaryTarget.some(e => e === "") &&
-            //   !primaryTarget.some(e => e === "X") &&
-            //   secondaryTarget.some(e => e === "")
-            // ) {
-            //   targetIndexes.current = array[0]
-            //   return true
-            // } 
+            else if (
+              rC.current.filter(e => e.value === "O").length === 1 &&
+              primaryTarget.filter(e => e === "O").length === 1 &&
+              !primaryTarget.some(e => e === "X") &&
+              secondaryTarget.some(e => e === "")
+            ) {
+              targetIndexes.current = array[0]
+              return true
+            }
+            else if (       
+              !rC.current.some(e => e.value === "O") &&
+              !primaryTarget.some(e => e === "O") &&
+              !primaryTarget.some(e => e === "X") &&
+              secondaryTarget.some(e => e === "")
+            ) {
+              targetIndexes.current = array[0]
+              return true
+            }        
             else {
               targetIndexes.current = []
               return false
@@ -249,7 +242,7 @@ const Main = () => {
             array.forEach((e: any) => {
               primaryTarget.push(rC.current[e].value)
             })
-            console.log("entro aca 123 123 123")
+            //console.log("entro aca 123 123 123")
             if (
               primaryTarget.some((e: any) => e === "") &&
               primaryTarget.some((e: any) => e === "O") &&
@@ -266,7 +259,7 @@ const Main = () => {
         }
 
         const executeRandomStrategy = (array: any[]) => {
-          if (checkIfPlaceIsAvailable(array)) {
+          if (checkIfStrategyWouldWork(array)) {
             selectRandomPlace(targetIndexes.current)
             return true
           } else {
@@ -313,29 +306,26 @@ const Main = () => {
           
           if (!success) blockThreeX() // TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
 
-          // BEGIN TRY MARK CENTER //
-          if (rC.current[3].value === "" && !success) {
-            console.log("AI: FIRST RANDOM ACTION")
-            //rC.current[4].value = "O"
-            rC.current[3].value = "O"
-            //rC.current[5].value = "O"
-            
-            success = true
-          }
-          // END TRY MARK CENTER //
-
-         // BEGIN FIRST RANDOM MOVEMENT //
-          // if (!rC.current.some(e => e.value === "O")) {
-          //   console.log("ENTRO EN EL RANDOM DEL MEDIO")
-          //   do {
-          //     AIRandomGridIndex.current = Math.floor(Math.random() * 9)
-          //     if (rC.current[AIRandomGridIndex.current].value === "") {
-          //       rC.current[AIRandomGridIndex.current].value = "O"
-          //       success = true
-          //     }
-          //   } while (success === false)
+          // CONTROLLED FIRST MOVEMENT //
+          // if (rC.current[3].value === "" && !success) {
+          //   console.log("AI: FIRST RANDOM ACTION")
+          //   rC.current[3].value = "O"
+          //   success = true
           // }
-         // END FIRST RANDOM MOVEMENT //
+          // CONTROLLED FIRST MOVEMENT //
+
+          // BEGIN FIRST RANDOM MOVEMENT //
+            // if (!rC.current.some(e => e.value === "O")) {
+            //   console.log("FIRST RANDOM MOVEMENT")
+            //   do {
+            //     AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+            //     if (rC.current[AIRandomGridIndex.current].value === "") {
+            //       rC.current[AIRandomGridIndex.current].value = "O"
+            //       success = true
+            //     }
+            //   } while (success === false)
+            // }
+          // END FIRST RANDOM MOVEMENT //
 
           // randomTimes[Math.floor(Math.random() * 5)]
 
@@ -365,23 +355,23 @@ const Main = () => {
           // END FIRST TRIANGLE STRATEGY //
 
           if (!success) { // EXECUTE PRIMARY STRATEGIES
-            //                              0                 1                 2                 3                 4                 5                 6                 7
-            let randomStrategies = [[[0,2,4],[1,6,8]],[[2,4,8],[0,5,6]],[[4,6,8],[0,2,7]],[[0,4,6],[2,3,8]],[[0,1,4],[2,7,8]],[[1,2,4],[0,6,7]],[[2,4,5],[3,6,8]],[[4,5,8],[0,2,3]],
-                                    [[4,7,8],[0,1,6]],[[4,6,7],[1,2,8]],[[3,4,6],[0,2,5]],[[0,3,4],[5,6,8]],[[0,2,8],[1,4,5]],[[2,6,8],[4,5,7]],[[0,6,8],[3,4,7]],[[0,2,6],[1,3,4]]]
-            //                              8                 9                 10                11                12                13                14                15
+            //                              0                 1                 2                 3
+            let randomStrategies = [[[0,2,4],[1,6,8]],[[2,4,8],[0,5,6]],[[4,6,8],[0,2,7]],[[0,4,6],[2,3,8]],
+            //                              4                 5                 6                 7
+                                    [[0,1,4],[2,7,8]],[[1,2,4],[0,6,7]],[[2,4,5],[3,6,8]],[[4,5,8],[0,2,3]],
+            //                              8                 9                 10                11
+                                    [[4,7,8],[0,1,6]],[[4,6,7],[1,2,8]],[[3,4,6],[0,2,5]],[[0,3,4],[5,6,8]],
+            //                              12                13                14                15
+                                    [[0,2,8],[1,4,5]],[[2,6,8],[4,5,7]],[[0,6,8],[3,4,7]],[[0,2,6],[1,3,4]]]
+
             setO.current.clear()
             do {
               randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
-              //setO.add(Number(randomStrategyIndex.current))
-              console.log("set current", setO.current.entries())
               if (!setO.current.has(randomStrategyIndex.current)) {
                 setO.current.add(randomStrategyIndex.current)
-                console.log("set current", setO.current.size)
-                console.log("set EJECUTANDO RANDOM STRATEGY")
+                //console.log("set (ejecutando) setO.current.size ", setO.current.size)
                 if (executeRandomStrategy(randomStrategies[randomStrategyIndex.current])) {
-                  //executeRandomStrategy(randomStrategies)
-                  //rC.current[array[AIRandomGridIndex.current]].value = "O"
-                  console.log("set RANDOM STRATEGY EJECUTADA, index:", randomStrategyIndex.current)
+                  console.log("set RANDOM STRATEGY EJECUTADA, index 1:", randomStrategies[randomStrategyIndex.current][0])
                   success = true
                 }
               }
@@ -399,37 +389,27 @@ const Main = () => {
 
             do {
               randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
-              //setO.add(Number(randomStrategyIndex.current))
-              console.log("set 2 current", setO.current.entries())
               if (!setO.current.has(randomStrategyIndex.current)) {
                 setO.current.add(randomStrategyIndex.current)
-                console.log("set 2 current", setO.current.size)
-                console.log("set 2 EJECUTANDO RANDOM STRATEGY")
+                //console.log("set 2 (ejecutando) setO.current.size", setO.current.size)
                 if (executeRandomStrategy(randomStrategies[randomStrategyIndex.current])) {
-                  //executeRandomStrategy(randomStrategies)
-                  //rC.current[array[AIRandomGridIndex.current]].value = "O"
-                  console.log("set 2 RANDOM STRATEGY EJECUTADA, index:", randomStrategyIndex.current)
+                  console.log("set 2 RANDOM STRATEGY EJECUTADA, index 2:", randomStrategies[randomStrategyIndex.current])
                   success = true
                 }
               }
             } while (success === false && setO.current.size < 8)
 
-          }
-          //console.log("set NO HIZO NINGUNA ESTRATEGIA PRIMARIA")
-          // else { // WHEN NO STRATEGY AVAILABLE === LAST MOVEMENT
-          //   while (success === false) {
-          //     console.log("ENTRO ACA LAST MOVEMENT")
-          //     AIRandomGridIndex.current = Math.floor(Math.random() * 9)
-          //     if (rC.current[AIRandomGridIndex.current].value === "") {
-          //       rC.current[AIRandomGridIndex.current].value = "O"
-          //       success = true
-          //     }
-          //   }
-          // }
+          } 
 
-          else if (!success) {
-            //console.log("set NO HIZO NINGUNA ESTRATEGIA PRIMARIA")
-            console.log("set NI PRIMARIA NI SECUNDARIA")
+          if (!success) {
+            while (success === false) {
+              AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+              if (rC.current[AIRandomGridIndex.current].value === "") {
+                console.log("LAST MOVEMENT")
+                rC.current[AIRandomGridIndex.current].value = "O"
+                success = true
+              }
+            }
           }
 
 
@@ -448,7 +428,7 @@ const Main = () => {
 
   const userAction = async ( target: any) => {
     if (target !== undefined && rC.current[target].value === "") {
-      console.log("while se ejecuto func de user, valid click")
+      //console.log("while se ejecuto func de user, valid click")
       rC.current[target].value = "X"
       //Omove.play()
       //Xmove.play()
