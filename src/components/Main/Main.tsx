@@ -41,11 +41,14 @@ const Main = () => {
       title: "Select difficulty:",
       heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
       showDenyButton: true,
+      showCancelButton: true,
       confirmButtonText: 'EASY',
       denyButtonText: `HARD`,
+      cancelButtonText: `NIGHTMARE`,
       //confirmButtonColor: '#0000ff', // LEFT OPTION
       confirmButtonColor: '#6060e0', // LEFT OPTION
-      denyButtonColor: '#ff4500', // RIGHT OPTION
+      denyButtonColor: '#ff4500', // CENTER OPTION
+      cancelButtonColor: '#808000', // RIGHT OPTION
     })
   }
 
@@ -173,11 +176,7 @@ const Main = () => {
   let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
   let randomStrategyIndex = useRef<any>()
-
   let targetIndexes = useRef<any[]>()
-
-  //let success = useRef(false)
-  //let setO = new Set()
   let setO = useRef(new Set())
 
   const AIAction = async () => {
@@ -206,7 +205,6 @@ const Main = () => {
             array[1].forEach((e: any) => {
               secondaryTarget.push(rC.current[e].value)
             })
-
             if (
               rC.current.filter(e => e.value === "O").length === 2 &&
               primaryTarget.filter(e => e === "O").length === 2 &&
@@ -225,15 +223,6 @@ const Main = () => {
               targetIndexes.current = array[0]
               return true
             }
-            else if (       
-              !rC.current.some(e => e.value === "O") &&
-              !primaryTarget.some(e => e === "O") &&
-              !primaryTarget.some(e => e === "X") &&
-              secondaryTarget.some(e => e === "")
-            ) {
-              targetIndexes.current = array[0]
-              return true
-            }        
             else {
               targetIndexes.current = []
               return false
@@ -242,13 +231,11 @@ const Main = () => {
             array.forEach((e: any) => {
               primaryTarget.push(rC.current[e].value)
             })
-            //console.log("entro aca 123 123 123")
             if (
               primaryTarget.some((e: any) => e === "") &&
               primaryTarget.some((e: any) => e === "O") &&
               !primaryTarget.some(e => e === "X")
             ) {
-              
               targetIndexes.current = array
               return true
             } else {
@@ -289,7 +276,6 @@ const Main = () => {
               break;
             }
           }
-
         }
 
         if (gameMode.current === 'easy') {
@@ -299,61 +285,11 @@ const Main = () => {
           if (allowFXSound.current) playSound({ file: aF.Omove })
           setShouldAIstartState(false)
           setUserPlaying(true)
-        } else { // BEGINS EVIL STRATEGY >-)
-          //console.log("ENTRO MODO HARD")
+        } 
+        else if (gameMode.current === 'hard') { 
           
           if (!success) completeThreeO() // TRY TO MATCH ALL 3 "O" POSSIBLE //
-          
           if (!success) blockThreeX() // TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
-
-          // CONTROLLED FIRST MOVEMENT //
-          // if (rC.current[3].value === "" && !success) {
-          //   console.log("AI: FIRST RANDOM ACTION")
-          //   rC.current[3].value = "O"
-          //   success = true
-          // }
-          // CONTROLLED FIRST MOVEMENT //
-
-          // BEGIN FIRST RANDOM MOVEMENT //
-            // if (!rC.current.some(e => e.value === "O")) {
-            //   console.log("FIRST RANDOM MOVEMENT")
-            //   do {
-            //     AIRandomGridIndex.current = Math.floor(Math.random() * 9)
-            //     if (rC.current[AIRandomGridIndex.current].value === "") {
-            //       rC.current[AIRandomGridIndex.current].value = "O"
-            //       success = true
-            //     }
-            //   } while (success === false)
-            // }
-          // END FIRST RANDOM MOVEMENT //
-
-          // randomTimes[Math.floor(Math.random() * 5)]
-
-          // BEGIN TRY TO BEGIN "TRIANGLE" //
-          // O • • // • • O // • • • // • • •
-          // • O • // • O • // • O • // • O •
-          // • • • // • • • // • • O // O • •
-
-
-          // END TRY TO BEGIN "TRIANGLE" //
-
-          // BEGIN FIRST TRIANGLE STRATEGY //
-          // else if (rC.current[4].value === "O" && rC.current.filter(e => e.value === "O").length === 1) {
-          //   const randomSecondMovTriangle = () => {
-          //     console.log("AI: SECOND RANDOM ACTION")
-          //     let targetIndexes = [0,2,6,8] // CORNERS
-          //     do {
-          //       AIRandomGridIndex.current = Math.floor(Math.random() * 4) // TILL INDEX 3
-          //       if (rC.current[targetIndexes[AIRandomGridIndex.current]].value === "") {
-          //         rC.current[targetIndexes[AIRandomGridIndex.current]].value = "O"
-          //         success = true
-          //       }
-          //     } while (success === false)
-          //   }
-          //   randomSecondMovTriangle()
-          // }
-          // END FIRST TRIANGLE STRATEGY //
-
           if (!success) { // EXECUTE PRIMARY STRATEGIES
             //                              0                 1                 2                 3
             let randomStrategies = [[[0,2,4],[1,6,8]],[[2,4,8],[0,5,6]],[[4,6,8],[0,2,7]],[[0,4,6],[2,3,8]],
@@ -369,23 +305,18 @@ const Main = () => {
               randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
               if (!setO.current.has(randomStrategyIndex.current)) {
                 setO.current.add(randomStrategyIndex.current)
-                //console.log("set (ejecutando) setO.current.size ", setO.current.size)
                 if (executeRandomStrategy(randomStrategies[randomStrategyIndex.current])) {
                   console.log("set RANDOM STRATEGY EJECUTADA, index 1:", randomStrategies[randomStrategyIndex.current][0])
                   success = true
                 }
               }
-            } while (success === false && setO.current.size < 16)
+            } while (success === false && setO.current.size < randomStrategies.length)
           }
-
-          // else if (!success) {
-          //   console.log("set NO HIZO NINGUNA ESTRATEGIA PRIMARIA")
-          // }
+     
           if (!success) { // EXECUTE SECONDARY STRATEGIES
-            //console.log("set NO HIZO NINGUNA ESTRATEGIA PRIMARIA")
             //                         0       1       2       3       4       5       6       7
             let randomStrategies = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-            setO.current.clear() // CLEAR FORMERLY SET
+            setO.current.clear()
 
             do {
               randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
@@ -397,7 +328,7 @@ const Main = () => {
                   success = true
                 }
               }
-            } while (success === false && setO.current.size < 8)
+            } while (success === false && setO.current.size < randomStrategies.length)
 
           } 
 
@@ -412,6 +343,31 @@ const Main = () => {
             }
           }
 
+
+          if (allowFXSound.current) playSound({ file: aF.Omove })
+          success = true
+          setShouldAIstartState(false)
+          setUserPlaying(true)
+        } else { // BEGINS EVIL STRATEGY >-)
+          if (!success) completeThreeO() // TRY TO MATCH ALL 3 "O" POSSIBLE //
+          if (!success) blockThreeX() // TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
+          if (!success) {
+            //                      0 1 2 3 4
+            let randomStrategies = [0,2,4,6,8] // PRIMARY TARGETS // 4 IS LESS IMPORTANT..
+            setO.current.clear()
+            do {
+              randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
+              if (!setO.current.has(randomStrategyIndex.current)) {
+                setO.current.add(randomStrategyIndex.current)
+                //console.log("set 2 (ejecutando) setO.current.size", setO.current.size)
+                if (rC.current[randomStrategyIndex.current].value === "") {
+                  console.log("set 2 RANDOM STRATEGY EJECUTADA, index 2:", randomStrategyIndex.current)
+                  rC.current[randomStrategies[randomStrategyIndex.current]].value = "O"
+                  success = true
+                }
+              }
+            } while (success === false && setO.current.size < randomStrategies.length)
+          }
 
           if (allowFXSound.current) playSound({ file: aF.Omove })
           success = true
@@ -813,6 +769,7 @@ const Main = () => {
         if (allowFXSound.current) playSound({ file: aF.menu })
         selectDifficulty()
         .then((result) => {
+          console.log("RESULT", result)
           if (result.isConfirmed) {
             //setGameMode("easy")
             gameMode.current = "easy"
@@ -821,6 +778,11 @@ const Main = () => {
           else if (result.isDenied) {
             //setGameMode("hard")
             gameMode.current = "hard"
+            selectNumberOfRoundsUser()
+          }
+          else if (result.isDismissed && typeof result.dismiss === "string" && result.dismiss === "cancel") {
+            //console.log("CANCELADO")
+            gameMode.current = "nightmare"
             selectNumberOfRoundsUser()
           }
         })
@@ -837,6 +799,11 @@ const Main = () => {
           else if (result.isDenied) {
             //setGameMode("hard")
             gameMode.current = "hard"
+            selectNumberOfRoundsAI()
+          }
+          else if (result.isDismissed && typeof result.dismiss === "string" && result.dismiss === "cancel") {
+            console.log("CANCELADO")
+            gameMode.current = "nightmare"
             selectNumberOfRoundsAI()
           }
         })
@@ -1784,6 +1751,8 @@ const Main = () => {
           `Mode: Easy` :
           (newGameStarted && gameMode.current === "hard") || (gameEndRoundsBoolean.current && gameMode.current === "hard") ?
           `Mode: Hard` :
+          (newGameStarted && gameMode.current === "nightmare") || (gameEndRoundsBoolean.current && gameMode.current === "nightmare") ?
+          `Mode: Nightmare` :
           null
         }
       </div>
