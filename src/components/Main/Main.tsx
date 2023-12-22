@@ -565,6 +565,100 @@ const Main = () => {
 
           }
 
+          if ( // SECOND MOVEMENT // O IS ON ANY CORNER & X CORNER NEXT // THEN THIRD MOVEMENT AUTO-COMPLETES
+            !success &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            //rC.current[4].value !== "O" &&
+            rC.current.filter(e => e.value === "X").length === 1
+          ) {
+            //              R R               R R               R R               R R
+            let s  = [[[0],[2,6]],      [[2],[8,0]],      [[8],[6,2]],      [[6],[0,8]]] // s === strategy
+            //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
+            let s2 =    [[[3],[1]],        [[1],[5]],        [[5],[7]],        [[7],[3]]] // s2 === strategy 2 depending on upper array
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                //let success2 = false
+
+                if (
+                  rC.current[s[sI.current][0][0]].value === "O" &&
+                  (rC.current[s[sI.current][1][0]].value === "X" || rC.current[s[sI.current][1][1]].value === "X") //&&
+                  //(rC.current[s2[sI.current][0]].value === "O" || rC.current[s2[sI.current][1]].value === "O" || rC.current[s2[sI.current][2]].value === "O")
+                ) { // X IS RECT AWAY
+                  //do {
+                    //s2I.current = Math.floor(Math.random() * 2)
+                    if (!set2O.current.has(s2I.current)) {
+                      //set2O.current.add(s2I.current)
+                      if (rC.current[s[sI.current][1][0]].value === "X") {
+                        rC.current[s2[sI.current][0][0]].value = "O"
+                        success = true
+                      }
+                      else if (rC.current[s[sI.current][1][1]].value === "X") {
+                        rC.current[s2[sI.current][1][0]].value = "O"
+                        success = true
+                      }
+                    }
+                  //} while (success2 === false && set2O.current.size < 3)
+                  //set2O.current.clear()
+                  //success = true
+                }
+              }
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
+
+          }
+
+          if ( // SECOND MOVEMENT // O IS ON ANY CORNER & X IS ON ANY DIAGONAL WAY
+            !success &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            //rC.current[4].value !== "O" &&
+            rC.current.filter(e => e.value === "X").length === 1
+          ) {
+            //              C C               R R               R R               R R // CENTER → CORNER
+            let s  = [[[0],[4,8]],      [[2],[4,6]],      [[8],[4,0]],      [[6],[4,2]]] // s === strategy
+            //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
+            let s2 =    [[[8],[4]],        [[6],[4]],        [[0],[4]],        [[2],[4]]] // s2 === strategy 2 depending on upper array
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                //let success2 = false
+
+                if (
+                  rC.current[s[sI.current][0][0]].value === "O" &&
+                  (rC.current[s[sI.current][1][0]].value === "X" || rC.current[s[sI.current][1][1]].value === "X") //&&
+                  //(rC.current[s2[sI.current][0]].value === "O" || rC.current[s2[sI.current][1]].value === "O" || rC.current[s2[sI.current][2]].value === "O")
+                ) { // X IS RECT AWAY
+                  //do {
+                    //s2I.current = Math.floor(Math.random() * 2)
+                    if (!set2O.current.has(s2I.current)) {
+                      //set2O.current.add(s2I.current)
+                      if (rC.current[s[sI.current][1][0]].value === "X") {
+                        rC.current[s2[sI.current][0][0]].value = "O"
+                        success = true
+                        //success2 = true
+                      }
+                      else if (rC.current[s[sI.current][1][1]].value === "X") {
+                        rC.current[s2[sI.current][1][0]].value = "O"
+                        success = true
+                      }
+                     
+                    }
+                  //} while (success2 === false && set2O.current.size < 3)
+                  //set2O.current.clear()
+                  //success = true
+                }
+              }
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
+
+
+
+          }
+
 
 
           if (allowFXSound.current) playSound({ file: aF.Omove })
