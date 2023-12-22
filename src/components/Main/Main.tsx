@@ -175,9 +175,11 @@ const Main = () => {
   const [ newGameStarted, setNewGameStarted ] = useState(false)
   let AIRandomGridIndex = useRef(Math.floor(Math.random() * 9)) // BETWEEN 0 & 8
 
-  let randomStrategyIndex = useRef<any>()
+  let sI = useRef<any>() // strategy Index
+  let s2I = useRef<any>() // strategy 2 Index
   let targetIndexes = useRef<any[]>()
   let setO = useRef(new Set())
+  let set2O = useRef(new Set())
 
   const AIAction = async () => {
     let randomTimes = [ 700, 900, 1100, 1300, 1500 ]
@@ -292,7 +294,7 @@ const Main = () => {
           if (!success) blockThreeX() // TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
           if (!success) { // EXECUTE PRIMARY STRATEGIES
             //                              0                 1                 2                 3
-            let randomStrategies = [[[0,2,4],[1,6,8]],[[2,4,8],[0,5,6]],[[4,6,8],[0,2,7]],[[0,4,6],[2,3,8]],
+            let s =                [[[0,2,4],[1,6,8]],[[2,4,8],[0,5,6]],[[4,6,8],[0,2,7]],[[0,4,6],[2,3,8]], // s === strategy
             //                              4                 5                 6                 7
                                     [[0,1,4],[2,7,8]],[[1,2,4],[0,6,7]],[[2,4,5],[3,6,8]],[[4,5,8],[0,2,3]],
             //                              8                 9                 10                11
@@ -302,33 +304,33 @@ const Main = () => {
 
             setO.current.clear()
             do {
-              randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
-              if (!setO.current.has(randomStrategyIndex.current)) {
-                setO.current.add(randomStrategyIndex.current)
-                if (executeRandomStrategy(randomStrategies[randomStrategyIndex.current])) {
-                  console.log("set RANDOM STRATEGY EJECUTADA, index 1:", randomStrategies[randomStrategyIndex.current][0])
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                if (executeRandomStrategy(s[sI.current])) {
+                  console.log("set RANDOM STRATEGY EJECUTADA, index 1:", s[sI.current][0])
                   success = true
                 }
               }
-            } while (success === false && setO.current.size < randomStrategies.length)
+            } while (success === false && setO.current.size < s.length)
           }
      
           if (!success) { // EXECUTE SECONDARY STRATEGIES
-            //                         0       1       2       3       4       5       6       7
-            let randomStrategies = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+            //          0       1       2       3       4       5       6       7
+            let s = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
             setO.current.clear()
 
             do {
-              randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
-              if (!setO.current.has(randomStrategyIndex.current)) {
-                setO.current.add(randomStrategyIndex.current)
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
                 //console.log("set 2 (ejecutando) setO.current.size", setO.current.size)
-                if (executeRandomStrategy(randomStrategies[randomStrategyIndex.current])) {
-                  console.log("set 2 RANDOM STRATEGY EJECUTADA, index 2:", randomStrategies[randomStrategyIndex.current])
+                if (executeRandomStrategy(s[sI.current])) {
+                  console.log("set 2 RANDOM STRATEGY EJECUTADA, index 2:", s[sI.current])
                   success = true
                 }
               }
-            } while (success === false && setO.current.size < randomStrategies.length)
+            } while (success === false && setO.current.size < s.length)
 
           } 
 
@@ -351,31 +353,225 @@ const Main = () => {
         } else { // BEGINS EVIL STRATEGY >-)
           if (!success) completeThreeO() // TRY TO MATCH ALL 3 "O" POSSIBLE //
           if (!success) blockThreeX() // TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
-          if (!success) {
+
+          if (
+            !success &&
+            !rC.current.some(e => e.value === "O")
+          ) { // ONLY FIRST MOVEMENT
             //                      0 1 2 3 4
-            let randomStrategies = [0,2,4,6,8] // PRIMARY TARGETS // 4 IS LESS IMPORTANT..
-            setO.current.clear()
+            let s = [0,2,4,6,8] // PRIMARY TARGETS // 4 IS LESS IMPORTANT..
             do {
-              randomStrategyIndex.current = Math.floor(Math.random() * randomStrategies.length)
-              if (!setO.current.has(randomStrategyIndex.current)) {
-                setO.current.add(randomStrategyIndex.current)
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
                 //console.log("set 2 (ejecutando) setO.current.size", setO.current.size)
-                if (rC.current[randomStrategyIndex.current].value === "") {
-                  console.log("set 2 RANDOM STRATEGY EJECUTADA, index 2:", randomStrategyIndex.current)
-                  rC.current[randomStrategies[randomStrategyIndex.current]].value = "O"
+                if (rC.current[s[sI.current]].value === "") {
+                  console.log("NIGHTMARE 1 RANDOM STRATEGY EJECUTADA, index:", sI.current)
+                  rC.current[s[sI.current]].value = "O"
                   success = true
                 }
               }
-            } while (success === false && setO.current.size < randomStrategies.length)
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
           }
+
+          if ( // SECOND MOVEMENT // O IS ON ANY CORNER & X RECT NEXT
+            !success &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current[4].value !== "O" &&
+            rC.current.filter(e => e.value === "X").length === 1
+          ) { 
+            //              R L               R L               R L               R L
+            let s  = [[[0],[1,3]],      [[2],[5,1]],      [[8],[7,5]],      [[6],[3,7]]] // s === strategy
+            //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
+            let s2 = [[[3,4,6],[1,2,4]],[[0,1,4],[4,5,8]],[[2,4,5],[4,6,7]],[[4,7,8],[0,3,4]]] // s2 === strategy 2 depending on upper array
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                let success2 = false
+                if (rC.current[s[sI.current][0][0]].value === "O" && rC.current[s[sI.current][1][0]].value === "X") { // X NEXT TO THE RIGHT
+                  do {
+                    s2I.current = Math.floor(Math.random() * 3)
+                    if (!set2O.current.has(s2I.current)) {
+                      set2O.current.add(s2I.current)
+                      if (rC.current[s2[sI.current][0][s2I.current]].value === "") {
+                        rC.current[s2[sI.current][0][s2I.current]].value = "O"
+                        success2 = true
+                      }
+                    }
+                  } while (success2 === false && set2O.current.size < 3)
+                  set2O.current.clear()
+                  success = true
+                }
+                else if (rC.current[s[sI.current][0][0]].value === "O" && rC.current[s[sI.current][1][1]].value === "X") { // X NEXT TO THE LEFT
+                  do {
+                    s2I.current = Math.floor(Math.random() * 3)
+                    if (!set2O.current.has(s2I.current)) {
+                      set2O.current.add(s2I.current)
+                      if (rC.current[s2[sI.current][1][s2I.current]].value === "") {
+                        rC.current[s2[sI.current][1][s2I.current]].value = "O"
+                        success2 = true
+                      }
+                    }
+                  } while (success2 === false && set2O.current.size < 3)
+                  set2O.current.clear()
+                }
+              }
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
+          }
+
+          if ( // THIRD MOVEMENT // O IS ON ANY CORNER & X RECT NEXT
+            !success &&
+            rC.current.filter(e => e.value === "O").length === 2 &&
+            //rC.current[4].value !== "O" &&
+            rC.current.filter(e => e.value === "X").length === 2
+          ) {
+            console.log("entro aca")
+            //              R L               R L               R L               R L
+            let s  = [[[0],[1,3]],      [[2],[5,1]],      [[8],[7,5]],      [[6],[3,7]]] // s === strategy
+            //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
+            let s2 = [[[3,4,6],[1,2,4]],[[0,1,4],[4,5,8]],[[2,4,5],[4,6,7]],[[4,7,8],[0,3,4]]] // s2 === strategy 2 depending on upper array
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                let success2 = false
+
+
+                if (
+                  rC.current[s[sI.current][0][0]].value === "O" &&
+                  rC.current[s[sI.current][1][0]].value === "X" &&
+                  (rC.current[s2[sI.current][0][0]].value === "O" || rC.current[s2[sI.current][0][1]].value === "O" || rC.current[s2[sI.current][0][2]].value === "O")
+                ) { // X NEXT TO THE RIGHT
+                  do {
+                    s2I.current = Math.floor(Math.random() * 3)
+                    if (!set2O.current.has(s2I.current)) {
+                      set2O.current.add(s2I.current)
+                      if (rC.current[s2[sI.current][0][s2I.current]].value === "") {
+                        rC.current[s2[sI.current][0][s2I.current]].value = "O"
+                        success2 = true
+                      }
+                    }
+                  } while (success2 === false && set2O.current.size < 3)
+                  set2O.current.clear()
+                  success = true
+                }
+
+
+                else if (
+                  rC.current[s[sI.current][0][0]].value === "O" &&
+                  rC.current[s[sI.current][1][1]].value === "X" &&
+                  (rC.current[s2[sI.current][1][0]].value === "O" || rC.current[s2[sI.current][1][1]].value === "O" || rC.current[s2[sI.current][1][2]].value === "O")
+                ) { // X NEXT TO THE LEFT
+                  do {
+                    s2I.current = Math.floor(Math.random() * 3)
+                    if (!set2O.current.has(s2I.current)) {
+                      set2O.current.add(s2I.current)
+                      if (rC.current[s2[sI.current][1][s2I.current]].value === "") {
+                        rC.current[s2[sI.current][1][s2I.current]].value = "O"
+                        success2 = true
+                      }
+                    }
+                  } while (success2 === false && set2O.current.size < 3)
+                  set2O.current.clear()
+                }
+
+
+              }
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
+
+          }
+
+          if ( // SECOND MOVEMENT // O IS ON ANY CORNER & X RECT AWAY
+            !success &&
+            rC.current.filter(e => e.value === "O").length === 1 &&
+            rC.current[4].value !== "O" &&
+            rC.current.filter(e => e.value === "X").length === 1
+          ) {
+            //console.log("ENTRO ACA !#!#!#")
+            //              R R               R R               R R               R R
+            let s  = [[[0],[5,7]],      [[2],[7,3]],      [[8],[3,1]],      [[6],[1,5]]] // s === strategy
+            //               ↓                 ↓                 ↓                 ↓
+            let s2 =     [[2,4,6],          [0,4,8],          [2,4,6],          [0,4,8]] // s2 === strategy 2 depending on upper array
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                let success2 = false
+
+                if (rC.current[s[sI.current][0][0]].value === "O" && (rC.current[s[sI.current][1][0]].value === "X" || rC.current[s[sI.current][1][1]].value === "X")) { // X IS RECT AWAY
+                  do {
+                    s2I.current = Math.floor(Math.random() * 3)
+                    if (!set2O.current.has(s2I.current)) {
+                      set2O.current.add(s2I.current)
+                      if (rC.current[s2[sI.current][s2I.current]].value === "") {
+                        rC.current[s2[sI.current][s2I.current]].value = "O"
+                        success2 = true
+                      }
+                    }
+                  } while (success2 === false && set2O.current.size < 3)
+                  set2O.current.clear()
+                  success = true
+                }
+              }
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
+          }
+
+          if ( // THIRD MOVEMENT // O IS ON ANY CORNER & X RECT AWAY
+            !success &&
+            rC.current.filter(e => e.value === "O").length === 2 &&
+            //rC.current[4].value !== "O" &&
+            rC.current.filter(e => e.value === "X").length === 2
+          ) {
+            //              R R               R R               R R               R R
+            let s  = [[[0],[5,7]],      [[2],[7,3]],      [[8],[3,1]],      [[6],[1,5]]] // s === strategy
+            //               ↓                 ↓                 ↓                 ↓
+            let s2 =     [[2,4,6],          [0,4,8],          [2,4,6],          [0,4,8]] // s2 === strategy 2 depending on upper array
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                let success2 = false
+
+                if (
+                  rC.current[s[sI.current][0][0]].value === "O" &&
+                  (rC.current[s[sI.current][1][0]].value === "X" || rC.current[s[sI.current][1][1]].value === "X") &&
+                  (rC.current[s2[sI.current][0]].value === "O" || rC.current[s2[sI.current][1]].value === "O" || rC.current[s2[sI.current][2]].value === "O")
+                ) { // X IS RECT AWAY
+                  do {
+                    s2I.current = Math.floor(Math.random() * 3)
+                    if (!set2O.current.has(s2I.current)) {
+                      set2O.current.add(s2I.current)
+                      if (rC.current[s2[sI.current][s2I.current]].value === "") {
+                        rC.current[s2[sI.current][s2I.current]].value = "O"
+                        success2 = true
+                      }
+                    }
+                  } while (success2 === false && set2O.current.size < 3)
+                  set2O.current.clear()
+                  success = true
+                }
+              }
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
+
+          }
+
+
 
           if (allowFXSound.current) playSound({ file: aF.Omove })
           success = true
           setShouldAIstartState(false)
           setUserPlaying(true)
         }
-          
-
       }
       checkRoundWinner()
       .then(() => { if (!roundEnd.current) clickBlocked.current = false })
