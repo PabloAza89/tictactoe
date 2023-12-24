@@ -1044,9 +1044,9 @@ const Main = () => {
             // O X - /or/ • X - // •: TARGET PLACE
             // X • - /or/ X O - // -: UNUSED
             // - - - /or/ - - - //
-            !success //&&
-            //rC.current.filter(e => e.value === "X").length === 2 &&
-            //rC.current.filter(e => e.value === "O").length === 1
+            !success && // reveer esta situacion
+            rC.current.filter(e => e.value === "X").length === 2 &&
+            rC.current.filter(e => e.value === "O").length === 1
           ) {
             //          X X   O •   O •
             let s  = [[[1,3],[0,4],[4,0]],      [[5,1],[2,4],[4,2]],      [[7,5],[8,4],[4,8]],      [[3,7],[6,4],[4,6]]] // s === strategy
@@ -1074,7 +1074,6 @@ const Main = () => {
                   rC.current[s[sI.current][2][1]].value = "O"
                   success = true
                 }
-              
 
               }
             } while (success === false && setO.current.size < s.length)
@@ -1082,15 +1081,49 @@ const Main = () => {
 
           }
 
-          if ( // X BEGINS // 2nd MOVEMENT // seguir aca
-            // 2 X & 2 O // IF CENTER IS NOT MARKED, IT WOULD BECOME CRITICAL
-            !success &&
+          if ( // X BEGINS // 2nd MOVEMENT //
+            // O X - /or/ - X O // •: TARGET PLACE
+            // - • - /or/ - • - //-: UNUSED
+            // X - - /or/ - - X //
+            !success && // reveer esta situacion
             rC.current.filter(e => e.value === "X").length === 2 &&
-            rC.current[4].value === "" &&
             rC.current.filter(e => e.value === "O").length === 1
           ) {
-            rC.current[4].value = "O"
+            //          X X   O •
+            let s = [ [[1,6],[0,4]],      [[5,0],[2,4]],      [[7,2],[8,4]],      [[3,8],[6,4]],
+                      [[1,8],[2,4]],      [[5,6],[8,4]],      [[7,0],[6,4]],      [[3,2],[0,4]] ] // s === strategy
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+
+                if (
+                  rC.current[s[sI.current][0][0]].value === "X" &&
+                  rC.current[s[sI.current][0][1]].value === "X" &&
+                  rC.current[s[sI.current][1][0]].value === "O" &&
+                  rC.current[s[sI.current][1][1]].value === ""
+                ) {
+                  rC.current[s[sI.current][1][1]].value = "O"
+                  success = true
+                }
+
+              }
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
+
+
           }
+
+          // if ( // X BEGINS // 2nd MOVEMENT // seguir aca
+          //   // 2 X & 2 O // IF CENTER IS NOT MARKED, IT WOULD BECOME CRITICAL
+          //   !success &&
+          //   rC.current.filter(e => e.value === "X").length === 2 &&
+          //   rC.current[4].value === "" &&
+          //   rC.current.filter(e => e.value === "O").length === 1
+          // ) {
+          //   rC.current[4].value = "O"
+          // }
 
           if (!success) { // EXECUTE LINEAR STRATEGY
             //          0       1       2       3       4       5       6       7
@@ -2591,7 +2624,7 @@ const Main = () => {
           TEST 3
         </Button> */}
         <div>
-          This App it's currently on development. {/* So you will see my work done in real time.. day by day.. */}
+          This App it's currently on development. (24/12/2023) {/* So you will see my work done in real time.. day by day.. */}
         </div>
     </div>
   );
