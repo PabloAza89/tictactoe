@@ -288,7 +288,7 @@ const Main = () => {
           setShouldAIstartState(false)
           setUserPlaying(true)
         } 
-        else if (gameMode.current === 'hard') { 
+        else if (gameMode.current === 'hard') {
           
           if (!success) completeThreeO() // TRY TO MATCH ALL 3 "O" POSSIBLE //
           if (!success) blockThreeX() // TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
@@ -332,9 +332,9 @@ const Main = () => {
               }
             } while (success === false && setO.current.size < s.length)
 
-          } 
+          }
 
-          if (!success) {
+          if (!success) { // RANDOM MOVEMENT
             while (success === false) {
               AIRandomGridIndex.current = Math.floor(Math.random() * 9)
               if (rC.current[AIRandomGridIndex.current].value === "") {
@@ -361,10 +361,12 @@ const Main = () => {
           if (
             !success &&
             !rC.current.some(e => e.value === "O") &&
-            !rC.current.some(e => e.value === "X")
+            (!rC.current.some(e => e.value === "X") || (rC.current.filter(e => e.value === "X").length === 1 && rC.current[4].value === "X"))
             //rC.current.filter(e => e.value === "X").length === 1
           ) { // O BEGINS // 1st MOVEMENT
-            //                      0 1 2 3 4
+            // • - • // •: TARGET PLACE
+            // - • - // -: UNUSED
+            // • - • //
             let s = [0,2,4,6,8] // PRIMARY TARGETS // 4 IS LESS IMPORTANT..
             do {
               sI.current = Math.floor(Math.random() * s.length)
@@ -1038,7 +1040,7 @@ const Main = () => {
 
           }
 
-          if ( // X BEGINS // 2nd MOVEMENT // seguir aca
+          if ( // X BEGINS // 2nd MOVEMENT //
             // O X - /or/ • X - // •: TARGET PLACE
             // X • - /or/ X O - // -: UNUSED
             // - - - /or/ - - - //
@@ -1080,6 +1082,45 @@ const Main = () => {
 
           }
 
+          if ( // X BEGINS // 2nd MOVEMENT // seguir aca
+            // 2 X & 2 O // IF CENTER IS NOT MARKED, IT WOULD BECOME CRITICAL
+            !success &&
+            rC.current.filter(e => e.value === "X").length === 2 &&
+            rC.current[4].value === "" &&
+            rC.current.filter(e => e.value === "O").length === 1
+          ) {
+            rC.current[4].value = "O"
+          }
+
+          if (!success) { // EXECUTE LINEAR STRATEGY
+            //          0       1       2       3       4       5       6       7
+            let s = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+            setO.current.clear()
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                //console.log("set 2 (ejecutando) setO.current.size", setO.current.size)
+                if (executeRandomStrategy(s[sI.current])) {
+                  console.log("set 2 RANDOM STRATEGY EJECUTADA, index 2:", s[sI.current])
+                  success = true
+                }
+              }
+            } while (success === false && setO.current.size < s.length)
+
+          }
+
+          if (!success) { // EXECUTE RANDOM MOVEMENT
+            while (success === false) {
+              AIRandomGridIndex.current = Math.floor(Math.random() * 9)
+              if (rC.current[AIRandomGridIndex.current].value === "") {
+                console.log("LAST MOVEMENT")
+                rC.current[AIRandomGridIndex.current].value = "O"
+                success = true
+              }
+            }
+          }
 
 
 
@@ -2217,7 +2258,7 @@ const Main = () => {
                 }}
                 className={css.eachBox}
               >
-                {<div style={{ fontSize: '10px', marginTop: '-25px', marginLeft: '-10px' }}> {index} </div>}
+                {/* {<div style={{ fontSize: '10px', marginTop: '-25px', marginLeft: '-10px' }}> {index} </div>} */}
                 { rC.current[index].value }
               </div>
             )
@@ -2550,7 +2591,7 @@ const Main = () => {
           TEST 3
         </Button> */}
         <div>
-          This App it's currently on development. So you will see my work done in real time.. day by day..
+          This App it's currently on development. {/* So you will see my work done in real time.. day by day.. */}
         </div>
     </div>
   );
