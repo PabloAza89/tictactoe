@@ -363,7 +363,7 @@ const Main = () => {
             !rC.current.some(e => e.value === "O") &&
             !rC.current.some(e => e.value === "X")
             //rC.current.filter(e => e.value === "X").length === 1
-          ) {  // O BEGINS // 1st MOVEMENT
+          ) { // O BEGINS // 1st MOVEMENT
             //                      0 1 2 3 4
             let s = [0,2,4,6,8] // PRIMARY TARGETS // 4 IS LESS IMPORTANT..
             do {
@@ -381,7 +381,7 @@ const Main = () => {
             setO.current.clear()
           }
 
-          if (  // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X RECT NEXT
+          if ( // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X RECT NEXT
             !success &&
             rC.current.filter(e => e.value === "O").length === 1 &&
             rC.current[4].value !== "O" &&
@@ -429,7 +429,7 @@ const Main = () => {
             setO.current.clear()
           }
 
-          if (  // O BEGINS // 3rd MOVEMENT // O IS ON ANY CORNER & X RECT NEXT
+          if ( // O BEGINS // 3rd MOVEMENT // O IS ON ANY CORNER & X RECT NEXT
             !success &&
             rC.current.filter(e => e.value === "O").length === 2 &&
             //rC.current[4].value !== "O" &&
@@ -493,7 +493,7 @@ const Main = () => {
 
           }
 
-          if (  // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X RECT AWAY
+          if ( // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X RECT AWAY
             !success &&
             rC.current.filter(e => e.value === "O").length === 1 &&
             rC.current[4].value !== "O" &&
@@ -530,7 +530,7 @@ const Main = () => {
             setO.current.clear()
           }
 
-          if (  // O BEGINS // 3rd MOVEMENT // O IS ON ANY CORNER & X RECT AWAY
+          if ( // O BEGINS // 3rd MOVEMENT // O IS ON ANY CORNER & X RECT AWAY
             !success &&
             rC.current.filter(e => e.value === "O").length === 2 &&
             //rC.current[4].value !== "O" &&
@@ -571,7 +571,7 @@ const Main = () => {
 
           }
 
-          if (  // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X CORNER NEXT // THEN THIRD MOVEMENT AUTO-COMPLETES
+          if ( // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X CORNER NEXT // THEN THIRD MOVEMENT AUTO-COMPLETES
             !success &&
             rC.current.filter(e => e.value === "O").length === 1 &&
             //rC.current[4].value !== "O" &&
@@ -616,7 +616,7 @@ const Main = () => {
 
           }
 
-          if (  // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X IS ON CORNER-DIAGONAL WAY // THEN THIRD MOVEMENT AUTO-COMPLETES
+          if ( // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X IS ON CORNER-DIAGONAL WAY // THEN THIRD MOVEMENT AUTO-COMPLETES
             !success &&
             rC.current.filter(e => e.value === "O").length === 1 &&
             //rC.current[4].value !== "O" &&
@@ -661,7 +661,7 @@ const Main = () => {
             setO.current.clear()
           }
 
-          if (  // O BEGINS // 3rd MOVEMENT // "L" OR "TRIANGLE"
+          if ( // O BEGINS // 3rd MOVEMENT // "L" OR "TRIANGLE"
             // O X - /or/ O X - // •: TARGET PLACE
             // • O - /or/ - O - // -: UNUSED
             // - - X /or/ • - X // (IN 4 POSITIONS)
@@ -709,7 +709,7 @@ const Main = () => {
 
           }
 
-          if (  // O BEGINS // 2nd MOVEMENT
+          if ( // O BEGINS // 2nd MOVEMENT
             // X - - // •: TARGET PLACE
             // - O - // -: UNUSED
             // - - • // (IN 4 POSITIONS)
@@ -739,7 +739,7 @@ const Main = () => {
             setO.current.clear()
           }
 
-          if (  // O BEGINS // 2nd MOVEMENT
+          if ( // O BEGINS // 2nd MOVEMENT
             // • X • // •: TARGET PLACE
             // • O • // -: UNUSED
             // • - • // (IN 4 POSITIONS)
@@ -783,7 +783,7 @@ const Main = () => {
 
           }
 
-          if (  // O BEGINS // 3rd MOVEMENT
+          if ( // O BEGINS // 3rd MOVEMENT
             // - X • // • X - // •: TARGET PLACE
             // X O O // O O X // -: UNUSED
             // - - • // • - - // (IN 4 POSITIONS)
@@ -853,7 +853,7 @@ const Main = () => {
 
           }
 
-          if (  // X BEGINS // 1st MOVEMENT
+          if ( // X BEGINS // 1st MOVEMENT
             // X - - // •: TARGET PLACE
             // - • - // -: UNUSED
             // - - • // (IN 4 POSITIONS)
@@ -896,7 +896,40 @@ const Main = () => {
 
           }
 
-          if (  // X BEGINS // 2nd MOVEMENT
+          if ( // X BEGINS // 1st MOVEMENT
+            // • X • // •: TARGET PLACE
+            // - • - // -: UNUSED
+            // • - • // (IN 4 POSITIONS)
+            !success &&
+            rC.current.filter(e => e.value === "X").length === 1 &&
+            rC.current[4].value === "" &&
+            !rC.current.some(e => e.value === "O")
+          ) {
+
+            let s = [0,2,4,6,8] // s === strategy
+
+            if (
+              rC.current[1].value === "X" ||
+              rC.current[5].value === "X" ||
+              rC.current[7].value === "X" ||
+              rC.current[3].value === "X"
+            ) {
+              do {
+                sI.current = Math.floor(Math.random() * s.length)
+                if (!setO.current.has(sI.current)) {
+                  setO.current.add(sI.current)
+                  if (rC.current[s[sI.current]].value === "") {
+                    rC.current[s[sI.current]].value = "O"
+                    success = true
+                  }
+                }
+              } while (success === false && setO.current.size < s.length)
+              setO.current.clear()
+            }
+            
+          }
+
+          if ( // X BEGINS // 2nd MOVEMENT
             // X - - /or/ X - - // •: TARGET PLACE
             // - O X /or/ - O • // -: UNUSED
             // - • - /or/ - X - // (IN 4 POSITIONS)
@@ -929,6 +962,100 @@ const Main = () => {
                   rC.current[s[sI.current][2][1]].value = "O"
                   success = true
                 }
+
+              }
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
+
+          }
+
+          if ( // X BEGINS // 2nd MOVEMENT
+            // X • - /or/ - • X // •: TARGET PLACE
+            // • O • /or/ • O • // -: UNUSED
+            // - • X /or/ X • - //
+            !success &&
+            rC.current.filter(e => e.value === "X").length === 2 &&
+            rC.current[4].value === "O" &&
+            rC.current.filter(e => e.value === "O").length === 1
+          ) {
+
+            //           X X   * * * *
+            let s  = [ [[0,8],[1,5,7,3]], [[2,6],[1,5,7,3]] ] // s === strategy
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                let success2 = false
+
+                if (
+                  rC.current[s[sI.current][0][0]].value === "X" &&
+                  rC.current[s[sI.current][0][1]].value === "X"
+                ) {
+                  //rC.current[s[sI.current][1][1]].value = "O"
+
+
+                  do {
+                    s2I.current = Math.floor(Math.random() * 4)
+                    if (!set2O.current.has(s2I.current)) {
+                      set2O.current.add(s2I.current)
+
+                      if (rC.current[s[sI.current][1][s2I.current]].value === "") {
+                        rC.current[s[sI.current][1][s2I.current]].value = "O"
+                        success = true
+                        success2 = true
+                      }
+
+                    }
+                  } while (success2 === false && set2O.current.size < 4)
+                  set2O.current.clear()
+
+
+
+                }
+
+              }
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
+
+
+          }
+
+          if ( // X BEGINS // 2nd MOVEMENT // seguir aca
+            // O X - /or/ • X - // •: TARGET PLACE
+            // X • - /or/ X O - // -: UNUSED
+            // - - - /or/ - - - //
+            !success //&&
+            //rC.current.filter(e => e.value === "X").length === 2 &&
+            //rC.current.filter(e => e.value === "O").length === 1
+          ) {
+            //          X X   O •   O •
+            let s  = [[[1,3],[0,4],[4,0]],      [[5,1],[2,4],[4,2]],      [[7,5],[8,4],[4,8]],      [[3,7],[6,4],[4,6]]] // s === strategy
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+
+                if (
+                  rC.current[s[sI.current][0][0]].value === "X" &&
+                  rC.current[s[sI.current][0][1]].value === "X" &&
+                  rC.current[s[sI.current][1][0]].value === "O" &&
+                  rC.current[s[sI.current][1][1]].value === ""
+                ) {
+                  rC.current[s[sI.current][1][1]].value = "O"
+                  success = true
+                }
+                else if (
+                  rC.current[s[sI.current][0][0]].value === "X" &&
+                  rC.current[s[sI.current][0][1]].value === "X" &&
+                  rC.current[s[sI.current][2][0]].value === "O" &&
+                  rC.current[s[sI.current][2][1]].value === ""
+                ) {
+                  rC.current[s[sI.current][2][1]].value = "O"
+                  success = true
+                }
+              
 
               }
             } while (success === false && setO.current.size < s.length)
