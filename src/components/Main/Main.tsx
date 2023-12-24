@@ -899,33 +899,50 @@ const Main = () => {
           if ( // X BEGINS // 1st MOVEMENT
             // • X • // •: TARGET PLACE
             // - • - // -: UNUSED
-            // • - • // (IN 4 POSITIONS)
+            // - - - // (IN 4 POSITIONS)
             !success &&
             rC.current.filter(e => e.value === "X").length === 1 &&
             rC.current[4].value === "" &&
             !rC.current.some(e => e.value === "O")
           ) {
 
-            let s = [0,2,4,6,8] // s === strategy
+            let s  = [[[1],[0,4,2]],      [[5],[2,4,8]],      [[7],[8,4,6]],      [[3],[6,4,0]]] // s === strategy
 
-            if (
-              rC.current[1].value === "X" ||
-              rC.current[5].value === "X" ||
-              rC.current[7].value === "X" ||
-              rC.current[3].value === "X"
-            ) {
-              do {
-                sI.current = Math.floor(Math.random() * s.length)
-                if (!setO.current.has(sI.current)) {
-                  setO.current.add(sI.current)
-                  if (rC.current[s[sI.current]].value === "") {
-                    rC.current[s[sI.current]].value = "O"
-                    success = true
-                  }
+            // let s = [0,2,4,6,8] // s === strategy
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                let success2 = false
+
+                if (
+                  rC.current[s[sI.current][0][0]].value === "X"// &&
+                ) { // X IS RECT AWAY
+                  // rC.current[s[sI.current][1][0]].value = "O"
+                  // success = true
+
+                  do {
+                    s2I.current = Math.floor(Math.random() * 3)
+                    if (!set2O.current.has(s2I.current)) {
+                      set2O.current.add(s2I.current)
+
+                      if (rC.current[s[sI.current][1][s2I.current]].value === "") {
+                        rC.current[s[sI.current][1][s2I.current]].value = "O"
+
+                        success = true
+                        success2 = true
+                      }
+                    }
+                  } while (success2 === false && set2O.current.size < 3)
+                  set2O.current.clear()
+
+
+
                 }
-              } while (success === false && setO.current.size < s.length)
-              setO.current.clear()
-            }
+              }
+            } while (success === false && setO.current.size < s.length)
+            setO.current.clear()
             
           }
 
