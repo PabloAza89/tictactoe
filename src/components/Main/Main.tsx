@@ -1052,6 +1052,56 @@ const Main = () => {
 
           }
 
+          if ( // X BEGINS // 2nd MOVEMENT
+            // X - • // •: TARGET PLACE
+            // - X - // -: UNUSED
+            // • - O // (IN 4 POSITIONS)
+            !success &&
+            rC.current.filter(e => e.value === "X").length === 2 &&
+            rC.current[4].value === "X" &&
+            rC.current.filter(e => e.value === "O").length === 1
+          ) {
+
+            //           X X O   • •
+            let s  = [ [[0,4,8],[2,6]], [[2,4,6],[8,0]], [[8,4,0],[6,2]], [[6,4,2],[0,8]] ] // s === strategy
+            setO.current.clear()
+
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                let success2 = false
+                if (
+                  rC.current[s[sI.current][0][0]].value === "X" &&
+                  rC.current[s[sI.current][0][1]].value === "X" &&
+                  rC.current[s[sI.current][0][2]].value === "O" &&
+                  rC.current[s[sI.current][1][0]].value === "" &&
+                  rC.current[s[sI.current][1][1]].value === ""
+                ) {
+
+                  set2O.current.clear()
+                  do {
+                    s2I.current = Math.floor(Math.random() * 2)
+                    if (!set2O.current.has(s2I.current)) {
+                      set2O.current.add(s2I.current)
+
+                      if (rC.current[s[sI.current][1][s2I.current]].value === "") {
+                        rC.current[s[sI.current][1][s2I.current]].value = "O"
+                        success = true
+                        success2 = true
+                      }
+
+                    }
+                  } while (success2 === false && set2O.current.size < 2)
+                  
+
+                }
+
+              }
+            } while (success === false && setO.current.size < s.length)
+
+          }
+
           if ( // X BEGINS // 2nd MOVEMENT //
             // O X - /or/ • X - // •: TARGET PLACE
             // X • - /or/ X O - // -: UNUSED
@@ -1094,9 +1144,9 @@ const Main = () => {
           }
 
           if ( // X BEGINS // 3rd MOVEMENT //
-            // - - - // •: TARGET PLACE
-            // - • - // -: UNUSED
-            // - - - // (IN 4 POSITIONS)
+            // - X - // •: TARGET PLACE
+            // X • • // -: UNUSED
+            // - • - // (IN 4 POSITIONS)
             !success && //
             rC.current[4].value === "" &&
             rC.current.filter(e => e.value === "X").length === 3 &&
@@ -1109,14 +1159,8 @@ const Main = () => {
             console.log("ENTRO este 321 321")
             do {
               sI.current = Math.floor(Math.random() * s.length)
-              console.log("setO.current" ,setO.current)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
-                console.log("ACTUAL NUMBER", sI.current)
-                console.log(`rC.current[s[sI.current][0][0]].value === "X"`, rC.current[s[sI.current][0][0]].value === "X")
-                console.log(`rC.current[s[sI.current][0][1]].value === "X"`, rC.current[s[sI.current][0][1]].value === "X")
-                console.log(`rC.current[s[sI.current][1][0]].value === ""`, rC.current[s[sI.current][1][0]].value === "")
-                console.log(`rC.current[s[sI.current][1][1]].value === ""`, rC.current[s[sI.current][1][1]].value === "")
                 if (
                   rC.current[s[sI.current][0][0]].value === "X" &&
                   rC.current[s[sI.current][0][1]].value === "X" &&
@@ -1167,7 +1211,7 @@ const Main = () => {
           }
 
 
-          if (!success) { // EXECUTE LINEAR STRATEGY
+          if (!success) { // EXECUTE ANY LINEAR STRATEGY
             //          0       1       2       3       4       5       6       7
             let s = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
             setO.current.clear()
@@ -1186,7 +1230,7 @@ const Main = () => {
 
           }
 
-          if (!success) { // EXECUTE RANDOM MOVEMENT
+          if (!success) { // EXECUTE ANY RANDOM MOVEMENT
             while (success === false) {
               AIRandomGridIndex.current = Math.floor(Math.random() * 9)
               if (rC.current[AIRandomGridIndex.current].value === "") {
@@ -1423,9 +1467,9 @@ const Main = () => {
               `no winner, no points.`,
             heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
             icon:
-              winnerRound.current === "" ?
-              'info' :
-              'success',
+              winnerRound.current === "X" || winnerRound.current === "O" ?
+              'success' :
+              'info', // TIED
             showConfirmButton: false,
             showDenyButton: false,
             showCancelButton: false,
@@ -1953,7 +1997,12 @@ const Main = () => {
               </div>`,
           heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
           icon:
-            'success',
+            finalWinner === "XByTime" ||
+            finalWinner === "X" ||
+            finalWinner === "OByTime" ||
+            finalWinner === "O" ?
+            'success' :
+            'info', // TIED
           showConfirmButton: true,
           showDenyButton: false,
           showCancelButton: false,

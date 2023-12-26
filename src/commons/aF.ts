@@ -16,7 +16,6 @@ import tiedWeird from '../audio/tiedWeird.mp3';
 import XTime from '../audio/XTime.mp3';
 import OTime from '../audio/OTime.mp3';
 import bG from '../audio/bG.mp3';
-import silence from '../audio/silence.mp3';
 
 const aF: any = { // audioFiles
   Xmove: { n: Xmove, i: 0, mV: 0.6 }, // n = name
@@ -37,8 +36,7 @@ const aF: any = { // audioFiles
   tiedWeird: { n: tiedWeird, i: 15, mV: 0.9 },
   XTime: { n: XTime, i: 16, mV: 1.0 },
   OTime: { n: OTime, i: 17, mV: 1.0 },
-  bG: { n: bG, i: 18, mV: 1.0 },
-  silence: { n: silence, i: 19, mV: 1.0 }
+  bG: { n: bG, i: 18, mV: 1.0 }
 }
 
 export default aF;
