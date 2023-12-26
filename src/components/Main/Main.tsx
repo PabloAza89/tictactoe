@@ -2666,7 +2666,7 @@ const Main = () => {
           TEST 3
         </Button> */}
         <div>
-          This App it's currently on development. (26/12/2023) {/* So you will see my work done in real time.. day by day.. */}
+          This App it's currently on development. (26/12/2023)  {/* So you will see my work done in real time.. day by day.. */}
         </div>
     </div>
   );
