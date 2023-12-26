@@ -368,6 +368,7 @@ const Main = () => {
             // - • - // -: UNUSED
             // • - • //
             let s = [0,2,4,6,8] // PRIMARY TARGETS // 4 IS LESS IMPORTANT..
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -380,7 +381,6 @@ const Main = () => {
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
           }
 
           if ( // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X RECT NEXT
@@ -393,42 +393,46 @@ const Main = () => {
             let s  = [[[0],[1,3]],      [[2],[5,1]],      [[8],[7,5]],      [[6],[3,7]]] // s === strategy
             //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
             let s2 = [[[3,4,6],[1,2,4]],[[0,1,4],[4,5,8]],[[2,4,5],[4,6,7]],[[4,7,8],[0,3,4]]] // s2 === strategy 2 depending on upper array
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
                 let success2 = false
                 if (rC.current[s[sI.current][0][0]].value === "O" && rC.current[s[sI.current][1][0]].value === "X") { // X NEXT TO THE RIGHT
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
                     if (!set2O.current.has(s2I.current)) {
                       set2O.current.add(s2I.current)
                       if (rC.current[s2[sI.current][0][s2I.current]].value === "") {
                         rC.current[s2[sI.current][0][s2I.current]].value = "O"
+                        success = true
                         success2 = true
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  set2O.current.clear()
-                  success = true
+                  
+                  
                 }
                 else if (rC.current[s[sI.current][0][0]].value === "O" && rC.current[s[sI.current][1][1]].value === "X") { // X NEXT TO THE LEFT
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
                     if (!set2O.current.has(s2I.current)) {
                       set2O.current.add(s2I.current)
                       if (rC.current[s2[sI.current][1][s2I.current]].value === "") {
                         rC.current[s2[sI.current][1][s2I.current]].value = "O"
+                        success = true
                         success2 = true
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  set2O.current.clear()
+                  
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            //setO.current.clear()
           }
 
           if ( // O BEGINS // 3rd MOVEMENT // O IS ON ANY CORNER & X RECT NEXT
@@ -442,31 +446,33 @@ const Main = () => {
             let s  = [[[0],[1,3]],      [[2],[5,1]],      [[8],[7,5]],      [[6],[3,7]]] // s === strategy
             //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
             let s2 = [[[3,4,6],[1,2,4]],[[0,1,4],[4,5,8]],[[2,4,5],[4,6,7]],[[4,7,8],[0,3,4]]] // s2 === strategy 2 depending on upper array
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
                 let success2 = false
-
+                
 
                 if (
                   rC.current[s[sI.current][0][0]].value === "O" &&
                   rC.current[s[sI.current][1][0]].value === "X" &&
                   (rC.current[s2[sI.current][0][0]].value === "O" || rC.current[s2[sI.current][0][1]].value === "O" || rC.current[s2[sI.current][0][2]].value === "O")
                 ) { // X NEXT TO THE RIGHT
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
                     if (!set2O.current.has(s2I.current)) {
                       set2O.current.add(s2I.current)
                       if (rC.current[s2[sI.current][0][s2I.current]].value === "") {
                         rC.current[s2[sI.current][0][s2I.current]].value = "O"
+                        success = true
                         success2 = true
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  set2O.current.clear()
-                  success = true
+                  
+                  
                 }
 
 
@@ -475,23 +481,25 @@ const Main = () => {
                   rC.current[s[sI.current][1][1]].value === "X" &&
                   (rC.current[s2[sI.current][1][0]].value === "O" || rC.current[s2[sI.current][1][1]].value === "O" || rC.current[s2[sI.current][1][2]].value === "O")
                 ) { // X NEXT TO THE LEFT
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
                     if (!set2O.current.has(s2I.current)) {
                       set2O.current.add(s2I.current)
                       if (rC.current[s2[sI.current][1][s2I.current]].value === "") {
                         rC.current[s2[sI.current][1][s2I.current]].value = "O"
+                        success = true
                         success2 = true
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  set2O.current.clear()
+                  
                 }
 
 
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
 
           }
 
@@ -506,30 +514,34 @@ const Main = () => {
             let s  = [[[0],[5,7]],      [[2],[7,3]],      [[8],[3,1]],      [[6],[1,5]]] // s === strategy
             //               ↓                 ↓                 ↓                 ↓
             let s2 =     [[2,4,6],          [0,4,8],          [2,4,6],          [0,4,8]] // s2 === strategy 2 depending on upper array
-
+            setO.current.clear()
+            
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
+                
                 let success2 = false
 
                 if (rC.current[s[sI.current][0][0]].value === "O" && (rC.current[s[sI.current][1][0]].value === "X" || rC.current[s[sI.current][1][1]].value === "X")) { // X IS RECT AWAY
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
                     if (!set2O.current.has(s2I.current)) {
                       set2O.current.add(s2I.current)
                       if (rC.current[s2[sI.current][s2I.current]].value === "") {
                         rC.current[s2[sI.current][s2I.current]].value = "O"
+                        success = true
                         success2 = true
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  set2O.current.clear()
-                  success = true
+                  
+                  
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
           }
 
           if ( // O BEGINS // 3rd MOVEMENT // O IS ON ANY CORNER & X RECT AWAY
@@ -542,7 +554,7 @@ const Main = () => {
             let s  = [[[0],[5,7]],      [[2],[7,3]],      [[8],[3,1]],      [[6],[1,5]]] // s === strategy
             //               ↓                 ↓                 ↓                 ↓
             let s2 =     [[2,4,6],          [0,4,8],          [2,4,6],          [0,4,8]] // s2 === strategy 2 depending on upper array
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -554,6 +566,7 @@ const Main = () => {
                   (rC.current[s[sI.current][1][0]].value === "X" || rC.current[s[sI.current][1][1]].value === "X") &&
                   (rC.current[s2[sI.current][0]].value === "O" || rC.current[s2[sI.current][1]].value === "O" || rC.current[s2[sI.current][2]].value === "O")
                 ) { // X IS RECT AWAY
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
                     if (!set2O.current.has(s2I.current)) {
@@ -565,11 +578,11 @@ const Main = () => {
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  set2O.current.clear()
+                  
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
 
           }
 
@@ -583,7 +596,7 @@ const Main = () => {
             let s  = [[[0],[2,6]],      [[2],[8,0]],      [[8],[6,2]],      [[6],[0,8]]] // s === strategy
             //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
             let s2 =    [[[3],[1]],        [[1],[5]],        [[5],[7]],        [[7],[3]]] // s2 === strategy 2 depending on upper array
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -597,7 +610,7 @@ const Main = () => {
                 ) { // X IS RECT AWAY
                   //do {
                     //s2I.current = Math.floor(Math.random() * 2)
-                    if (!set2O.current.has(s2I.current)) {
+                    //if (!set2O.current.has(s2I.current)) {
                       //set2O.current.add(s2I.current)
                       if (rC.current[s[sI.current][1][0]].value === "X") {
                         rC.current[s2[sI.current][0][0]].value = "O"
@@ -607,14 +620,14 @@ const Main = () => {
                         rC.current[s2[sI.current][1][0]].value = "O"
                         success = true
                       }
-                    }
+                   // }
                   //} while (success2 === false && set2O.current.size < 3)
                   //set2O.current.clear()
                   //success = true
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
 
           }
 
@@ -628,7 +641,7 @@ const Main = () => {
             let s  = [[[0],[4,8]],      [[2],[4,6]],      [[8],[4,0]],      [[6],[4,2]]] // s === strategy
             //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
             let s2 =    [[[8],[4]],        [[6],[4]],        [[0],[4]],        [[2],[4]]] // s2 === strategy 2 depending on upper array
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -642,7 +655,7 @@ const Main = () => {
                 ) { // X IS RECT AWAY
                   //do {
                     //s2I.current = Math.floor(Math.random() * 2)
-                    if (!set2O.current.has(s2I.current)) {
+                    //if (!set2O.current.has(s2I.current)) {
                       //set2O.current.add(s2I.current)
                       if (rC.current[s[sI.current][1][0]].value === "X") {
                         rC.current[s2[sI.current][0][0]].value = "O"
@@ -653,14 +666,14 @@ const Main = () => {
                         rC.current[s2[sI.current][1][0]].value = "O"
                         success = true
                       }
-                    }
+                    //}
                   //} while (success2 === false && set2O.current.size < 3)
                   //set2O.current.clear()
                   //success = true
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
           }
 
           if ( // O BEGINS // 3rd MOVEMENT // "L" OR "TRIANGLE"
@@ -676,7 +689,7 @@ const Main = () => {
             let s  = [[[0,8],[1,3]],      [[2,6],[5,1]],      [[8,0],[7,5]],      [[6,2],[3,7]]] // s === strategy
             //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
             let s2 =    [[[8],[4]],        [[6],[4]],        [[0],[4]],        [[2],[4]]] // s2 === strategy 2 depending on upper array
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -689,7 +702,7 @@ const Main = () => {
                   (rC.current[s[sI.current][1][0]].value === "X" || rC.current[s[sI.current][1][1]].value === "X")
                 ) {
 
-
+                  set2O.current.clear()
 
                   do {
                     s2I.current = Math.floor(Math.random() * 2)
@@ -702,12 +715,12 @@ const Main = () => {
                       }
                     }
                   } while (success2 === false && set2O.current.size < 2)
-                  set2O.current.clear()
+                  
 
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
 
           }
 
@@ -722,7 +735,7 @@ const Main = () => {
           ) {
 
             let s  = [[[0],[8]],      [[2],[6]],      [[8],[0]],      [[6],[2]]] // s === strategy
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -738,7 +751,7 @@ const Main = () => {
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+           
           }
 
           if ( // O BEGINS // 2nd MOVEMENT
@@ -752,7 +765,7 @@ const Main = () => {
           ) {
 
             let s  = [[[1,7],[2,5,8,6,3,0]], [[5,3],[0,1,2,8,7,6]]] // s === strategy
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -763,7 +776,7 @@ const Main = () => {
                   rC.current[s[sI.current][0][0]].value === "X" ||
                   rC.current[s[sI.current][0][1]].value === "X"
                 ) {
-                  
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 6)
                     if (!set2O.current.has(s2I.current)) {
@@ -775,13 +788,13 @@ const Main = () => {
                       }
                     }
                   } while (success2 === false && set2O.current.size < 6)
-                  set2O.current.clear()
+                  
 
 
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
 
           }
 
@@ -798,7 +811,7 @@ const Main = () => {
             let s = [ [[1],[5,3],[3,5]],      [[5],[7,1],[1,7]],      [[7],[3,5],[5,3]],      [[3],[1,7],[7,1]] ] // s === strategy
             //               ↓     ↓                 ↓     ↓                 ↓     ↓                 ↓     ↓
             let s2 =    [ [[0,6],[2,8]],          [[0,2],[6,8]],          [[2,8],[0,6]],          [[6,8],[0,2]] ] // s2 === strategy 2 depending on upper array
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -810,7 +823,7 @@ const Main = () => {
                   rC.current[s[sI.current][1][0]].value === "X" &&
                   rC.current[s[sI.current][1][1]].value === "O"
                 ) {
-
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 2)
                     if (!set2O.current.has(s2I.current)) {
@@ -824,14 +837,14 @@ const Main = () => {
 
                     }
                   } while (success2 === false && set2O.current.size < 2)
-                  set2O.current.clear()
+                  
 
                 } else if (
                   rC.current[s[sI.current][0][0]].value === "X" &&
                   rC.current[s[sI.current][2][0]].value === "X" &&
                   rC.current[s[sI.current][2][1]].value === "O"
                 ) {
-
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 2)
                     if (!set2O.current.has(s2I.current)) {
@@ -845,12 +858,11 @@ const Main = () => {
 
                     }
                   } while (success2 === false && set2O.current.size < 2)
-                  set2O.current.clear()
 
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
 
 
           }
@@ -866,7 +878,7 @@ const Main = () => {
           ) {
 
             let s  = [[[0],[4,8]],      [[2],[4,6]],      [[8],[4,0]],      [[6],[4,2]]] // s === strategy
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -874,7 +886,7 @@ const Main = () => {
                 let success2 = false
 
                 if (rC.current[s[sI.current][0][0]].value === "X") {
-
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 2)
                     if (!set2O.current.has(s2I.current)) {
@@ -887,14 +899,14 @@ const Main = () => {
                       }
                     }
                   } while (success2 === false && set2O.current.size < 2)
-                  set2O.current.clear()
+                  
 
                 }
                   
 
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
 
           }
 
@@ -911,7 +923,7 @@ const Main = () => {
             let s  = [[[1],[0,4,2]],      [[5],[2,4,8]],      [[7],[8,4,6]],      [[3],[6,4,0]]] // s === strategy
 
             // let s = [0,2,4,6,8] // s === strategy
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -923,7 +935,7 @@ const Main = () => {
                 ) { // X IS RECT AWAY
                   // rC.current[s[sI.current][1][0]].value = "O"
                   // success = true
-
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
                     if (!set2O.current.has(s2I.current)) {
@@ -937,14 +949,14 @@ const Main = () => {
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  set2O.current.clear()
+                  
 
 
 
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
             
           }
 
@@ -959,7 +971,7 @@ const Main = () => {
           ) {
             //          X   X *   X *
             let s  = [[[0],[5,7],[7,5]],      [[2],[7,3],[3,7]],      [[8],[3,1],[1,3]],      [[6],[1,5],[5,1]]] // s === strategy
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -984,7 +996,7 @@ const Main = () => {
 
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
 
           }
 
@@ -1000,7 +1012,7 @@ const Main = () => {
 
             //           X X   * * * *
             let s  = [ [[0,8],[1,5,7,3]], [[2,6],[1,5,7,3]] ] // s === strategy
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -1013,7 +1025,7 @@ const Main = () => {
                 ) {
                   //rC.current[s[sI.current][1][1]].value = "O"
 
-
+                  set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 4)
                     if (!set2O.current.has(s2I.current)) {
@@ -1027,7 +1039,7 @@ const Main = () => {
 
                     }
                   } while (success2 === false && set2O.current.size < 4)
-                  set2O.current.clear()
+                  
 
 
 
@@ -1035,7 +1047,7 @@ const Main = () => {
 
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
+            
 
 
           }
@@ -1044,13 +1056,13 @@ const Main = () => {
             // O X - /or/ • X - // •: TARGET PLACE
             // X • - /or/ X O - // -: UNUSED
             // - - - /or/ - - - //
-            !success && // reveer esta situacion
+            !success && //
             rC.current.filter(e => e.value === "X").length === 2 &&
             rC.current.filter(e => e.value === "O").length === 1
           ) {
             //          X X   O •   O •
             let s  = [[[1,3],[0,4],[4,0]],      [[5,1],[2,4],[4,2]],      [[7,5],[8,4],[4,8]],      [[3,7],[6,4],[4,6]]] // s === strategy
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -1077,7 +1089,48 @@ const Main = () => {
 
               }
             } while (success === false && setO.current.size < s.length)
+            
+
+          }
+
+          if ( // X BEGINS // 3rd MOVEMENT //
+            // - - - // •: TARGET PLACE
+            // - • - // -: UNUSED
+            // - - - // (IN 4 POSITIONS)
+            !success && //
+            rC.current[4].value === "" &&
+            rC.current.filter(e => e.value === "X").length === 3 &&
+            rC.current.filter(e => e.value === "O").length === 2
+          ) {
+
+            //           X X   • •
+            let s  = [ [[1,3],[5,7]],      [[5,1],[7,3]],      [[7,5],[3,1]],      [[3,7],[1,5]] ] // s === strategy
             setO.current.clear()
+            console.log("ENTRO este 321 321")
+            do {
+              sI.current = Math.floor(Math.random() * s.length)
+              console.log("setO.current" ,setO.current)
+              if (!setO.current.has(sI.current)) {
+                setO.current.add(sI.current)
+                console.log("ACTUAL NUMBER", sI.current)
+                console.log(`rC.current[s[sI.current][0][0]].value === "X"`, rC.current[s[sI.current][0][0]].value === "X")
+                console.log(`rC.current[s[sI.current][0][1]].value === "X"`, rC.current[s[sI.current][0][1]].value === "X")
+                console.log(`rC.current[s[sI.current][1][0]].value === ""`, rC.current[s[sI.current][1][0]].value === "")
+                console.log(`rC.current[s[sI.current][1][1]].value === ""`, rC.current[s[sI.current][1][1]].value === "")
+                if (
+                  rC.current[s[sI.current][0][0]].value === "X" &&
+                  rC.current[s[sI.current][0][1]].value === "X" &&
+                  rC.current[s[sI.current][1][0]].value === "" &&
+                  rC.current[s[sI.current][1][1]].value === ""
+                ) {
+                  console.log("este 321 321")
+                  rC.current[4].value = "O"
+                  success = true
+                }
+
+              }
+            } while (success === false && setO.current.size < s.length)
+            
 
           }
 
@@ -1092,7 +1145,7 @@ const Main = () => {
             //          X X   O •
             let s = [ [[1,6],[0,4]],      [[5,0],[2,4]],      [[7,2],[8,4]],      [[3,8],[6,4]],
                       [[1,8],[2,4]],      [[5,6],[8,4]],      [[7,0],[6,4]],      [[3,2],[0,4]] ] // s === strategy
-
+            setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
@@ -1110,20 +1163,9 @@ const Main = () => {
 
               }
             } while (success === false && setO.current.size < s.length)
-            setO.current.clear()
-
-
+            
           }
 
-          // if ( // X BEGINS // 2nd MOVEMENT // seguir aca
-          //   // 2 X & 2 O // IF CENTER IS NOT MARKED, IT WOULD BECOME CRITICAL
-          //   !success &&
-          //   rC.current.filter(e => e.value === "X").length === 2 &&
-          //   rC.current[4].value === "" &&
-          //   rC.current.filter(e => e.value === "O").length === 1
-          // ) {
-          //   rC.current[4].value = "O"
-          // }
 
           if (!success) { // EXECUTE LINEAR STRATEGY
             //          0       1       2       3       4       5       6       7
@@ -2291,7 +2333,7 @@ const Main = () => {
                 }}
                 className={css.eachBox}
               >
-                {/* {<div style={{ fontSize: '10px', marginTop: '-25px', marginLeft: '-10px' }}> {index} </div>} */}
+                {<div style={{ fontSize: '10px', marginTop: '-25px', marginLeft: '-10px' }}> {index} </div>}
                 { rC.current[index].value }
               </div>
             )
@@ -2624,7 +2666,7 @@ const Main = () => {
           TEST 3
         </Button> */}
         <div>
-          This App it's currently on development. (24/12/2023) {/* So you will see my work done in real time.. day by day.. */}
+          This App it's currently on development. (26/12/2023) {/* So you will see my work done in real time.. day by day.. */}
         </div>
     </div>
   );
