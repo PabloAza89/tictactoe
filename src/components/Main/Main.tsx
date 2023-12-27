@@ -42,9 +42,11 @@ const Main = () => {
       heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
       showDenyButton: true,
       showCancelButton: true,
-      confirmButtonText: 'EASY',
-      denyButtonText: `HARD`,
-      cancelButtonText: `NIGHTMARE`,
+      //confirmButtonText: '      EASY      ',
+      confirmButtonText: `<div style="width:97px">EASY</div>`,
+      denyButtonText: `<div style="width:97px">HARD</div>`,
+      /* cancelButtonText: `NIGHTMARE`, */
+      cancelButtonText: `<div style="width:97px">NIGHTMARE</div>`,
       //confirmButtonColor: '#0000ff', // LEFT OPTION
       confirmButtonColor: '#6060e0', // LEFT OPTION
       denyButtonColor: '#ff4500', // CENTER OPTION
@@ -72,7 +74,6 @@ const Main = () => {
       confirmButtonColor: '#2e8b57',
       showCancelButton: false,
       inputValidator: (value) => {
-        //console.log("123123 value", value)
         gameEndRoundsNumber.current = parseInt(value, 10) - 1 // ONLY SEND WHEN result.isConfirmed
         localStorage.setItem('roundsValue', JSON.stringify(parseInt(value, 10) - 1))
       }
@@ -94,7 +95,6 @@ const Main = () => {
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-        //console.log("123123 rejected")
         if (allowFXSound.current) playSound({ file: aF.menu })
         setTimeout(function() {
           addButtonAnimation()
@@ -119,7 +119,6 @@ const Main = () => {
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-        //console.log("123123 rejected")
         if (allowFXSound.current) playSound({ file: aF.menu })
         setTimeout(function() {
           addButtonAnimation()
@@ -135,11 +134,7 @@ const Main = () => {
 
   let allSoundsLoaded = useRef<boolean>(false)
   let score = useRef<any[]>([])
-
-  //const [ gameMode, setGameMode ] = useState<string>("easy")
   const gameMode = useRef("easy")
-  //const [ gameMode, setGameMode ] = useState<string>("hard")
-
   const allowBgSoundState = useSelector((state: { allowBgSound: boolean }) => state.allowBgSound)
   let allowBgSound = useRef(allowBgSoundState)
   const BgSoundValueState = useSelector((state: { BgSoundValue: number }) => state.BgSoundValue)
@@ -156,11 +151,9 @@ const Main = () => {
   let continueFlowPopUp = useRef(true)
   const [ points, setPoints ] = useState<pointsI>({ "X": 0, "O": 0 })
   let roundEnd = useRef(false)
-  //let gameEndRoundsNumber = useRef(9) // 10 ROUNDS
-  //let gameEndRoundsNumber = useRef(1) // 2 ROUNDS
   let gameEndRoundsNumber = useRef(0) // 1 ROUNDS
-  //let gameEndRoundsNumber = useRef(2) // 3 ROUNDS
-  //let gameEndRoundsNumber = useRef(1) // 2 ROUNDS
+  //let gameEndRoundsNumber = useRef(2) // 3 ROUNDS // DEV
+  //let gameEndRoundsNumber = useRef(1) // 2 ROUNDS // DEV
   let gameEndRoundsBoolean = useRef(false)
   let winnerRound = useRef("")
   const [ winnerRoundState, setWinnerRoundState ] = useState("") // ONLY FOR GAME UI DISPLAY REASONS..
@@ -168,7 +161,6 @@ const Main = () => {
   const [ userPlaying, setUserPlaying ] = useState(true)
   let userHasStartedThisRound = useRef(true)
   const [ countdownRound, setCountdownRound ] = useState<number>(3)
-  //let countdownRound = useRef<number>(3)
   let showCountdownRound = useRef<boolean>(false)
   const [ showCountdownRoundState, setShowCountdownRoundState ] = useState<boolean>(false)
   const [ shouldAIstartState, setShouldAIstartState ] = useState(false) // ONLY FOR GAME UI DISPLAY REASONS..
@@ -261,7 +253,6 @@ const Main = () => {
         const completeThreeO = () => {
           for (let i = 0; i < targetPlaces.length; i++) {
             if (targetPlaces[i].filter((i:any) => rC.current[i].value === "O").length === 2 && targetPlaces[i].filter((idx: any) => rC.current[idx].value === "").length === 1) {
-              console.log("TRUE TRUE COMPLETED")
               rC.current[targetPlaces[i].filter((idx: any) => rC.current[idx].value === "")[0]].value = "O"
               success = true
               break;
@@ -272,7 +263,6 @@ const Main = () => {
         const blockThreeX = () => {
           for (let i = 0; i < targetPlaces.length; i++) {
             if (targetPlaces[i].filter((i:any) => rC.current[i].value === "X").length === 2 && targetPlaces[i].filter((idx: any) => rC.current[idx].value === "").length === 1) {
-              console.log("TRUE TRUE BLOCKED")
               rC.current[targetPlaces[i].filter((idx: any) => rC.current[idx].value === "")[0]].value = "O"
               success = true
               break;
@@ -281,15 +271,14 @@ const Main = () => {
         }
 
         if (gameMode.current === 'easy') {
-          console.log("ENTRO MODO EASY")
           let targetIndexes = [0,1,2,3,4,5,6,7,8]
           selectRandomPlace(targetIndexes)
           if (allowFXSound.current) playSound({ file: aF.Omove })
           setShouldAIstartState(false)
           setUserPlaying(true)
-        } 
+        }
         else if (gameMode.current === 'hard') {
-          
+
           if (!success) completeThreeO() // TRY TO MATCH ALL 3 "O" POSSIBLE //
           if (!success) blockThreeX() // TRY TO BLOCK 3 "X" FROM HUMAN ENEMY //
           if (!success) { // EXECUTE PRIMARY STRATEGIES
@@ -308,13 +297,12 @@ const Main = () => {
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
                 if (executeRandomStrategy(s[sI.current])) {
-                  console.log("set RANDOM STRATEGY EJECUTADA, index 1:", s[sI.current][0])
                   success = true
                 }
               }
             } while (success === false && setO.current.size < s.length)
           }
-     
+
           if (!success) { // EXECUTE SECONDARY STRATEGIES
             //          0       1       2       3       4       5       6       7
             let s = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
@@ -324,9 +312,7 @@ const Main = () => {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
-                //console.log("set 2 (ejecutando) setO.current.size", setO.current.size)
                 if (executeRandomStrategy(s[sI.current])) {
-                  console.log("set 2 RANDOM STRATEGY EJECUTADA, index 2:", s[sI.current])
                   success = true
                 }
               }
@@ -338,7 +324,6 @@ const Main = () => {
             while (success === false) {
               AIRandomGridIndex.current = Math.floor(Math.random() * 9)
               if (rC.current[AIRandomGridIndex.current].value === "") {
-                console.log("LAST MOVEMENT")
                 rC.current[AIRandomGridIndex.current].value = "O"
                 success = true
               }
@@ -1199,7 +1184,7 @@ const Main = () => {
         setShouldAIstartState(false)
         startTimer()
         clickBlocked.current = false
-        showCountdownRound.current = false // TEST
+        showCountdownRound.current = false
       } else if (showCountdownRound.current) { // AUTO-START AI // PREVENT EXECUTION WHEN USER CLICK "NEW GAME"
         softResetGame()
         userHasStartedThisRound.current = false
@@ -1207,7 +1192,7 @@ const Main = () => {
         setShouldAIstartState(true)
         startTimer()
         AIAction()
-        showCountdownRound.current = false // TEST
+        showCountdownRound.current = false
       }
     }, 7000)
   }
@@ -1249,7 +1234,7 @@ const Main = () => {
     setTimeout(() => {
       let min // MINUTES
       let sec // SECONDS
-      let mss // file.i
+      let mss // MILLISECONDS
       let mn = document.getElementById('timer_minutes')
       if (mn !== null) min = mn.innerHTML
       let sc = document.getElementById('timer_seconds')
@@ -1337,10 +1322,6 @@ const Main = () => {
             else if (winnerRound.current === "O") playSound({ file: aF.roundLost })
             else playSound({ file: aF.trill })
           }
-            
-          
-          
-
 
           Swal.fire({
             title:
@@ -1365,25 +1346,15 @@ const Main = () => {
             showCancelButton: false,
             timer: 2000,
           })
-          setTimeout(() => {
-            // if (winnerRound.current === "") {
-            //   setWinnerRoundState("TIED") // SYNC WITH POP-UP
-            //   clickBlocked.current = true
-            // }
-          }, 1200)
         }
       }, 1200)
 
-      if (!gameEndRoundsBoolean.current) showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
+      if (!gameEndRoundsBoolean.current) showCountdownRound.current = true // ENABLES COUNTDOWN VISUALIZATION
       countdownHandler() // START COUNTDOWN FOR NEXT ROUND
 
       setTimeout(() => {
         if (roundEnd.current) addTimerChangeColor() // MAKE SURE THERE ISN'T A NEW GAME TO MAKE THE ANIMATION
       }, 3200)
-
-
-
-
     }
   }
 
@@ -1401,6 +1372,7 @@ const Main = () => {
       addButtonAnimation()
     },300);
   },[])
+
   const basicOptions = () => {
     startsIn()
     setNewGameStarted(true) // ADD TIMER IN SCREEN
@@ -1475,7 +1447,6 @@ const Main = () => {
         if (allowFXSound.current) playSound({ file: aF.menu })
         selectDifficulty()
         .then((result) => {
-          console.log("RESULT", result)
           if (result.isConfirmed) {
             gameMode.current = "easy"
             selectNumberOfRoundsUser()
@@ -1721,13 +1692,12 @@ const Main = () => {
           XSumScore > OSumScore ?
           "X" :
           "O"
-        //)
 
         setTimeout(() => {
           setWinnerGameState(finalWinner)
           addFinalWinnerChangeColor()
         }, 200) // DELAY WAITS FOR FINAL POPUP
- 
+
 
         if (finalWinner === "X") startConfetti()
 
@@ -1812,7 +1782,7 @@ const Main = () => {
         $(`.buttonShow`)
           .on("click", function() {
           $(`#sliderBox`)
-            .stop() // ↓↓ ABSOLUTE ↓↓
+            .stop()
             .animate( { right: '0px' }, { queue: false, easing: 'easeOutCubic', duration: 800 }) // INITIAL POSITION
         })
         $(`#sliderBox`)
@@ -1823,7 +1793,7 @@ const Main = () => {
         $(`.buttonShow`)
           .on("click", function() {
             $(`#sliderBox`)
-              .stop() // DIV WIDTH
+              .stop()
               .animate( { right: '-415px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
           })
         $(`#sliderBox`)
@@ -1840,7 +1810,7 @@ const Main = () => {
           .on("click", function() {
             $(`#divBGSlider`)
               .stop()
-              .animate( { left: '-117px' }, { queue: false, easing: 'easeOutCubic', duration: 800 }) // INITIAL POSITION
+              .animate( { left: '-117px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
         })
         $(`#divBGSlider`)
           .css("left", "35px")
@@ -1853,7 +1823,7 @@ const Main = () => {
               .animate( { left: '35px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
           })
         $(`#divBGSlider`)
-          .css("left", "-117px") // ABSOLUTE
+          .css("left", "-117px")
       }
     })
   },[BGMusicShown])
@@ -1865,7 +1835,7 @@ const Main = () => {
           .on("click", function() {
             $(`#divFXSlider`)
               .stop()
-              .animate( { left: '-117px' }, { queue: false, easing: 'easeOutCubic', duration: 800 }) // INITIAL POSITION
+              .animate( { left: '-117px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
         })
         $(`#divFXSlider`)
           .css("left", "35px")
@@ -1878,7 +1848,7 @@ const Main = () => {
               .animate( { left: '35px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
           })
         $(`#divFXSlider`)
-          .css("left", "-117px") // ABSOLUTE
+          .css("left", "-117px")
       }
     })
   },[FXMusicShown])
@@ -1992,7 +1962,6 @@ const Main = () => {
   }
 
   const stopConfetti = () => {
-    console.log("EXECUTED CLEAR")
     clearInterval(intervalID.current);
     intervalID.current = null;
   }
@@ -2005,7 +1974,6 @@ const Main = () => {
       if (res.state === "suspended") {
         document.addEventListener('click', () => {
           if (allowBgSound.current) {
-            console.log("se ejecuto este 2")
             contextArray[aF.bG.i].resume()
           }
         }, { once: true })
@@ -2063,6 +2031,7 @@ const Main = () => {
         }
       })
     })
+  // eslint-disable-next-line
   },[])
 
   return (
@@ -2262,40 +2231,40 @@ const Main = () => {
             })
           }
         </div>
-          <div className={css.scoreBackgroundLight1}></div>
-          <div className={css.scoreBackgroundLight2}></div>
-          <div className={css.scoreBackgroundLight3}></div>
-          <div className={css.scoreBackgroundLight4}></div>
-          <div className={css.scoreBackgroundLight5}></div>
-          <div className={css.scoreBackgroundLight6}></div>
-          <div className={css.scoreBackgroundLight7}></div>
-          <div className={css.scoreBackgroundLight8}></div>
-          <div className={css.scoreBackgroundLight9}></div>
-          <div className={css.scoreBackgroundLight10}></div>
-          <div className={css.scoreBackgroundLight11}>
-            <div className={css.scoreTableTitlesContainerLower}>
-              <div id={`evenTarget`} className={css.scoreTableNumeralLast}></div>
-              <div id={`evenTarget`} className={css.scoreTableTime}>
-                {
-                  <div className={css.scoreTableTimeInner}>
-                    <div>{XfinalMin.current.toString().padStart(2,'0')}:{XfinalSec.current.toString().padStart(2,'0')}</div>
-                    <div className={css.smallerMili}>:{XfinalMs.current.toString().padStart(3,'0')}</div>
-                  </div>
-                }
-              </div>
-              <div id={`evenTarget`} className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreX, 0) }</div>
-              <div id={`evenTarget`} className={css.scoreTableTotal}>TOTAL</div>
-              <div id={`evenTarget`} className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
-              <div id={`evenTarget`} className={css.scoreTableTimeLast}>
-                {
-                  <div className={css.scoreTableTimeInner}>
-                    <div>{OfinalMin.current.toString().padStart(2,'0')}:{OfinalSec.current.toString().padStart(2,'0')}</div>
-                    <div className={css.smallerMili}>:{OfinalMs.current.toString().padStart(3,'0')}</div>
-                  </div>
-                }
-              </div>
+        <div className={css.scoreBackgroundLight1}></div>
+        <div className={css.scoreBackgroundLight2}></div>
+        <div className={css.scoreBackgroundLight3}></div>
+        <div className={css.scoreBackgroundLight4}></div>
+        <div className={css.scoreBackgroundLight5}></div>
+        <div className={css.scoreBackgroundLight6}></div>
+        <div className={css.scoreBackgroundLight7}></div>
+        <div className={css.scoreBackgroundLight8}></div>
+        <div className={css.scoreBackgroundLight9}></div>
+        <div className={css.scoreBackgroundLight10}></div>
+        <div className={css.scoreBackgroundLight11}>
+          <div className={css.scoreTableTitlesContainerLower}>
+            <div id={`evenTarget`} className={css.scoreTableNumeralLast}></div>
+            <div id={`evenTarget`} className={css.scoreTableTime}>
+              {
+                <div className={css.scoreTableTimeInner}>
+                  <div>{XfinalMin.current.toString().padStart(2,'0')}:{XfinalSec.current.toString().padStart(2,'0')}</div>
+                  <div className={css.smallerMili}>:{XfinalMs.current.toString().padStart(3,'0')}</div>
+                </div>
+              }
+            </div>
+            <div id={`evenTarget`} className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreX, 0) }</div>
+            <div id={`evenTarget`} className={css.scoreTableTotal}>TOTAL</div>
+            <div id={`evenTarget`} className={css.scoreTableScore}>{ score.current.reduce((partial, el) => partial + el.scoreO, 0) }</div>
+            <div id={`evenTarget`} className={css.scoreTableTimeLast}>
+              {
+                <div className={css.scoreTableTimeInner}>
+                  <div>{OfinalMin.current.toString().padStart(2,'0')}:{OfinalSec.current.toString().padStart(2,'0')}</div>
+                  <div className={css.smallerMili}>:{OfinalMs.current.toString().padStart(3,'0')}</div>
+                </div>
+              }
             </div>
           </div>
+        </div>
       </div>
 
       <div id={`divBGSlider`} className={css.sliderBGContainer}>
@@ -2316,6 +2285,7 @@ const Main = () => {
           <MusicNoteIcon />
         </Button>
       </div>
+
       <div id={css.bgAndSliderContainer}>
         <Button
           id={css.buttonMute}
@@ -2324,10 +2294,8 @@ const Main = () => {
             allowBgSound.current = !allowBgSound.current
             localStorage.setItem('allowBgSound', JSON.stringify(!allowBgSoundState))
             if (allSoundsLoaded.current && !allowBgSound.current) {
-              console.log("MUTED se ejecuto este otro 1")
               soundsArray[aF.bG.i].stop()
             } else if (allSoundsLoaded.current && allowBgSound.current) {
-              console.log("PLAY se ejecuto este otro 2")
               playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
             }
           }}
@@ -2366,7 +2334,6 @@ const Main = () => {
             allowFXSound.current = !allowFXSound.current
             localStorage.setItem('allowFXSound', JSON.stringify(!allowFXSoundState))
             if (allSoundsLoaded.current && !allowFXSound.current) {
-              console.log("MUTED se ejecuto este otro 1")
               soundsArray.forEach((e,index) => {
                 if (aF.bG.i !== index && e.context.state === 'running') e.stop()
               })
@@ -2380,6 +2347,7 @@ const Main = () => {
           }
         </Button>
       </div>
+
       <div className={css.gameMode}>
         {
           (newGameStarted && gameMode.current === "easy") || (gameEndRoundsBoolean.current && gameMode.current === "easy") ?
