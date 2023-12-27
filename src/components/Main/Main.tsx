@@ -358,24 +358,21 @@ const Main = () => {
           //   rC.current[4].value = "O"
           // }
 
-          if (
+          if ( // O BEGINS // 1st MOVEMENT
             !success &&
             !rC.current.some(e => e.value === "O") &&
             (!rC.current.some(e => e.value === "X") || (rC.current.filter(e => e.value === "X").length === 1 && rC.current[4].value === "X"))
-            //rC.current.filter(e => e.value === "X").length === 1
-          ) { // O BEGINS // 1st MOVEMENT
+          ) {
             // • - • // •: TARGET PLACE
             // - • - // -: UNUSED
             // • - • //
-            let s = [0,2,4,6,8] // PRIMARY TARGETS // 4 IS LESS IMPORTANT..
+            let s = [0,2,4,6,8] // s === strategy
             setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
-                //console.log("set 2 (ejecutando) setO.current.size", setO.current.size)
                 if (rC.current[s[sI.current]].value === "") {
-                  console.log("NIGHTMARE 1 RANDOM STRATEGY EJECUTADA, index:", sI.current)
                   rC.current[s[sI.current]].value = "O"
                   success = true
                 }
@@ -386,20 +383,24 @@ const Main = () => {
           if ( // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X RECT NEXT
             !success &&
             rC.current.filter(e => e.value === "O").length === 1 &&
-            rC.current[4].value !== "O" &&
+            rC.current[4].value !== "" &&
             rC.current.filter(e => e.value === "X").length === 1
           ) {
-            //              R L               R L               R L               R L
-            let s  = [[[0],[1,3]],      [[2],[5,1]],      [[8],[7,5]],      [[6],[3,7]]] // s === strategy
-            //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
-            let s2 = [[[3,4,6],[1,2,4]],[[0,1,4],[4,5,8]],[[2,4,5],[4,6,7]],[[4,7,8],[0,3,4]]] // s2 === strategy 2 depending on upper array
+            // O X - /or/ • • O // •: TARGET PLACE
+            // • • - /or/ - • X // -: UNUSED
+            // • - - /or/ - - - //
+            //            O   X X
+            let s  = [  [[0],[1,3]],      [[2],[5,1]],      [[8],[7,5]],      [[6],[3,7]] ] // s === strategy
+            //               ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
+            let s2 = [ [[3,4,6],[1,2,4]],[[0,1,4],[4,5,8]],[[2,4,5],[4,6,7]],[[4,7,8],[0,3,4]] ] // s2 === strategy 2 depending on upper array
+            //           • • •   • • •
             setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
                 let success2 = false
-                if (rC.current[s[sI.current][0][0]].value === "O" && rC.current[s[sI.current][1][0]].value === "X") { // X NEXT TO THE RIGHT
+                if (rC.current[s[sI.current][0][0]].value === "O" && rC.current[s[sI.current][1][0]].value === "X") {
                   set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
@@ -412,10 +413,8 @@ const Main = () => {
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  
-                  
                 }
-                else if (rC.current[s[sI.current][0][0]].value === "O" && rC.current[s[sI.current][1][1]].value === "X") { // X NEXT TO THE LEFT
+                else if (rC.current[s[sI.current][0][0]].value === "O" && rC.current[s[sI.current][1][1]].value === "X") {
                   set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
@@ -428,37 +427,35 @@ const Main = () => {
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            //setO.current.clear()
           }
 
           if ( // O BEGINS // 3rd MOVEMENT // O IS ON ANY CORNER & X RECT NEXT
             !success &&
             rC.current.filter(e => e.value === "O").length === 2 &&
-            //rC.current[4].value !== "O" &&
             rC.current.filter(e => e.value === "X").length === 2
           ) {
-            console.log("entro aca")
-            //              R L               R L               R L               R L
-            let s  = [[[0],[1,3]],      [[2],[5,1]],      [[8],[7,5]],      [[6],[3,7]]] // s === strategy
-            //             ↙  ↘              ↙  ↘              ↙  ↘             ↙  ↘
-            let s2 = [[[3,4,6],[1,2,4]],[[0,1,4],[4,5,8]],[[2,4,5],[4,6,7]],[[4,7,8],[0,3,4]]] // s2 === strategy 2 depending on upper array
+            // O X - /or/ • • O // •: TARGET PLACE
+            // • • - /or/ - • X // -: UNUSED
+            // • - - /or/ - - - //
+            //             O   X X
+            let s  = [   [[0],[1,3]],      [[2],[5,1]],        [[8],[7,5]],      [[6],[3,7]] ] // s === strategy
+            //                ↙  ↘              ↙  ↘               ↙  ↘              ↙  ↘
+            let s2 = [ [[3,4,6],[1,2,4]], [[0,1,4],[4,5,8]], [[2,4,5],[4,6,7]], [[4,7,8],[0,3,4]] ] // s2 === strategy 2 depending on upper array
+            //           • • •   • • • (← SOME IS O, THEN CONTINUE "L" OR "TRIANGLE" RANDOMLY)
             setO.current.clear()
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
                 let success2 = false
-                
-
                 if (
                   rC.current[s[sI.current][0][0]].value === "O" &&
                   rC.current[s[sI.current][1][0]].value === "X" &&
                   (rC.current[s2[sI.current][0][0]].value === "O" || rC.current[s2[sI.current][0][1]].value === "O" || rC.current[s2[sI.current][0][2]].value === "O")
-                ) { // X NEXT TO THE RIGHT
+                ) {
                   set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
@@ -471,16 +468,12 @@ const Main = () => {
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  
-                  
                 }
-
-
                 else if (
                   rC.current[s[sI.current][0][0]].value === "O" &&
                   rC.current[s[sI.current][1][1]].value === "X" &&
                   (rC.current[s2[sI.current][1][0]].value === "O" || rC.current[s2[sI.current][1][1]].value === "O" || rC.current[s2[sI.current][1][2]].value === "O")
-                ) { // X NEXT TO THE LEFT
+                ) {
                   set2O.current.clear()
                   do {
                     s2I.current = Math.floor(Math.random() * 3)
@@ -493,14 +486,9 @@ const Main = () => {
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  
                 }
-
-
               }
             } while (success === false && setO.current.size < s.length)
-            
-
           }
 
           if ( // O BEGINS // 2nd MOVEMENT // O IS ON ANY CORNER & X RECT AWAY
@@ -509,20 +497,20 @@ const Main = () => {
             rC.current[4].value !== "O" &&
             rC.current.filter(e => e.value === "X").length === 1
           ) {
-            //console.log("ENTRO ACA !#!#!#")
-            //              R R               R R               R R               R R
-            let s  = [[[0],[5,7]],      [[2],[7,3]],      [[8],[3,1]],      [[6],[1,5]]] // s === strategy
-            //               ↓                 ↓                 ↓                 ↓
-            let s2 =     [[2,4,6],          [0,4,8],          [2,4,6],          [0,4,8]] // s2 === strategy 2 depending on upper array
+            // O - • /or/ O - • // •: TARGET PLACE
+            // - • X /or/ - • - // -: UNUSED
+            // • - - /or/ • X - //
+            //           O   X X
+            let s  = [ [[0],[5,7]], [[2],[7,3]], [[8],[3,1]], [[6],[1,5]] ] // s === strategy
+            //                ↓         ↓            ↓            ↓
+            let s2 =    [  [2,4,6],  [0,4,8],     [2,4,6],     [0,4,8] ] // s2 === strategy 2 depending on upper array
+            //              • • •
             setO.current.clear()
-            
             do {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
-                
                 let success2 = false
-
                 if (rC.current[s[sI.current][0][0]].value === "O" && (rC.current[s[sI.current][1][0]].value === "X" || rC.current[s[sI.current][1][1]].value === "X")) { // X IS RECT AWAY
                   set2O.current.clear()
                   do {
@@ -536,12 +524,9 @@ const Main = () => {
                       }
                     }
                   } while (success2 === false && set2O.current.size < 3)
-                  
-                  
                 }
               }
             } while (success === false && setO.current.size < s.length)
-            
           }
 
           if ( // O BEGINS // 3rd MOVEMENT // O IS ON ANY CORNER & X RECT AWAY
@@ -1194,7 +1179,6 @@ const Main = () => {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
-
                 if (
                   rC.current[s[sI.current][0][0]].value === "X" &&
                   rC.current[s[sI.current][0][1]].value === "X" &&
@@ -1204,10 +1188,8 @@ const Main = () => {
                   rC.current[s[sI.current][1][1]].value = "O"
                   success = true
                 }
-
               }
             } while (success === false && setO.current.size < s.length)
-            
           }
 
 
@@ -1220,11 +1202,7 @@ const Main = () => {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
-                //console.log("set 2 (ejecutando) setO.current.size", setO.current.size)
-                if (executeRandomStrategy(s[sI.current])) {
-                  console.log("set 2 RANDOM STRATEGY EJECUTADA, index 2:", s[sI.current])
-                  success = true
-                }
+                if (executeRandomStrategy(s[sI.current])) success = true
               }
             } while (success === false && setO.current.size < s.length)
 
@@ -1234,14 +1212,11 @@ const Main = () => {
             while (success === false) {
               AIRandomGridIndex.current = Math.floor(Math.random() * 9)
               if (rC.current[AIRandomGridIndex.current].value === "") {
-                console.log("LAST MOVEMENT")
                 rC.current[AIRandomGridIndex.current].value = "O"
                 success = true
               }
             }
           }
-
-
 
           if (allowFXSound.current) playSound({ file: aF.Omove })
           success = true
@@ -1256,10 +1231,7 @@ const Main = () => {
 
   const userAction = async ( target: any) => {
     if (target !== undefined && rC.current[target].value === "") {
-      //console.log("while se ejecuto func de user, valid click")
       rC.current[target].value = "X"
-      //Omove.play()
-      //Xmove.play()
       if (allowFXSound.current) playSound({ file: aF.Xmove })
       setUserPlaying(false)
       validClick.current = true
@@ -1338,10 +1310,6 @@ const Main = () => {
         if (allowFXSound.current) playSound({ file: actionPoints === 100 ? aF.revealedOne : aF.revealedTwo, pitch: 300 })
     }, actionPoints === 100 ? 1000 : 900)
 
-    // console.log("123 actionPoints", actionPoints)
-    // if (actionPoints === 100) setTimeout(() => { $(`#${array[2].id}`).css("background", "blue") }, 1000)
-    // else setTimeout(() => { $(`#${array[2].id}`).css("background", "gray") }, 900)
-
     setTimeout(() => {
       let copyPoints: pointsI = {...points}
       copyPoints[letter] = copyPoints[letter] + actionPoints
@@ -1359,7 +1327,7 @@ const Main = () => {
     setTimeout(() => {
       let min // MINUTES
       let sec // SECONDS
-      let mss // MILLISECONDS
+      let mss // file.i
       let mn = document.getElementById('timer_minutes')
       if (mn !== null) min = mn.innerHTML
       let sc = document.getElementById('timer_seconds')
@@ -1517,12 +1485,6 @@ const Main = () => {
   }
 
   const softResetGame = () => {
-    // XfinalMin = 0
-    // XfinalSec = 0
-    // XfinalMs = 0
-    // OfinalMin = 0
-    // OfinalSec = 0
-    // OfinalMs = 0
     addFlowPopUp()
     stopTimer()
     resetTimer()
@@ -1544,29 +1506,6 @@ const Main = () => {
 
   const hardResetGame = () => {
     score.current = []
-//   score.current = [
-//   {
-//     id: 0,
-//     timeX: `10:34:112`,
-//     scoreX: 100,
-//     X: "✔️",
-//     O: "❌",
-//     scoreO: 0,
-//     timeO: `00:00:000`
-//   },
-//   {
-//     id: 1,
-//     timeX: `00:00:000`,
-//     scoreX: 0,
-//     X: "❌",
-//     O: "✔️",
-//     scoreO: 100,
-//     timeO: `10:34:112`
-//   }
-// ]
-
-
-
     roundEnd.current = false
     setWinnerGameState("")
     setWinnerRoundState("")
@@ -1585,34 +1524,8 @@ const Main = () => {
 
     rC.current = Array.from({length: 9}, (e,i) => ({ id: i, value: '' })) // rowsAndColumns
 
-    // CONTINUE CHECK OF DOUBLE SOUND GAME WHEN 200 POINTS
-// rC.current = [ // rowsAndColumns
-// { id: 0, value: 'X' },
-// { id: 1, value: 'O' },
-// { id: 2, value: 'X' },
-// { id: 3, value: 'X' },
-// { id: 4, value: 'X' },
-// { id: 5, value: 'O' },
-// { id: 6, value: '' },
-// { id: 7, value: 'O' },
-// { id: 8, value: 'O' }
-// ]
-
-// rC.current = [ // rowsAndColumns
-// { id: 0, value: 'X' },
-// { id: 1, value: '' },
-// { id: 2, value: 'X' },
-// { id: 3, value: 'O' },
-// { id: 4, value: 'X' },
-// { id: 5, value: 'O' },
-// { id: 6, value: 'O' },
-// { id: 7, value: 'X' },
-// { id: 8, value: 'O' }
-// ]
-
     clickBlocked.current = true
     setPoints({ "X": 0, "O": 0 });
-    //actionPoints = 0;
     roundEnd.current = false;
     winnerRound.current = ""
     setWinnerRoundState("")
@@ -1636,24 +1549,20 @@ const Main = () => {
     gameEndRoundsBoolean.current = false
     welcomeTicTacToe()
     .then((result) => {
-      //console.log("123123 result", result)
       if (result.isConfirmed) { // START USER
         if (allowFXSound.current) playSound({ file: aF.menu })
         selectDifficulty()
         .then((result) => {
           console.log("RESULT", result)
           if (result.isConfirmed) {
-            //setGameMode("easy")
             gameMode.current = "easy"
             selectNumberOfRoundsUser()
           }
           else if (result.isDenied) {
-            //setGameMode("hard")
             gameMode.current = "hard"
             selectNumberOfRoundsUser()
           }
           else if (result.isDismissed && typeof result.dismiss === "string" && result.dismiss === "cancel") {
-            //console.log("CANCELADO")
             gameMode.current = "nightmare"
             selectNumberOfRoundsUser()
           }
@@ -1664,17 +1573,14 @@ const Main = () => {
         selectDifficulty()
         .then((result) => {
           if (result.isConfirmed) {
-            //setGameMode("easy")
             gameMode.current = "easy"
             selectNumberOfRoundsAI()
           }
           else if (result.isDenied) {
-            //setGameMode("hard")
             gameMode.current = "hard"
             selectNumberOfRoundsAI()
           }
           else if (result.isDismissed && typeof result.dismiss === "string" && result.dismiss === "cancel") {
-            console.log("CANCELADO")
             gameMode.current = "nightmare"
             selectNumberOfRoundsAI()
           }
@@ -1690,12 +1596,11 @@ const Main = () => {
   }
 
   const buttonNewGameHandler = () => {
-    //stopConfetti()
     stopConfetti()
     if (allowFXSound.current) playSound({ file: aF.menu })
     removeFlowPopUp() // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
     removeButtonAnimation()
-    if (newGameStarted/*  || gameEndRoundsBoolean.current */) {
+    if (newGameStarted) {
       Swal.fire({
         title: `DO YOU WANT TO START A NEW GAME ?`,
         text: 'All points gonna be lost !..',
@@ -1710,17 +1615,14 @@ const Main = () => {
       .then((result) => {
         if (result.isConfirmed) {
           selectOptions() // CONFIRM NEW GAME
-          //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
         }
         else {
           addFlowPopUp() // ELSE CONTINUE GAME
-          //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
         }
       })
 
     } else {
       selectOptions() // WHEN NO CURRENT GAME
-      //showCountdownRound.current = true // ARREGLAR ESTO // ENABLES COUNTDOWN VISUALIZATION
     }
   }
 
@@ -1822,12 +1724,6 @@ const Main = () => {
     }, 3000)
   }
 
-  // let XfinalMin = 0
-  // let XfinalSec = 0
-  // let XfinalMs = 0
-  // let OfinalMin = 0
-  // let OfinalSec = 0
-  // let OfinalMs = 0
   let XfinalMin = useRef(0)
   let XfinalSec = useRef(0)
   let XfinalMs = useRef(0)
@@ -1878,35 +1774,21 @@ const Main = () => {
   sumTime()
 
   const checkGameEndByRounds = () => { // GAME END BY ROUNDS HANDLER
-    console.log("score.current.length", score.current)
-
     if (gameEndRoundsNumber.current === score.current.length ) { // GAME END BY ROUNDS
-      // gameEndRoundsBoolean.current = true;
-      // showCountdownRound.current = false // PREVENT DEFAULT NEXT ROUND COUNTDOWN
-
-      //gameEndRoundsBoolean.current = true;
       gameEndRoundsBoolean.current = true;
       showCountdownRound.current = false
       setNewGameStarted(false)
 
       setTimeout(() => {
         addButtonAnimation()
-        //gameEndRoundsBoolean.current = true;
-         // PREVENT DEFAULT NEXT ROUND COUNTDOWN
       }, 1800) // BUTTON SHAKE AFTER FINAL POPUP (1700ms)
-      //setShowCountdownRoundState(false)
 
-      //console.log("123123 333", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
       setTimeout(() => {
-
-        //console.log("123123", XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()))
         let XSumScore = score.current.reduce((partial, el) => partial + el.scoreX, 0)
         let OSumScore = score.current.reduce((partial, el) => partial + el.scoreO, 0)
         let XSumTime = parseInt(XfinalMin.current.toString().concat(XfinalSec.current.toString(), XfinalMs.current.toString()), 10)
         let OSumTime = parseInt(OfinalMin.current.toString().concat(OfinalSec.current.toString(), OfinalMs.current.toString()), 10)
 
-        //let finalWinner =
-        //setWinnerGameState(
         let finalWinner =
           XSumScore === OSumScore && XSumTime === OSumTime ?
           "TIED" : // WEIRD TIED :S
@@ -1935,18 +1817,6 @@ const Main = () => {
           else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound({ file: aF.tiedWeird }) // Tied by points & time & has at least a winning round, no way !
           else playSound({ file: aF.tied }) // Normal tied game
         }
-        
-
-        
-
-
-        
-        // do {
-        //   setTimeout(() => {
-        //     console.log("ABASDBASDASDASDASDASD")
-        //     //totalFire()
-        //   }, 1000)
-        // } while (gameEndRoundsBoolean.current)
 
         Swal.fire({
           title:
@@ -1958,25 +1828,25 @@ const Main = () => {
             `GAME END !\nTIED, INCREDIBLE !!`: // Tied by points & time & has at least a winning round, no way !
             `GAME END !\nTIED !`,
           html:
-            finalWinner === `XByTime` ? // CHECKED
+            finalWinner === `XByTime` ?
               `<div>
                 <div>You have tied in points, but you won by time !</div>
                 <div>Points: ${XSumScore}</div>
                 <div>Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}</div>
               </div>` :
-            finalWinner === `OByTime` ? // CHECKED
+            finalWinner === `OByTime` ?
               `<div>
                 <div>You have tied in points, but AI won by time !</div>
                 <div>Points: ${OSumScore}</div>
                 <div>Time: ${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}</div>
               </div>` :
-            finalWinner === `X` ? // CHECKED
+            finalWinner === `X` ?
               `<div>
                 <div>You have won by points !</div>
                 <div>Points: ${XSumScore}</div>
                 <div>Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}</div>
               </div>` :
-            finalWinner === `O` ? // CHECKED
+            finalWinner === `O` ?
               `<div>
                 <div>AI have won by points !</div>
                 <div>Points: ${OSumScore}</div>
@@ -2006,32 +1876,10 @@ const Main = () => {
           showConfirmButton: true,
           showDenyButton: false,
           showCancelButton: false,
-          //timer: 2000,
         })
-
-        //startConfetti()
-
       }, 1700) // WAITS FINAL TIME & POINTS TO UPDATE
-
-      // confetti({
-      //   particleCount: 100,
-      //   spread: 70,
-      //   origin: { y: 0.6 }
-      // });
-
-      //confetti()
-
-      //totalFire()
-
-
-
     }
   }
-
-
-  //console.log("123 score.current", score.current)
-  //console.log("123 rC", rC) // rowsAndColumns
-  //console.log("123 winnerRound.current", winnerRound.current) // rowsAndColumns
 
   let roundsValueLS: string | null = localStorage.getItem('roundsValue');
   if (roundsValueLS !== null) gameEndRoundsNumber.current = parseInt(roundsValueLS, 10)
@@ -2242,7 +2090,7 @@ const Main = () => {
       }
     })
   }
-  
+
   const handleBgValue = (value: string) => {
     clearTimeout(timeoutBG)
     setTimeoutBG(setTimeout(autoHideBG, 5000))
@@ -2294,8 +2142,6 @@ const Main = () => {
       })
     })
   },[])
-
-  //console.log("111 GAME MODE", gameMode)
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -2432,7 +2278,6 @@ const Main = () => {
             <div id={`evenTarget`} className={css.scoreTableScore}>SCORE</div>
             <div id={`evenTarget`} className={css.scoreTableTime}>TIME</div>
           </div>
-
           {
             score.current.map((e,i)=> {
               return (
@@ -2494,12 +2339,7 @@ const Main = () => {
               )
             })
           }
-
-
         </div>
-
-
-
           <div className={css.scoreBackgroundLight1}></div>
           <div className={css.scoreBackgroundLight2}></div>
           <div className={css.scoreBackgroundLight3}></div>
@@ -2534,10 +2374,6 @@ const Main = () => {
               </div>
             </div>
           </div>
-
-        
-
-
       </div>
 
       <div id={`divBGSlider`} className={css.sliderBGContainer}>
@@ -2633,90 +2469,9 @@ const Main = () => {
           null
         }
       </div>
-      
-        {/* <Button
-          focusRipple={false}
-          variant="outlined"
-          id={`mmb`}
-          onClick={() => {
-            setGameMode("easy")
-          }}
-        >
-          EASY MODE
-        </Button>
-
-        <Button
-          focusRipple={false}
-          variant="outlined"
-          id={`mmb`}
-          onClick={() => {
-            setGameMode("hard")
-          }}
-        >
-          HARD MODE
-        </Button> */}
-    
-    
-        {/* <Button
-          focusRipple={false}
-          variant="outlined"
-          id={`mmb`}
-          onClick={() => {
-            //soundsArray[aF.bG.i].start()
-            //soundsArray[aF.bG.i].start()
-
-            //contextArray[aF.bG.i].resume()
-            //playSound({ file: aF.bG, volume: 0.4, loop: true })
-
-            //soundsArray[aF.bG.i].start()
-
-            //contextArray[aF.bG.i].resume()
-            console.log("soundsArray 333", soundsArray)
-            //soundsArray[aF.bG.i].start()
-            //soundsArray[aF.bG.i].resume()            
-            //if (allowBgSound.current) playSound({ file: aF.bG, volume: 0.4, loop: true })
-            //soundsArray[aF.bG.i].start(0)
-
-          }}
-        >
-          TEST 1
-        </Button>
-        <Button
-          focusRipple={false}
-          variant="outlined"
-          onClick={() => {
-            //soundsArray[aF.bG.i].stop()
-            //soundsArray[aF.bG.i].close()
-            //soundsArray[aF.bG.i].pause()
-            //contextArray[aF.bG.i].suspend()
-
-            //contextArray[aF.bG.i].suspend()
-            //contextArray[aF.bG.i].close()
-            contextArray[aF.bG.i].close()
-            //soundsArray[aF.bG.i].stop()
-
-            //soundsArray[aF.bG.i].stop()
-            //contextArray[aF.bG.i].close()
-          }}
-        >
-          TEST 2
-        </Button>
-        <Button
-          focusRipple={false}
-          variant="outlined"
-          onClick={() => {
-            //source.current.stop()
-            //source.current.resume()
-            //source.current.resume()
-            //source.current.start(0)
-            //stopConfetti()
-          }}
-        >
-          TEST 3
-        </Button> */}
-        <div>
-          This App it's currently on development. (26/12/2023)  {/* So you will see my work done in real time.. day by day.. */}
-        </div>
+      <div>
+        This App it's currently on development. (26/12/2023)
+      </div>
     </div>
   );
 }
