@@ -29,11 +29,6 @@
   padding-left: 22px !important;
 }
 
-/* .testCSS {
-  display: flex;
-  background: red;
-} */
-
 /* SMALL DEVICES -> WIDTH MIN THAN 300 (GAME WIDTH) */
 @media screen
 and (orientation: portrait)

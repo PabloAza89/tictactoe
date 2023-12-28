@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { Route, Routes, useMatch, useLocation } from "react-router-dom";
 import $ from 'jquery';
 import Main from "./components/Main/Main";
+import Loading from "./components/Loading/Loading";
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           element={
             <>
               <Main />
+              <Loading />
               {/* <ScoreTable score={score} /> */}
             </>
           }

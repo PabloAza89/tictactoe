@@ -50,12 +50,6 @@
   padding-right: 0px !important;
 }
 
-.noAnimation {
-  animation-name: onone;
-  animation-duration: 0s;
-  animation-iteration-count: none;
-}
-
 .shakeAnimation {
   animation-name: shake;
   animation-duration: 2.5s;
