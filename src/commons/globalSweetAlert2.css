@@ -1,3 +1,4 @@
+
 .swal2-popup .swal2-styled:focus {
   box-shadow: none !important;
   -webkit-touch-callout: none !important;
@@ -26,4 +27,27 @@
   padding-left: 0px !important;
   padding-right: 0px !important;
   padding-left: 22px !important;
+}
+
+/* .testCSS {
+  display: flex;
+  background: red;
+} */
+
+/* SMALL DEVICES -> WIDTH MIN THAN 300 (GAME WIDTH) */
+@media screen
+and (orientation: portrait)
+and (max-device-width: 300px),
+screen
+and (orientation: landscape)
+and (max-device-height: 300px) {
+  .swal2-title { font-size: 27px }
+  .swal2-html-container { font-size: 17px !important }
+}
+
+/* SMALL DEVICES -> WIDTH MIN THAN 450 */
+@media screen
+and (orientation: portrait)
+and (max-device-width: 450px) {
+  .columnPopUp { flex-direction: column }
 }

@@ -1,5 +1,6 @@
 .background {
-  background: lightblue;
+  /* background: lightblue; */
+  background: gray; /* DEV */
   display: flex;
   position: relative;
   flex-direction: column;
@@ -548,12 +549,25 @@ div:nth-child(even of [id*="evenTarget"]) {
   z-index: 3001;
   min-width: 30px !important;
   width: 30px !important;
-  min-height: 120px !important;
-  height: 120px !important;
+  /* min-height: 110px !important;
+  height: 110px !important; */
   color: darkblue;
   border-radius: 0px;
   /* background: lightblue; */ /* DEV */
+  /* background: violet; */
+}
+
+.buttonTypo {
+  display: flex;
+  align-items: center;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  transform: rotate(270deg);
+  height: 30px;
+  white-space: nowrap;
   background: violet;
+  padding: 0px 8px;
 }
 
 #bgAndSliderContainer {
@@ -661,15 +675,8 @@ div:nth-child(even of [id*="evenTarget"]) {
   padding: 0px !important;
 }
 
-.buttonTypo {
-  display: flex;
-  align-items: center;
-  font-family: Roboto;
-  font-size: 14px;
-  font-weight: 500;
-  transform: rotate(270deg);
-  height: 30px;
-  white-space: nowrap
+.buttonTypo:after {
+  content: 'TOTAL SCORE';
 }
 
 /* SMALL DEVICES -> WIDTH MIN THAN 370 (GAME WIDTH) */
@@ -680,19 +687,33 @@ screen
 and (orientation: landscape)
 and (max-device-height: 370px) {
   .timer, .rounds {
-    width: calc((100vw - 110px) / 2);
+    width: calc((100% - 110px) / 2);
     justify-content: center;
   }
 }
 
-/* SMALL DEVICES -> HEIGHT MIN THAN 370 (GAME WIDTH) */
+/* SMALL DEVICES -> HEIGHT MIN THAN 700 */
 @media screen
 and (orientation: portrait)
 and (max-device-height: 700px),
 screen
 and (orientation: landscape)
 and (max-device-width: 700px) {
-  #buttonShow {
-    top: 2px
-  }
+  #buttonShow { top: 2px }
+  .buttonTypo:after { content: 'SCORE' }
+  #buttonShow { top: 15px }
+}
+
+/* SMALL DEVICES -> WIDTH MIN THAN 450 */
+@media screen
+and (orientation: portrait)
+and (max-device-width: 450px),
+screen
+and (orientation: landscape)
+and (max-device-height: 450px) {
+  .background { padding-top: 20px; padding-bottom: 30px; }
+  .sliderBGContainer { position: fixed }
+  #bgAndSliderContainer { position: fixed }
+  .sliderFXContainer { position: fixed }
+  #fxAndSliderContainer { position: fixed }
 }

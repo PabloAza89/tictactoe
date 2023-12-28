@@ -29,8 +29,8 @@ const Main = () => {
       text: 'Please, select who start first..',
       heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
       showDenyButton: true,
-      confirmButtonText: 'LET ME START !',
-      denyButtonText: `    AI STARTS !   `,
+      confirmButtonText: `<div style="width:125px">LET ME START !</div>`,
+      denyButtonText: `<div style="width:125px">AI STARTS !</div>`,
       confirmButtonColor: '#800080', // LEFT OPTION
       denyButtonColor: '#008000', // RIGHT OPTION
     })
@@ -42,15 +42,15 @@ const Main = () => {
       heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
       showDenyButton: true,
       showCancelButton: true,
-      //confirmButtonText: '      EASY      ',
       confirmButtonText: `<div style="width:97px">EASY</div>`,
       denyButtonText: `<div style="width:97px">HARD</div>`,
-      /* cancelButtonText: `NIGHTMARE`, */
       cancelButtonText: `<div style="width:97px">NIGHTMARE</div>`,
-      //confirmButtonColor: '#0000ff', // LEFT OPTION
       confirmButtonColor: '#6060e0', // LEFT OPTION
       denyButtonColor: '#ff4500', // CENTER OPTION
       cancelButtonColor: '#808000', // RIGHT OPTION
+      customClass: {
+        actions: 'columnPopUp'
+      }
     })
   }
 
@@ -1495,13 +1495,13 @@ const Main = () => {
     removeButtonAnimation()
     if (newGameStarted) {
       Swal.fire({
-        title: `DO YOU WANT TO START A NEW GAME ?`,
-        text: 'All points gonna be lost !..',
+        title: `DO YOU WANT TO START A NEW GAME ?`,
+        text: 'All points gonna be lost !..',
         heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
         icon: 'info',
         showDenyButton: true,
-        confirmButtonText: 'START NEW GAME !',
-        denyButtonText: `CONTINUE PLAYING !`,
+        confirmButtonText: `<div style="width:167px">START NEW GAME !</div>`,
+        denyButtonText: `<div style="width:167px">CONTINUE PLAYING !</div>`,
         confirmButtonColor: '#800080', // LEFT OPTION
         denyButtonColor: '#008000', // RIGHT OPTION
       })
@@ -2016,7 +2016,6 @@ const Main = () => {
   const [ timeoutBG, setTimeoutBG ] = useState<ReturnType<typeof setTimeout>>()
   const [ timeoutFX, setTimeoutFX ] = useState<ReturnType<typeof setTimeout>>()
 
-
   useEffect(() => { // LOAD ALL SOUNDS
     let fileCounter: number = 0;
     Object.keys(aF).forEach((e: any, i: any) => {
@@ -2149,9 +2148,7 @@ const Main = () => {
         id={css.buttonShow}
         onClick={() => setScoreShown(!scoreShown) }
       >
-        <div className={css.buttonTypo}>
-          { `TOTAL SCORE` }
-        </div>
+        <div className={css.buttonTypo} />
       </Button>
       <div
         className={css.scoreTable}
@@ -2285,7 +2282,6 @@ const Main = () => {
           <MusicNoteIcon />
         </Button>
       </div>
-
       <div id={css.bgAndSliderContainer}>
         <Button
           id={css.buttonMute}
@@ -2359,9 +2355,9 @@ const Main = () => {
           null
         }
       </div>
-      <div>
+      {/* <div>
         This App it's currently on development. (26/12/2023)
-      </div>
+      </div> */}
     </div>
   );
 }
