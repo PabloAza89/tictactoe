@@ -1,6 +1,6 @@
 .background {
-  /* background: lightblue; */
-  background: gray; /* DEV */
+  background: lightblue;
+  /* background: gray; */ /* DEV */
   display: flex;
   position: relative;
   flex-direction: column;
@@ -9,6 +9,10 @@
   justify-content: center;
   align-items: center;
   min-height: 450px;
+
+  padding-top: 20px;
+  padding-bottom: 30px;
+
 }
 
 .nextGameIn {
@@ -566,7 +570,8 @@ div:nth-child(even of [id*="evenTarget"]) {
 
 #bgAndSliderContainer {
   display: flex;
-  position: absolute;
+  /* position: absolute; */
+  position: fixed;
   z-index: 1;
   top: 5px;
   left: 5px;
@@ -574,7 +579,8 @@ div:nth-child(even of [id*="evenTarget"]) {
 
 #fxAndSliderContainer {
   display: flex;
-  position: absolute;
+  /* position: absolute; */
+  position: fixed;
   z-index: 1;
   top: 45px;
   left: 5px;
@@ -610,7 +616,8 @@ div:nth-child(even of [id*="evenTarget"]) {
 
 .sliderBGContainer {
   display: flex;
-  position: absolute;
+  /* position: absolute; */
+  position: fixed;
   top: 5px;
   left: -117px;
   width: 190px !important;
@@ -623,7 +630,8 @@ div:nth-child(even of [id*="evenTarget"]) {
 
 .sliderFXContainer {
   display: flex;
-  position: absolute;
+  /* position: absolute; */
+  position: fixed;
   top: 45px;
   left: -117px;
   width: 190px !important;
@@ -673,17 +681,40 @@ div:nth-child(even of [id*="evenTarget"]) {
   content: 'TOTAL SCORE';
 }
 
-/* TEST */
-.backgroundd {
+/* BEGIN LOADING SPINNER */
+
+.backgroundSpinner {
   background: rgba(0, 0, 0, 0.3);
   display: flex;
+  /* display: none; */
   position: fixed;
-  width: 100vw;
-  height: 100vh;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  min-height: 270px;
   animation-name: blinkBG;
   animation-duration: 1.5s;
   animation-iteration-count: infinite;
-  z-index: 50000;
+  z-index: 50000 !important;
+}
+
+.spinnerBottomText {
+  justify-content: center;
+  display: flex;
+  /* background: orangered; */ /* DEV */
+  --width: 130px;
+  width: var(--width);
+  height: 40px;
+  position: absolute;
+  font-size: 25px;
+  font-weight: 700;
+  color: gainsboro;
+  left: calc(50% - calc(var(--width)/2));
+  /* top: 50%; */
+  top: calc(50% + 80px);
+  /* transform: translate(-50%, -50%); */
+
 }
 
 #spinner {
@@ -699,20 +730,21 @@ div:nth-child(even of [id*="evenTarget"]) {
 
 .spinner {
   display: flex;
-  position: fixed;
-  /* background: rgba(0, 0, 0, 0.5); */
-  width: 100px;
-  height: 100px;
-  top: calc(50% - 50px);
-  left: calc(50% - 50px);
+  /* position: fixed; */
+  position: relative;
+  --widthHeight: 180px;
+  width: var(--widthHeight);
+  height: var(--widthHeight);
+  top: calc(50% - calc(var(--widthHeight)/2));
+  left: calc(50% - calc(var(--widthHeight)/2));
 }
 
 @keyframes blinkBG {
-  0% { background: rgba(0, 0, 0, 0.3) }
-  50% { background: rgba(0, 0, 0, 0.2) }
-  100% { background: rgba(0, 0, 0, 0.3) }
+  0% { background: rgba(0, 0, 0, 0.2) }
+  50% { background: rgba(0, 0, 0, 0.1) }
+  100% { background: rgba(0, 0, 0, 0.2) }
 }
-/* TEST */
+/* END LOADING SPINNER */
 
 /* SMALL DEVICES -> WIDTH MIN THAN 370 (GAME WIDTH) */
 @media screen
@@ -740,7 +772,7 @@ and (max-device-width: 700px) {
 }
 
 /* SMALL DEVICES -> WIDTH MIN THAN 450 */
-@media screen
+/* @media screen
 and (orientation: portrait)
 and (max-device-width: 450px),
 screen
@@ -751,4 +783,4 @@ and (max-device-height: 450px) {
   #bgAndSliderContainer { position: fixed }
   .sliderFXContainer { position: fixed }
   #fxAndSliderContainer { position: fixed }
-}
+} */
