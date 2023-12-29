@@ -216,6 +216,9 @@
   font-size: 32px;
   text-align: center;
   padding-top: 4px;
+  line-height: 45px;
+  /* background: red; */
+  /* text-justify: auto; */
 }
 
 .points {
@@ -711,10 +714,7 @@ div:nth-child(even of [id*="evenTarget"]) {
   font-weight: 700;
   color: gainsboro;
   left: calc(50% - calc(var(--width)/2));
-  /* top: 50%; */
   top: calc(50% + 80px);
-  /* transform: translate(-50%, -50%); */
-
 }
 
 #spinner {
