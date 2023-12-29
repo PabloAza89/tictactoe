@@ -8,6 +8,8 @@ import { easings } from '../../commons/easingsCSS';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ReactComponent as FXSvg } from '../../images/fxIcon.svg';
 import Slider from '@mui/material/Slider';
 import Swal from 'sweetalert2';
@@ -96,7 +98,6 @@ const Main = () => {
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-        //if (allowFXSound.current) playSound({ file: aF.menu })
         setTimeout(function() {
           addButtonAnimation()
         },300);
@@ -120,7 +121,6 @@ const Main = () => {
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-        //if (allowFXSound.current) playSound({ file: aF.menu })
         setTimeout(function() {
           addButtonAnimation()
         },300);
@@ -145,6 +145,7 @@ const Main = () => {
   const FXSoundValueState = useSelector((state: { FXSoundValue: number }) => state.FXSoundValue)
 
   const [ scoreShown, setScoreShown ] = useState<boolean>(false)
+  const [ aboutShown, setAboutShown ] = useState<boolean>(false)
   const [ BGMusicShown, setBGMusicShown ] = useState<boolean>(false)
   const [ FXMusicShown, setFXMusicShown ] = useState<boolean>(false)
   let clickBlocked = useRef(true)
@@ -2113,6 +2114,11 @@ const Main = () => {
     animation_loop = setInterval(animate_to, 5)
   }
 
+/*   const func1 = () => {
+    $(`[class*="containerAbout"]`)
+      .css("transform", "rotateY(180deg)")
+  } */
+
   return (
     <div className={`${css.background} ${com.noSelect}`}>
       <div className={css.backgroundSpinner}>
@@ -2234,6 +2240,30 @@ const Main = () => {
         onClick={() => setScoreShown(!scoreShown) }
       >
         <div className={css.buttonTypo} />
+      </Button>
+      <Button
+        className={`buttonShowAbout`}
+        id={css.buttonShowAbout}
+        onClick={() => {
+          setAboutShown(!aboutShown)
+          console.log("111 clicked")
+          /* .container:hover {
+            transform: rotateY(180deg);
+          } */
+          //$(`.containerAbout`)
+          
+            aboutShown ?
+            $(`[class*="containerAbout"]`)
+              .css("transform", "rotateY(0deg)") :
+            $(`[class*="containerAbout"]`)
+              .css("transform", "rotateY(180deg)")
+          
+        }}
+      >
+        <div className={css.containerAbout}>
+          <HelpOutlineIcon className={css.icon1} />
+          <ErrorOutlineIcon className={css.icon2} />
+        </div>
       </Button>
       <div
         className={css.scoreTable}
