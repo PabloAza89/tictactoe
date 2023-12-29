@@ -1519,7 +1519,8 @@ const Main = () => {
     }
   }
 
-  let offset = useRef(0);
+  //let offset = useRef(0);
+  let offset = useRef(1803851887225);
   let paused = useRef(true);
 
   render();
@@ -1554,14 +1555,28 @@ const Main = () => {
 
   function render() {
 
-    var value = paused.current ? offset.current : Date.now() + offset.current;
+    //var value = paused.current ? offset.current : Date.now() + offset.current;
+    //var value = paused.current ? offset.current : Date.now() + 3540000 + offset.current; // DEV, TO FAKE TIME // 59:50:000
+    var value = paused.current ? offset.current : Date.now() + 3595000 + offset.current; // DEV, TO FAKE TIME // 59:50:000
+    
 
-    let miliseconds = document.getElementById('timer_ms')
-    if (miliseconds !== null) miliseconds.textContent = format(value, 1, 1000, 3);
+    let milliseconds = document.getElementById('timer_ms')
+    if (milliseconds !== null) milliseconds.textContent = format(value, 1, 1000, 3);
     let seconds = document.getElementById('timer_seconds')
     if (seconds !== null) seconds.textContent = format(value, 1000, 60, 2);
     let minutes = document.getElementById('timer_minutes')
     if (minutes !== null) minutes.textContent = format(value, 60000, 60, 2);
+
+    if (minutes !== null && seconds !== null && milliseconds !== null) {
+      //console.log("seconds", seconds.textContent)
+      if (
+        minutes.textContent === '59' &&
+        seconds.textContent === '59' &&
+        milliseconds.textContent === '999'
+      ) {
+        console.log("REACHED")
+      }
+    }
 
     if(!paused.current) requestAnimationFrame(render);
   }
@@ -2037,13 +2052,13 @@ const Main = () => {
             allSoundsLoaded.current = true
             if (allowBgSound.current) playBackgroundSong()
             setTimeout(() => {
-              $(`[class*="App_background"]`)
-                .css("overflow-y", "visible")
                 if (bottomText) bottomText.innerHTML = "Loaded."
             }, 200)
             setTimeout(() => {
               $(`[class*="backgroundSpinner"]`)
                 .css("display", "none")
+              $(`[class*="App_background"]`)
+                .css("overflow-y", "visible")
             }, 800)
           }
         })
