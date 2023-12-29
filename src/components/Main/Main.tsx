@@ -55,6 +55,7 @@ const Main = () => {
   }
 
   const selectNumberOfRounds = () => {
+    if (allowFXSound.current) playSound({ file: aF.menu })
     return Swal.fire({
       title: "Select number of rounds:",
       input: "select",
@@ -95,7 +96,7 @@ const Main = () => {
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-        if (allowFXSound.current) playSound({ file: aF.menu })
+        //if (allowFXSound.current) playSound({ file: aF.menu })
         setTimeout(function() {
           addButtonAnimation()
         },300);
@@ -119,7 +120,7 @@ const Main = () => {
         }, 4300) // SYNC WITH POP-UP CLOSES
       }
       else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-        if (allowFXSound.current) playSound({ file: aF.menu })
+        //if (allowFXSound.current) playSound({ file: aF.menu })
         setTimeout(function() {
           addButtonAnimation()
         },300);
@@ -1226,11 +1227,9 @@ const Main = () => {
         setWinnerRoundState(`${letter}`) // SYNC WITH POP-UP
       }, 300)
     }, 1200)
-
   }
 
   const updateScore = () => {
-
     setTimeout(() => {
       let min // MINUTES
       let sec // SECONDS
@@ -1244,13 +1243,14 @@ const Main = () => {
 
       score.current.push({
         id: score.current.length,
-        //timeX: winnerRound.current === "X" || winnerRound.current === "TIED" ? `${min}:${sec}:339` : `00:00:000`, // FAKE MS FOR TEST (TIED BY POINTS & TIME)
+        //timeX: winnerRound.current === "X" || winnerRound.current === "TIED" ? `${min}:${sec}:555` : `00:00:000`, // FAKE MS FOR TEST (TIED BY POINTS & TIME) // WEIRD TIED
         timeX: winnerRound.current === "X" || winnerRound.current === "TIED" ? `${min}:${sec}:${mss}` : `00:00:000`,
         scoreX: winnerRound.current === "X" ? actionPoints : 0,
         X: winnerRound.current === "TIED" ? "➖" : winnerRound.current === "X" ? "✔️" : "❌",
         O: winnerRound.current === "TIED" ? "➖" : winnerRound.current === "O" ? "✔️" : "❌",
         scoreO: winnerRound.current === "O" ? actionPoints : 0,
-        timeO: winnerRound.current === "O" || winnerRound.current === "TIED" ? `${min}:${sec}:${mss}` : `00:00:000`,
+        //timeO: winnerRound.current === "O" || winnerRound.current === "TIED" ? `${min}:${sec}:555` : `00:00:000` // FAKE MS FOR TEST (TIED BY POINTS & TIME) // WEIRD TIED
+        timeO: winnerRound.current === "O" || winnerRound.current === "TIED" ? `${min}:${sec}:${mss}` : `00:00:000`
       })
     }, 1200) // SYNC WITH HIGHLIGHTER FUNC UPDATE
   }
@@ -1480,7 +1480,7 @@ const Main = () => {
         })
       }
       else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-        if (allowFXSound.current) playSound({ file: aF.menu })
+        //if (allowFXSound.current) playSound({ file: aF.menu })
         setTimeout(function() {
           addButtonAnimation()
         },300); // NECESSARY FOR ADD ANIMATION WHEN USER PRESS SCAPE.. DON'T ASK WHY.
@@ -1491,6 +1491,7 @@ const Main = () => {
   const buttonNewGameHandler = () => {
     stopConfetti()
     if (allowFXSound.current) playSound({ file: aF.menu })
+    //if (allowFXSound.current) playSound({ file: aF.menu })
     removeFlowPopUp() // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
     removeButtonAnimation()
     if (newGameStarted) {
@@ -1507,6 +1508,7 @@ const Main = () => {
       })
       .then((result) => {
         if (result.isConfirmed) {
+          if (allowFXSound.current) playSound({ file: aF.menu })
           selectOptions() // CONFIRM NEW GAME
         }
         else {
@@ -1554,8 +1556,8 @@ const Main = () => {
 
   function render() {
 
-    //var value = paused.current ? offset.current : Date.now() + offset.current;
-    var value = paused.current ? offset.current : Date.now() + 3595000 + offset.current; // DEV, TO FAKE TIME // 59:55:000
+    var value = paused.current ? offset.current : Date.now() + offset.current;
+    //var value = paused.current ? offset.current : Date.now() + 3595000 + offset.current; // ONLY FOR DEV, TO FAKE TIME // 59:55:000
 
     let milliseconds = document.getElementById('timer_ms')
     if (milliseconds !== null) milliseconds.textContent = format(value, 1, 1000, 3);
@@ -1717,17 +1719,18 @@ const Main = () => {
           addFinalWinnerChangeColor()
         }, 200) // DELAY WAITS FOR FINAL POPUP
 
-
         if (finalWinner === "X") startConfetti()
 
         if (allowFXSound.current) {
           if (finalWinner === "X") playSound({ file: aF.taDah, pitch: 100 }); // X win entire game
           else if (finalWinner === "O") playSound({ file: aF.looser, pitch: 125 }) // O win entire game
           else if (finalWinner === "XByTime") playSound({ file: aF.XTime }) // X win entire game by time
-          else if (finalWinner === "OByTime") playSound({ file: aF.OTime }) // O win entire game by time
-          else if (score.current.some(e => e.X === "✔️" || e.O === "✔️")) playSound({ file: aF.tiedWeird }) // Tied by points & time & has at least a winning round, no way !
+          else if (finalWinner === "OByTime") playSound({ file: aF.OTime }) // O win entire game by time //                                                                     If tied, the same time is added for both teams.
+          else if (score.current.filter(e => e.timeX !== '59:59:999' && e.timeO !== '59:59:999').some(e => e.X === "✔️" || e.O === "✔️")) playSound({ file: aF.tiedWeird }) // Tied by points & time & has at least a winning round, no way !
           else playSound({ file: aF.tied }) // Normal tied game
         }
+
+        console.log("111 score.current", score.current)
 
         Swal.fire({
           title:
@@ -1735,7 +1738,7 @@ const Main = () => {
             `GAME END !\nYOU WIN !` :
             finalWinner === "OByTime" || finalWinner === "O" ?
             `GAME END !\nAI WIN !` :
-            score.current.some(e => e.X === "✔️" || e.O === "✔️") ? // Check if tied by points & time & has at least a winning round, no way !
+            score.current.filter(e => e.timeX !== '59:59:999' && e.timeO !== '59:59:999').some(e => e.X === "✔️" || e.O === "✔️") ? // Check if tied by points & time & has at least a winning round, no way !
             `GAME END !\nTIED, INCREDIBLE !!`: // Tied by points & time & has at least a winning round, no way !
             `GAME END !\nTIED !`,
           html:
@@ -1763,13 +1766,13 @@ const Main = () => {
                 <div>Points: ${OSumScore}</div>
                 <div>Time: ${OfinalMin.current.toString().padStart(2,'0')}:${OfinalSec.current.toString().padStart(2,'0')}:${OfinalMs.current.toString().padStart(3,'0')}</div>
               </div>` :
-            score.current.some(e => e.X === "✔️" || e.O === "✔️") ? // CHECK IF TIED BY POINTS & TIME HAS AT LEAST A WINNING ROUND
+            score.current.filter(e => e.timeX !== '59:59:999' && e.timeO !== '59:59:999').some(e => e.X === "✔️" || e.O === "✔️") ? // CHECK IF TIED BY POINTS & TIME HAS AT LEAST A WINNING ROUND // ↓↓↓ no way ! ↓↓↓
               `<div>
                 <div>The game is tied, this is really incredible !!</div>
                 <div>Tied by points & time !!!</div>
                 <div>Points: ${XSumScore}</div>
                 <div>Time: ${XfinalMin.current.toString().padStart(2,'0')}:${XfinalSec.current.toString().padStart(2,'0')}:${XfinalMs.current.toString().padStart(3,'0')}</div>
-              </div>` : // ↓↓↓ CHECKED, no way ! ↓↓↓
+              </div>` :
               `<div>
                 <div>The game is tied !</div>
                 <div>Tied by points & time !</div>
@@ -2123,6 +2126,7 @@ const Main = () => {
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
         onClick={() => {
+          //if (allowFXSound.current) playSound({ file: aF.menu })
           buttonNewGameHandler()
         }}
       >
@@ -2436,9 +2440,6 @@ const Main = () => {
           null
         }
       </div>
-      {/* <div>
-        This App it's currently on development. (26/12/2023)
-      </div> */}
     </div>
   );
 }
