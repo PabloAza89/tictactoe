@@ -2,24 +2,20 @@ import css from './LoadingCSS.module.css';
 
 const Loading = () => {
 
-  window.onload = function(){
+  function BBB(test: any){
 
-    let spinner = (document.getElementById("spinner") as HTMLCanvasElement)
-    
+    let spinner = (document.getElementById("spinner") as HTMLCanvasElement)    
 
-    //let ctx: CanvasRenderingContext2D;
-    let width: any;
-    let height: any;
+    let ctx = spinner.getContext("2d");
+    let width: any = spinner!.width;
+    let height: any = spinner!.height;
+    //width = spinner!.width;
+    //height = spinner!.height;
 
-      let ctx = spinner!.getContext("2d");
-      width = spinner!.width;
-      height = spinner!.height;
-    
-      
-      
+
       let degrees = 0;
       let new_degrees = 0;
-      let difference = 0;
+      //let difference = 0;
       let color = "turquoise";
       let bgcolor = "#222";
       let text;
@@ -50,9 +46,12 @@ const Loading = () => {
       
       function draw() {
         if (typeof animation_loop != undefined) clearInterval(animation_loop);
-        new_degrees = 360;
-        difference = new_degrees - degrees;
-        animation_loop = setInterval(animate_to, 10000/difference);
+        //new_degrees = 360;
+        //new_degrees = 180;
+        new_degrees = test;
+        //difference = new_degrees - degrees;
+        //animation_loop = setInterval(animate_to, 10000/difference);
+        animation_loop = setInterval(animate_to, 1);
       }
       
       function animate_to() {
@@ -66,7 +65,13 @@ const Loading = () => {
       }
       
       draw();
-  }
+   }
+
+   //BBB()
+
+   setTimeout(() => {
+    BBB(100)
+   }, 2000)
 
   return (
     <div className={css.background}>
@@ -76,3 +81,4 @@ const Loading = () => {
 }
 
 export default Loading;
+

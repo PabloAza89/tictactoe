@@ -2016,25 +2016,122 @@ const Main = () => {
   const [ timeoutBG, setTimeoutBG ] = useState<ReturnType<typeof setTimeout>>()
   const [ timeoutFX, setTimeoutFX ] = useState<ReturnType<typeof setTimeout>>()
 
+  let filePercentage: number = 0;
+  //let filePercentage = useRef<number>(0);
+  //let new_degrees = 0;
+  let degrees = 0;
+  let new_degrees = 0;
+  let difference = new_degrees - degrees;
+
   useEffect(() => { // LOAD ALL SOUNDS
     let fileCounter: number = 0;
-    Object.keys(aF).forEach((e: any, i: any) => {
-      loadAllSounds({ file: aF[e] })
-      .then(() => {
-        fileCounter += 1
-      })
-      .then(() => {
-        if (fileCounter === Object.keys(aF).length) {
-          allSoundsLoaded.current = true
-          if (allowBgSound.current) playBackgroundSong()
-        }
-      })
+    //let filePercentage: number = 0;
+    Object.keys(aF).forEach(async (e: any, i: any) => {
+      
+      setTimeout(() => {
+        loadAllSounds({ file: aF[e] })
+        .then(() => {
+          
+            console.log("FILE NUMBER", fileCounter)
+            fileCounter += 1
+            //filePercentage += 19
+            new_degrees += 19
+           // degrees = filePercentage
+            //BBB(100)
+            BBB()
+          
+          
+        })
+        .then(() => {
+          if (fileCounter === Object.keys(aF).length) {
+            allSoundsLoaded.current = true
+            if (allowBgSound.current) playBackgroundSong()
+          }
+        })
+      }, i * 1500)
     })
   // eslint-disable-next-line
   },[])
 
+  function BBB(){
+
+    let spinner = (document.getElementById("spinner") as HTMLCanvasElement)
+
+    let ctx = spinner.getContext("2d");
+    let width: any = spinner!.width;
+    let height: any = spinner!.height;
+    //width = spinner!.width;
+    //height = spinner!.height;
+
+
+      //let degrees = filePercentage;
+      //let degrees = 0;
+      //let new_degrees = 0;
+      //let difference = 0;
+      let color = "turquoise";
+      let bgcolor = "#222";
+      let text;
+      let animation_loop: any;
+      //let redraw_loop: any;
+      
+      function init() {
+        ctx!.clearRect(0, 0, width, height);
+        
+        ctx!.beginPath();
+        ctx!.strokeStyle = bgcolor;
+        ctx!.lineWidth = 30;
+        ctx!.arc(width/2, width/2, 100, 0, Math.PI*2, false);
+        ctx!.stroke();
+        //let radians = degrees * Math.PI / 180;
+        let radians = degrees * Math.PI / 180;
+        
+        ctx!.beginPath();
+        ctx!.strokeStyle = color;
+        ctx!.lineWidth = 30;
+        //ctx!.arc(width/2, height/2, 100, 0 - 90*Math.PI/180, radians - 90*Math.PI/180, false); 
+        ctx!.arc(width/2, height/2, 100, 0 - 90*Math.PI/180, radians - 90*Math.PI/180, false); 
+        ctx!.stroke();
+        ctx!.fillStyle = color;
+        ctx!.font = "50px arial";
+        text = Math.floor(degrees/360*100) + "%";
+        let text_width = ctx!.measureText(text).width;
+        ctx!.fillText(text, width/2 - text_width/2, height/2 + 15);
+      }
+      
+      function draw() {
+        //if (typeof animation_loop != undefined) clearInterval(animation_loop);
+        //new_degrees = 360;
+        //new_degrees = 180;
+        //new_degrees = test;
+        //new_degrees = filePercentage.current;
+        
+        //animation_loop = setInterval(animate_to, 10000/difference);
+        animation_loop = setInterval(animate_to, 25);
+        //animation_loop = setInterval(animate_to, 50);
+        //animate_to()
+      }
+      
+      function animate_to() {
+        if(degrees > new_degrees) {
+          //degrees = filePercentage
+          clearInterval(animation_loop);
+        }
+        //else if(degrees < new_degrees) degrees++;
+        //else degrees--;
+        
+        degrees++
+        //filePercentage++
+        init();
+      }
+      
+      draw();
+   }
+
   return (
     <div className={`${css.background} ${com.noSelect}`}>
+      <div className={css.background}>
+        <canvas className={css.spinner} id={`spinner`} width="300" height="300" />
+      </div>
       <Button
         focusRipple={false}
         id={`buttonStart`}

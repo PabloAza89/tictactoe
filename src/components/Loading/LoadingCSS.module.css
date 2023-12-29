@@ -1,4 +1,4 @@
-.background {
+.backgroundd {
   background: rgba(0, 0, 0, 0.3);
   display: flex;
   position: fixed;
@@ -7,6 +7,7 @@
   animation-name: blinkBG;
   animation-duration: 1.5s;
   animation-iteration-count: infinite;
+  z-index: 50000;
 }
 
 #spinner {
