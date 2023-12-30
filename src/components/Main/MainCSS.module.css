@@ -350,21 +350,21 @@
   margin: 0px 7px;
 }
 
-.testBox {
+.boxHelperLeft {
   top: 0px;
   left: 0px;
   display: flex;
   position: fixed;
   /* background: red; */ /* DEV */
   width: 0px;
-  height: calc(100vh - 39px);
+  height: calc(100vh - 63px);
   min-height: 135px;
   align-items: flex-end;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.stopper {
+.stopperHelper {
   /* background: yellow; */
   display: flex;
   position: relative;

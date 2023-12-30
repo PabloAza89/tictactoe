@@ -2272,8 +2272,8 @@ const Main = () => {
       >
         <div className={css.buttonTypo} />
       </Button>
-      <div className={css.testBox}>
-        <div className={css.stopper} />
+      <div className={css.boxHelperLeft}>
+        <div className={css.stopperHelper} />
         <Button
           className={`buttonShowAbout`}
           id={css.buttonShowAbout}
