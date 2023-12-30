@@ -11,6 +11,7 @@ import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ReactComponent as FXSvg } from '../../images/fxIcon.svg';
+import { ReactComponent as LinkedInSvg } from '../../images/linkedIn.svg';
 import Slider from '@mui/material/Slider';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
@@ -1481,7 +1482,6 @@ const Main = () => {
         })
       }
       else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
-        //if (allowFXSound.current) playSound({ file: aF.menu })
         setTimeout(function() {
           addButtonAnimation()
         },300); // NECESSARY FOR ADD ANIMATION WHEN USER PRESS SCAPE.. DON'T ASK WHY.
@@ -1492,7 +1492,6 @@ const Main = () => {
   const buttonNewGameHandler = () => {
     stopConfetti()
     if (allowFXSound.current) playSound({ file: aF.menu })
-    //if (allowFXSound.current) playSound({ file: aF.menu })
     removeFlowPopUp() // CANCEL WINNER POP-UP WHEN USER CLICK "NEW GAME" BUTTON
     removeButtonAnimation()
     if (newGameStarted) {
@@ -1826,6 +1825,33 @@ const Main = () => {
     })
   },[scoreShown])
 
+  useEffect(() => { // SHOW/HIDE ABOUT HANDLER
+    $(function() {
+      if (!aboutShown) { // show --> hidden
+        $(`.buttonShowAbout`)
+          .on("click", function() {
+          $(`#sliderBoxAbout`)
+            .stop()
+            .animate( { left: '250px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
+        })
+        $(`#sliderBoxAbout`)
+          .css("left", "auto")
+          .css("left", "0px")
+      }
+      else if (aboutShown) { // hidden -> show
+        $(`.buttonShowAbout`)
+          .on("click", function() {
+            $(`#sliderBoxAbout`)
+              .stop()
+              .animate( { left: '0px' }, { queue: false, easing: 'easeOutCubic', duration: 800 })
+          })
+        $(`#sliderBoxAbout`)
+          .css("left", "auto")
+          .css("left", "250px")
+      }
+    })
+  },[aboutShown])
+
   useEffect(() => { // SHOW/HIDE BG SLIDER
     $(function() {
       if (BGMusicShown) { // show --> hidden
@@ -2029,6 +2055,13 @@ const Main = () => {
     })
   }
 
+  const autoHideAbout = () => {
+    $(function() {
+      $(`.buttonShowAbout`)
+        .trigger( "click" )
+    })
+  }
+
   const autoHideFX = () => {
     $(function() {
       $(`.buttonFXSlider`)
@@ -2036,6 +2069,7 @@ const Main = () => {
     })
   }
 
+  const [ timeoutAbout, setTimeoutAbout ] = useState<ReturnType<typeof setTimeout>>()
   const [ timeoutBG, setTimeoutBG ] = useState<ReturnType<typeof setTimeout>>()
   const [ timeoutFX, setTimeoutFX ] = useState<ReturnType<typeof setTimeout>>()
 
@@ -2114,13 +2148,11 @@ const Main = () => {
     animation_loop = setInterval(animate_to, 5)
   }
 
-/*   const func1 = () => {
-    $(`[class*="containerAbout"]`)
-      .css("transform", "rotateY(180deg)")
-  } */
+  console.log("111 aboutShown", aboutShown)
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
+      
       <div className={css.backgroundSpinner}>
         <canvas className={css.spinner} id={`spinner`} width="300" height="300" />
         <div className={css.spinnerBottomText}>Loading..</div>
@@ -2132,7 +2164,6 @@ const Main = () => {
         variant="outlined"
         sx={{ color: 'white', background: 'blue', '&:hover': { background: 'green' } }}
         onClick={() => {
-          //if (allowFXSound.current) playSound({ file: aF.menu })
           buttonNewGameHandler()
         }}
       >
@@ -2241,30 +2272,40 @@ const Main = () => {
       >
         <div className={css.buttonTypo} />
       </Button>
-      <Button
-        className={`buttonShowAbout`}
-        id={css.buttonShowAbout}
-        onClick={() => {
-          setAboutShown(!aboutShown)
-          console.log("111 clicked")
-          /* .container:hover {
-            transform: rotateY(180deg);
-          } */
-          //$(`.containerAbout`)
-          
+      <div className={css.testBox}>
+        <div className={css.stopper} />
+        <Button
+          className={`buttonShowAbout`}
+          id={css.buttonShowAbout}
+          onClick={() => {
+            clearTimeout(timeoutAbout)
+            if (!aboutShown) setTimeoutAbout(setTimeout(autoHideAbout, 5500))
+            setAboutShown(!aboutShown)
             aboutShown ?
             $(`[class*="containerAbout"]`)
               .css("transform", "rotateY(0deg)") :
             $(`[class*="containerAbout"]`)
               .css("transform", "rotateY(180deg)")
-          
-        }}
-      >
-        <div className={css.containerAbout}>
-          <HelpOutlineIcon className={css.icon1} />
-          <ErrorOutlineIcon className={css.icon2} />
+          }}
+        >
+          <div className={css.containerAbout}>
+            <HelpOutlineIcon className={css.iconQuestion} />
+            <ErrorOutlineIcon className={css.iconExclamation} />
+          </div>
+        </Button>
+        <div
+          className={css.sliderAbout}
+          id={`sliderBoxAbout`}
+        >
+          <div>
+            <div>This App is made by</div>
+            <div>Juan Pablo Azambuyo.</div>
+          </div>
+          <a href="https://linkedin.com/in/juan-pablo-azambuyo" target="blank">
+            <LinkedInSvg className={css.linkedInSVG} />
+          </a>
         </div>
-      </Button>
+      </div>
       <div
         className={css.scoreTable}
         id={`sliderBox`}
@@ -2434,7 +2475,7 @@ const Main = () => {
             setFXMusicShown(!FXMusicShown)
           }}
         >
-          <FXSvg style={{ width: '23px', height: '23px' }}/>
+          <FXSvg style={{ width: '23px', height: '23px' }} />
         </Button>
       </div>
       <div id={css.fxAndSliderContainer}>
