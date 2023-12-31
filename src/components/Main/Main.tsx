@@ -10,6 +10,7 @@ import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import CelebrationIcon from '@mui/icons-material/Celebration';
 import { ReactComponent as FXSvg } from '../../images/fxIcon.svg';
 import { ReactComponent as LinkedInSvg } from '../../images/linkedIn.svg';
 import Slider from '@mui/material/Slider';
@@ -145,6 +146,7 @@ const Main = () => {
   let allowFXSound = useRef(allowFXSoundState)
   const FXSoundValueState = useSelector((state: { FXSoundValue: number }) => state.FXSoundValue)
 
+  const [ confettiAllowed, setConfettiAllowed ] = useState<boolean>(true)
   const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   const [ aboutShown, setAboutShown ] = useState<boolean>(false)
   const [ BGMusicShown, setBGMusicShown ] = useState<boolean>(false)
@@ -1719,7 +1721,7 @@ const Main = () => {
           addFinalWinnerChangeColor()
         }, 200) // DELAY WAITS FOR FINAL POPUP
 
-        if (finalWinner === "X") startConfetti()
+        if (finalWinner === "X") if (confettiAllowed) startConfetti()
 
         if (allowFXSound.current) {
           if (finalWinner === "X") playSound({ file: aF.taDah, pitch: 100 }); // X win entire game
@@ -1902,12 +1904,12 @@ const Main = () => {
     })
   },[FXMusicShown])
 
-  const [ height, setHeight ] = useState<number>(window.innerHeight)
+  const [ heightDev, setHeightDev ] = useState<number>(window.innerHeight)
 
   useEffect(() => { // INNER HEIGHT HANDLER
     function handleResize() {
       let { innerHeight } = window
-      setHeight(innerHeight)
+      setHeightDev(innerHeight);
     }
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize)
@@ -1917,7 +1919,7 @@ const Main = () => {
     const el = document.getElementById('sliderBox');
     if (el !== null) {
       const mouseEnterOnScore = () => {
-        if (height <= 550) el.style.cursor = 'grab'; // GRAB WHEN ENTER (MOUSEENTER)
+        if (heightDev <= 550) el.style.cursor = 'grab'; // GRAB WHEN ENTER (MOUSEENTER)
         let pos = { top: 0, left: 0, x: 0, y: 0 };
 
         const mouseDownHandler = function (e: any) {
@@ -1929,7 +1931,7 @@ const Main = () => {
             x: e.clientX,
             y: e.clientY,
           }
-          if (height <= 550) {
+          if (heightDev <= 550) {
             el.addEventListener('mousemove', mouseMoveHandler)
             el.addEventListener('mouseup', mouseUpHandler)
           } else {
@@ -1964,6 +1966,11 @@ const Main = () => {
     }
   })
 
+  let { width, height } = window.screen
+  let orientation = window.matchMedia("(orientation: portrait)").matches
+  // eslint-disable-next-line
+  const [ isSmallDevice, setIsSmallDevice ] = useState<boolean>(((width < 450 && orientation) || (height < 450 && !orientation)) ? true : false)
+
   // BEGIN CONFETTI //
 
   let countConfetti = 200;
@@ -1975,33 +1982,40 @@ const Main = () => {
     confetti({
       ...defaultsConfetti,
       ...opts,
-      particleCount: Math.floor(countConfetti * particleRatio)
+      particleCount: isSmallDevice ? 10 : Math.floor(countConfetti * particleRatio)
     });
   }
 
   const fireAllConfetti = () => {
-    fireConfetti(0.25, {
-      spread: 26,
-      startVelocity: 55,
-    });
-    fireConfetti(0.2, {
-      spread: 60,
-    });
-    fireConfetti(0.35, {
-      spread: 100,
-      decay: 0.91,
-      scalar: 0.8
-    });
-    fireConfetti(0.1, {
-      spread: 120,
-      startVelocity: 25,
-      decay: 0.92,
-      scalar: 1.2
-    });
-    fireConfetti(0.1, {
-      spread: 120,
-      startVelocity: 45,
-    });
+    if (isSmallDevice) {
+      fireConfetti(0.25, {
+        spread: 26,
+        startVelocity: 55,
+      });
+    } else {
+      fireConfetti(0.25, {
+        spread: 26,
+        startVelocity: 55,
+      });
+      fireConfetti(0.2, {
+        spread: 60,
+      });
+      fireConfetti(0.35, {
+        spread: 100,
+        decay: 0.91,
+        scalar: 0.8
+      });
+      fireConfetti(0.1, {
+        spread: 120,
+        startVelocity: 25,
+        decay: 0.92,
+        scalar: 1.2
+      });
+      fireConfetti(0.1, {
+        spread: 120,
+        startVelocity: 45,
+      });
+    }
   }
 
   let intervalID: any = useRef()
@@ -2029,6 +2043,23 @@ const Main = () => {
       }
     })
   }
+
+  /* function showNotification() {
+    Notification.requestPermission().then((result) => {
+      if (result === "granted") {
+        navigator.serviceWorker.ready.then((registration) => {
+          registration.showNotification("Vibration Sample", {
+            body: "Buzz! Buzz!",
+            icon: "../images/touch/chrome-touch-icon-192x192.png",
+            vibrate: [200, 100, 200, 100, 200, 100, 200],
+            tag: "vibration-sample",
+          });
+        });
+      }
+    });
+  }
+
+  showNotification() */
 
   const handleBgValue = (value: string) => {
     clearTimeout(timeoutBG)
@@ -2112,8 +2143,8 @@ const Main = () => {
   const spinnerLoader = () => {
     let spinner = document.getElementById("spinner") as HTMLCanvasElement
     let ctx = spinner.getContext("2d");
-    let width;
-    let height;
+    let widthSpinner;
+    let heightSpinner;
     let color = "turquoise";
     let bgcolor = "#222";
     let text;
@@ -2124,31 +2155,33 @@ const Main = () => {
       else degrees++
 
       if (ctx !== null) {
-        width = spinner.width;
-        height = spinner.height;
-        ctx.clearRect(0, 0, width, height);
+        widthSpinner = spinner.width;
+        heightSpinner = spinner.height;
+        ctx.clearRect(0, 0, widthSpinner, heightSpinner);
         ctx.beginPath();
         ctx.strokeStyle = bgcolor;
         ctx.lineWidth = 30;
-        ctx.arc(width/2, width/2, 100, 0, Math.PI*2, false);
+        ctx.arc(widthSpinner/2, widthSpinner/2, 100, 0, Math.PI*2, false);
         ctx.stroke();
         let radians = degrees * Math.PI / 180;
         ctx.beginPath();
         ctx.strokeStyle = color;
         ctx.lineWidth = 30;
-        ctx.arc(width/2, height/2, 100, 0 - 90*Math.PI/180, radians - 90*Math.PI/180, false);
+        ctx.arc(widthSpinner/2, heightSpinner/2, 100, 0 - 90*Math.PI/180, radians - 90*Math.PI/180, false);
         ctx.stroke();
         ctx.fillStyle = color;
         ctx.font = "50px arial";
         text = Math.floor(degrees/360*100) + "%";
         let text_width = ctx.measureText(text).width;
-        ctx.fillText(text, width/2 - text_width/2, height/2 + 15);
+        ctx.fillText(text, widthSpinner/2 - text_width/2, heightSpinner/2 + 15);
       }
     }
     animation_loop = setInterval(animate_to, 5)
   }
 
-  console.log("111 aboutShown", aboutShown)
+  //console.log("111 aboutShown", aboutShown)
+
+  console.log("111 confettiAllowed", confettiAllowed)
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -2304,6 +2337,39 @@ const Main = () => {
             <LinkedInSvg className={css.linkedInSVG} />
           </a>
         </div>
+      </div>
+      <div className={css.boxHelperRight}>
+        <div className={css.stopperHelperRight} />
+        <Button
+          className={`buttonShowAbout`}
+          id={css.buttonShowAbout}
+          onClick={() => {
+            clearTimeout(timeoutAbout)
+            if (!aboutShown) setTimeoutAbout(setTimeout(autoHideAbout, 5500))
+            setAboutShown(!aboutShown)
+            aboutShown ?
+            $(`[class*="containerAbout"]`)
+              .css("transform", "rotateY(0deg)") :
+            $(`[class*="containerAbout"]`)
+              .css("transform", "rotateY(180deg)")
+          }}
+        >
+          <div className={css.containerAbout}>
+            <CelebrationIcon />
+          </div>
+        </Button>
+        {/* <div
+          className={css.sliderAbout}
+          id={`sliderBoxAbout`}
+        >
+          <div>
+            <div>Stop</div>
+            <div>Hide</div>
+          </div>
+          <a href="https://linkedin.com/in/juan-pablo-azambuyo" target="blank">
+            <LinkedInSvg className={css.linkedInSVG} />
+          </a>
+        </div> */}
       </div>
       <div
         className={css.scoreTable}
@@ -2510,6 +2576,22 @@ const Main = () => {
           null
         }
       </div>
+      <Button
+        variant="outlined"
+        onClick={() => {
+          stopConfetti()
+        }}
+      >
+        STOP CONFETTI
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => {
+          setConfettiAllowed(!confettiAllowed)
+        }}
+      >
+        DONT SHOW CONFETTI AGAIN
+      </Button>
     </div>
   );
 }
