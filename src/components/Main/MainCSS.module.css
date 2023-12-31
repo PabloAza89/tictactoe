@@ -36,13 +36,15 @@
 }
 
 .nextGameText {
-  width: 178px;
-  /* background: orange; */ /* DEV */
+  /* background: gray; */ /* DEV */
+  text-align: right;
+  text-wrap: nowrap;
 }
 
 .nextGameNumber {
-  width: 22px;
-  /* background: orange; */ /* DEV */
+  width: 14px;
+  /* background: yellowgreen; */ /* DEV */
+  text-wrap: nowrap;
 }
 
 .buttonNewGame {
@@ -357,7 +359,7 @@
   position: fixed;
   /* background: red; */ /* DEV */
   width: 0px;
-  height: calc(100vh - 63px);
+  height: calc(100% - 39px);
   min-height: 135px;
   align-items: flex-end;
   flex-direction: column;

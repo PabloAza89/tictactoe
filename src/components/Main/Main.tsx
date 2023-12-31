@@ -28,7 +28,7 @@ const Main = () => {
 
   const welcomeTicTacToe = () => {
     return Swal.fire({
-      title: `WELCOME TO TIC-TAC-TOE !`,
+      title: `WELCOME TO TIC&#8209;TAC&#8209;TOE !`,
       text: 'Please, select who start first..',
       heightAuto: false, // PREVENTS SWAL CHANGE BACKGROUND POSITION
       showDenyButton: true,
@@ -2152,7 +2152,6 @@ const Main = () => {
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
-      
       <div className={css.backgroundSpinner}>
         <canvas className={css.spinner} id={`spinner`} width="300" height="300" />
         <div className={css.spinnerBottomText}>Loading..</div>
@@ -2259,8 +2258,8 @@ const Main = () => {
             countdownRound === 0 ?
             <div className={css.nextGameInInner}>Go !!!</div> :
             <div className={css.nextGameInInner}>
-              <div className={css.nextGameText}> Next round in</div>
-              <div className={css.nextGameNumber}>{countdownRound} </div>
+              <div className={css.nextGameText}>Next round in </div>
+              <div className={css.nextGameNumber}>{countdownRound}</div>
             </div>
           }
         </div>
