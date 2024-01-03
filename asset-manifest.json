@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/tictactoe/static/css/main.c48eeda0.chunk.css",
-    "main.js": "/tictactoe/static/js/main.4a1adda1.chunk.js",
-    "main.js.map": "/tictactoe/static/js/main.4a1adda1.chunk.js.map",
+    "main.css": "/tictactoe/static/css/main.898a4179.chunk.css",
+    "main.js": "/tictactoe/static/js/main.920decbe.chunk.js",
+    "main.js.map": "/tictactoe/static/js/main.920decbe.chunk.js.map",
     "runtime-main.js": "/tictactoe/static/js/runtime-main.68d2a3da.js",
     "runtime-main.js.map": "/tictactoe/static/js/runtime-main.68d2a3da.js.map",
-    "static/js/2.3a0219f4.chunk.js": "/tictactoe/static/js/2.3a0219f4.chunk.js",
-    "static/js/2.3a0219f4.chunk.js.map": "/tictactoe/static/js/2.3a0219f4.chunk.js.map",
+    "static/js/2.a295c15e.chunk.js": "/tictactoe/static/js/2.a295c15e.chunk.js",
+    "static/js/2.a295c15e.chunk.js.map": "/tictactoe/static/js/2.a295c15e.chunk.js.map",
     "index.html": "/tictactoe/index.html",
-    "static/css/main.c48eeda0.chunk.css.map": "/tictactoe/static/css/main.c48eeda0.chunk.css.map",
-    "static/js/2.3a0219f4.chunk.js.LICENSE.txt": "/tictactoe/static/js/2.3a0219f4.chunk.js.LICENSE.txt",
+    "static/css/main.898a4179.chunk.css.map": "/tictactoe/static/css/main.898a4179.chunk.css.map",
+    "static/js/2.a295c15e.chunk.js.LICENSE.txt": "/tictactoe/static/js/2.a295c15e.chunk.js.LICENSE.txt",
     "static/media/OTime.1a4a4639.mp3": "/tictactoe/static/media/OTime.1a4a4639.mp3",
     "static/media/Omove.7092c42c.mp3": "/tictactoe/static/media/Omove.7092c42c.mp3",
     "static/media/XTime.3cddf66b.mp3": "/tictactoe/static/media/XTime.3cddf66b.mp3",
@@ -24,6 +24,7 @@
     "static/media/revealed.7ccf0a51.mp3": "/tictactoe/static/media/revealed.7ccf0a51.mp3",
     "static/media/roundLost.2e868e4f.mp3": "/tictactoe/static/media/roundLost.2e868e4f.mp3",
     "static/media/roundWin.f2e24fd6.mp3": "/tictactoe/static/media/roundWin.f2e24fd6.mp3",
+    "static/media/silence.be2bc6f4.mp3": "/tictactoe/static/media/silence.be2bc6f4.mp3",
     "static/media/startRound.a3ba4010.mp3": "/tictactoe/static/media/startRound.a3ba4010.mp3",
     "static/media/taDah.d4157f1d.mp3": "/tictactoe/static/media/taDah.d4157f1d.mp3",
     "static/media/ticTac3Sec.377f30c8.mp3": "/tictactoe/static/media/ticTac3Sec.377f30c8.mp3",
@@ -33,8 +34,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.68d2a3da.js",
-    "static/js/2.3a0219f4.chunk.js",
-    "static/css/main.c48eeda0.chunk.css",
-    "static/js/main.4a1adda1.chunk.js"
+    "static/js/2.a295c15e.chunk.js",
+    "static/css/main.898a4179.chunk.css",
+    "static/js/main.920decbe.chunk.js"
   ]
 }
