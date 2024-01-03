@@ -93,6 +93,10 @@
   100% { color: blue; transform: scale(1.1) }
 }
 
+.testAudio {
+  display: contents;
+}
+
 .rounds {
   /* background: lightgreen; */ /* DEV */
   display: flex;
@@ -244,6 +248,7 @@
   align-items: center;
   font-weight: 500;
   padding-bottom: 2px;
+  /* justify-content: center; */
 }
 
 .gameMode {
@@ -372,8 +377,8 @@
   display: flex;
   position: fixed;
   background: red; /* DEV */
-  /* width: 0px; */
-  width: 10px;
+  width: 0px;
+  /* width: 10px; */
   height: calc(100% - 39px);
   min-height: 135px;
   align-items: flex-end;
@@ -395,10 +400,11 @@
   background: yellow; /* DEV */
   display: flex;
   position: relative;
-  width: 10px;
-  min-width: 10px;
-  height: 150px;
-  min-height: 150px;
+  /* width: 10px; */
+  width: 0px;
+  min-width: 0px;
+  height: 120px;
+  min-height: 120px;
 }
 
 .sliderAbout {
@@ -421,6 +427,91 @@
   align-items: center;
   text-align: center;
   border-radius: 0px 4px 4px 0px;
+}
+
+.sliderMenuConfetti {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  background: rgb(199 255 0);
+  left: 105px;
+  width: 105px;
+  min-width: 105px;
+  height: 50px;
+  min-height: 50px;
+  max-height: 100vh;
+  font-size: 16px;
+  font-weight: 500;
+  max-width: 100vw;
+  overflow-x: auto;
+  overflow-y: auto;
+  z-index: 101; /* HIGHER THAN CONFETTI */
+  justify-content: flex-end;
+  align-items: center;
+  text-align: center;
+  /* border-radius: 4px 0px 0px 0px; */
+  overflow: visible;
+}
+
+.barConfettiUpper {
+  display: flex;
+  position: relative;
+  /* background: red; */ /* DEV */
+  height: 25px;
+  width: 100%;
+  /* box-shadow: 0 0 0 2px blue inset; */ /* DEV */
+  /* justify-content: center; */
+  /* align-items: flex-end; */
+  /* align-items: center; */
+  line-height: 25px;
+  justify-content: space-evenly;
+  align-items: flex-end;
+}
+
+.barConfettiLower {
+  display: flex;
+  position: relative;
+  /* background: red; */ /* DEV */
+  height: 25px;
+  width: 100%;
+  /* box-shadow: 0 0 0 2px blue inset; */ /* DEV */
+  /* justify-content: center; */
+  /* align-items: center; */
+  line-height: 25px;
+  /* justify-content: space-evenly; */
+  justify-content: center;
+  align-items: center;
+}
+
+.textConfetti {
+  display: flex;
+  position: relative;
+  height: 18px;
+  list-style: 18px;
+  width: fit-content;
+  /* background: red; */ /* DEV */
+  align-items: center;
+  font-size: 14px;
+  margin-left: 2px;
+}
+
+.buttonStopConfetti {
+  height: 20px !important;
+  min-height: 20px !important;
+  width: 90%;
+  background: yellow !important;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  line-height: 20px !important;
+}
+
+.buttonCheckboxConfetti {
+  width: 20px !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  line-height: 20px;
+  /* margin-bottom: 2px; */
 }
 
 .scoreTable::-webkit-scrollbar {
@@ -624,6 +715,17 @@ div:nth-child(even of [id*="evenTarget"]) {
   transition: transform 1000ms;
 }
 
+.containerMenuConfetti {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  transform-style: preserve-3d;
+  transition: transform 1000ms;
+}
+
 .iconQuestion {
   position: relative;
   min-width: 30px !important;
@@ -641,6 +743,15 @@ div:nth-child(even of [id*="evenTarget"]) {
   height: 30px !important;
   backface-visibility: hidden;
   transform: rotateY(180deg);
+}
+
+.iconConfetti {
+  position: relative;
+  min-width: 30px !important;
+  width: 30px !important;
+  min-height: 30px !important;
+  height: 30px !important;
+  backface-visibility: hidden;
 }
 
 #buttonShow {
@@ -669,6 +780,22 @@ div:nth-child(even of [id*="evenTarget"]) {
   border-radius: 0px;
   background: rgb(4, 223, 4) !important;
   border-radius: 0px 4px 4px 0px;
+}
+
+#buttonShowMenuConfetti {
+  bottom: 0px;
+  left: -35px;
+  display: flex;
+  position: absolute;
+  z-index: 3001;
+  min-width: 35px !important;
+  width: 35px !important;
+  min-height: 35px !important;
+  height: 35px !important;
+  color: darkblue;
+  border-radius: 0px;
+  background: rgb(4, 223, 4) !important;
+  border-radius: 4px 0px 0px 4px;
 }
 
 .buttonTypo {
