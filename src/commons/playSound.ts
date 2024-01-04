@@ -24,8 +24,11 @@ export const playSound = async ({ file, pitch, cV, loop }: playSoundI) => { // c
   gainArray[file.i] = contextArray[file.i].createGain();
   if (typeof cV === 'number') gainArray[file.i].gain.value = cV
   if (file.i !== 18) gainArray[file.i].gain.value = file.mV * store.getState().FXSoundValue
-  soundsArray[file.i].connect(gainArray[file.i]);
-  gainArray[file.i].connect(contextArray[file.i].destination);
+  // soundsArray[file.i].connect(gainArray[file.i]);
+  // gainArray[file.i].connect(contextArray[file.i].destination);
+  soundsArray[file.i]
+    .connect(gainArray[file.i])
+    .connect(contextArray[file.i].destination);
   gainArray[file.i]['maxVolume'] = file.mV
   soundsArray[file.i].start()
   return contextArray[file.i]
@@ -45,8 +48,11 @@ export const loadAllSounds = async ({ file }: loadAllSoundsI) => {
     soundsArray[file.i].buffer = bufferArray[file.i]
     gainArray[file.i] = contextArray[file.i].createGain();
     gainArray[file.i]['maxVolume'] = file.mV
-    soundsArray[file.i].connect(gainArray[file.i]);
-    gainArray[file.i].connect(contextArray[file.i].destination);
+    // soundsArray[file.i].connect(gainArray[file.i]);
+    // gainArray[file.i].connect(contextArray[file.i].destination);
+    soundsArray[file.i]
+      .connect(gainArray[file.i])
+      .connect(contextArray[file.i].destination);
   })
   return file.i
 }

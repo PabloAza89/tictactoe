@@ -94,8 +94,12 @@
 }
 
 .testAudio {
-  display: contents;
+  /* display: contents; */
 }
+
+/* audio::-webkit-media-controls-play-button{
+  display: none !important;
+} */
 
 .rounds {
   /* background: lightgreen; */ /* DEV */
