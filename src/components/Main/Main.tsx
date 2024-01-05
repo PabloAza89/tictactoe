@@ -1,4 +1,3 @@
-
 import css from './MainCSS.module.css';
 import com from '../../commons/commonsCSS.module.css';
 import { useEffect, useState, useRef } from 'react';
@@ -153,6 +152,7 @@ const Main = () => {
     if (confettiAllowedLS !== null) setConfettiAllowed(JSON.parse(confettiAllowedLS))
   },[])
 
+  let userHasNotClicked = useRef<boolean>(true)
   const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   const [ aboutShown, setAboutShown ] = useState<boolean>(false)
   const [ firstMenuConfettiAutoShown, setFirstMenuConfettiAutoShown ] = useState<boolean>(true)
@@ -2055,13 +2055,23 @@ const Main = () => {
 
   // END CONFETTI //
 
+  document.addEventListener('click', () => {
+    //console.log("clicked clicked clicked")
+    //userFirstClick.current = true
+    userHasNotClicked.current = false
+   
+  }, { once: true })
+
   const playBackgroundSong = () => {
     startNotificationOnlyBGAudio()
+    console.log("se ejecuto aca A 1")
     playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
     .then((res: any) => {
       if (res.state === "suspended") {
         document.addEventListener('click', () => {
+          //console.log("clicked clicked clicked")
           if (allowBgSound.current) {
+            console.log("se ejecuto aca A 2")
             contextArray[aF.bG.i].resume()
             startNotificationOnlyBGAudio()
           }
@@ -2200,7 +2210,55 @@ const Main = () => {
   }
 
   const startBGAudio = () => {
-    playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+    console.log("DEBUGG soundsArray", soundsArray[aF.bG.i].context.state)
+    console.log("DEBUGG contextArray", contextArray[aF.bG.i].state)
+    // if (soundsArray[aF.bG.i].context.state === "suspended") if (allowBgSound.current) contextArray[aF.bG.i].resume()
+    // else playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+    //console.log("se ejecuto aca B 1")
+    //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+    //contextArray[aF.bG.i].resume()
+    if (soundsArray[aF.bG.i].context.state === "suspended" && userHasNotClicked.current) {
+      playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+    }
+
+    else if (soundsArray[aF.bG.i].context.state === "suspended") {
+      console.log("se ejecuto aca B ESTE 1")
+      console.log("se ejecuto aca B ESTE 1 userHasNotClicked", userHasNotClicked.current)
+      //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+      
+      contextArray[aF.bG.i].resume()
+      
+      
+
+      //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+      // .then((res: any) => {
+      //   if (res.state === "suspended") {
+      //       if (allowBgSound.current) {
+      //         console.log("se ejecuto aca A 2")
+      //         contextArray[aF.bG.i].resume()
+      //         startNotificationOnlyBGAudio()
+      //       }
+      //   }
+      // })
+
+
+
+    }
+    else if (soundsArray[aF.bG.i].context.state === "running") {
+      console.log("se ejecuto aca B ESTE 2")
+      playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+    }
+    //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+    // .then((res: any) => {
+    //   if (res.state === "suspended") {
+    //     if (allowBgSound.current) {
+    //       console.log("se ejecuto aca A 2")
+    //       contextArray[aF.bG.i].resume()
+    //       //startNotificationOnlyBGAudio()
+    //     }
+    //   }
+    // })
+
     dispatch(setAllowBgSound(true))
     allowBgSound.current = true
     localStorage.setItem('allowBgSound', JSON.stringify(true))
@@ -2212,23 +2270,30 @@ const Main = () => {
   }
 
   const stopBGAudio = () => {
-    soundsArray[aF.bG.i].stop()
-    dispatch(setAllowBgSound(false))
-    allowBgSound.current = false
-    localStorage.setItem('allowBgSound', JSON.stringify(false))
-    const audio = document.querySelector("audio"); // WORKAROUND FOR NOTIFICATION
-    if (audio !== null) audio.src = ""
+    //console.log("STOP DEBUGG soundsArray", soundsArray[aF.bG.i].context.state)
+    //console.log("STOP DEBUGG contextArray", contextArray[aF.bG.i].state)
+    //console.log("soundsArray[aF.bG.i]", soundsArray[aF.bG.i])
+    if (soundsArray[aF.bG.i].context.state === 'running') {
+      soundsArray[aF.bG.i].stop()
+      dispatch(setAllowBgSound(false))
+      allowBgSound.current = false
+      localStorage.setItem('allowBgSound', JSON.stringify(false))
+      const audio = document.querySelector("audio"); // WORKAROUND FOR NOTIFICATION
+      if (audio !== null) audio.src = ""
+    }
   }
 
   const pauseBGAudio = () => {
-    soundsArray[aF.bG.i].stop()
-    dispatch(setAllowBgSound(false))
-    allowBgSound.current = false
-    localStorage.setItem('allowBgSound', JSON.stringify(false))
-    const audio = document.querySelector("audio"); // WORKAROUND FOR NOTIFICATION
-    if (audio !== null) {
-      audio.pause();
-      audio.currentTime = 0;
+    if (soundsArray[aF.bG.i].context.state === 'running') {
+      soundsArray[aF.bG.i].stop()
+      dispatch(setAllowBgSound(false))
+      allowBgSound.current = false
+      localStorage.setItem('allowBgSound', JSON.stringify(false))
+      const audio = document.querySelector("audio"); // WORKAROUND FOR NOTIFICATION
+      if (audio !== null) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
     }
   }
 

@@ -37,5 +37,6 @@ export const loadAllSounds = async ({ file }: loadAllSoundsI) => {
       .connect(gainArray[file.i])
       .connect(contextArray[file.i].destination);
   })
+  console.log("aF state", soundsArray[18] && soundsArray[18].context.state)
   return file.i
 }
