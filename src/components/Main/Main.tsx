@@ -24,9 +24,7 @@ import { pointsI, highlighterI, handleSequenceI, eachBoxI } from '../../interfac
 import { playSound, soundsArray, loadAllSounds, gainArray, contextArray } from '../../commons/playSound';
 import { setAllowBgSound, setBgSoundValue, setAllowFXSound, setFXSoundValue } from '../../actions';
 import confetti from 'canvas-confetti';
-import bG from '../../audio/bG.mp3';
 import silence from '../../audio/silence.mp3';
-import checkk from '../../images/check.png';
 
 const Main = () => {
 
@@ -258,9 +256,7 @@ const Main = () => {
           if (checkIfStrategyWouldWork(array)) {
             selectRandomPlace(targetIndexes.current)
             return true
-          } else {
-            return false
-          }
+          } else return false
         }
 
         let targetPlaces = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
@@ -327,9 +323,7 @@ const Main = () => {
               sI.current = Math.floor(Math.random() * s.length)
               if (!setO.current.has(sI.current)) {
                 setO.current.add(sI.current)
-                if (executeRandomStrategy(s[sI.current])) {
-                  success = true
-                }
+                if (executeRandomStrategy(s[sI.current])) success = true
               }
             } while (success === false && setO.current.size < s.length)
 
@@ -344,7 +338,6 @@ const Main = () => {
               }
             }
           }
-
 
           if (allowFXSound.current) playSound({ file: aF.Omove })
           success = true
@@ -1409,7 +1402,6 @@ const Main = () => {
     rC.current.forEach(e => {
       $(`#${e.id}`)
         .css("background", "red")
-        //.css("background", "rgb(255, 255, 255)")
     })
   }
 
@@ -1446,7 +1438,6 @@ const Main = () => {
     rC.current.forEach(e => {
       $(`#${e.id}`)
       .css("background", "red")
-      //.css("background", "rgb(255, 255, 255)")
     })
   }
 
@@ -1498,7 +1489,7 @@ const Main = () => {
       else { // ESCAPE KEY OR CLICK OUTSIDE POPUP
         setTimeout(function() {
           addButtonAnimation()
-        },300); // NECESSARY FOR ADD ANIMATION WHEN USER PRESS SCAPE.. DON'T ASK WHY.
+        },300);
       }
     })
   }
@@ -1759,8 +1750,6 @@ const Main = () => {
           else playSound({ file: aF.tied }) // Normal tied game
         }
 
-        console.log("111 score.current", score.current)
-
         Swal.fire({
           title:
             finalWinner === "XByTime" || finalWinner === "X" ?
@@ -2011,26 +2000,13 @@ const Main = () => {
 
         el.addEventListener('mousedown', mouseDownHandler);
         el.addEventListener('mouseleave', function() {
-          el.removeEventListener('mousedown', mouseDownHandler)
-          //el.removeEventListener('mouseup', mouseUpHandler)
-          //el.removeEventListener("mouseenter", mouseEnterOnScore)
-          console.log("I'm out");
-          //pos = { top: 0, left: 0, x: 0, y: 0 };
-          el.removeEventListener('mousemove', mouseMoveHandler);
           el.removeEventListener('mouseup', mouseUpHandler);
-          el.style.cursor = 'default';
-          //mouseMoveHandler()
-          //el.style.removeProperty('user-select')
+          el.removeEventListener('mousedown', mouseDownHandler)
+          el.removeEventListener('mousemove', mouseMoveHandler);
           el.style.cursor = 'default'
         })
       }
       el.addEventListener("mouseenter", mouseEnterOnScore)
-
-      // el.addEventListener("mouseleave", function() {
-      //   console.log("I'm out");
-      //   //el.removeEventListener("mouseenter", mouseEnterOnScore)
-      //   mouseUpHandler()
-      // });
 
       return () => el.removeEventListener("mouseenter", mouseEnterOnScore)
     }
@@ -2132,7 +2108,6 @@ const Main = () => {
       setTimeout(() => {
         loadAllSounds({ file: aF[e] })
         .then(() => {
-          console.log("FILE NUMBER", fileCounter)
           fileCounter += 1
           // eslint-disable-next-line
           newDegrees += eachDegree
@@ -2220,6 +2195,7 @@ const Main = () => {
     if (audio !== null) {
       audio.src = silence
       audio.play()
+      .catch(() => console.log(""))
     }
   }
 
@@ -2265,19 +2241,11 @@ const Main = () => {
   navigator.mediaSession.setActionHandler("previoustrack", null);
   navigator.mediaSession.setActionHandler("nexttrack", null);
 
-  // const el = document.getElementById('sliderBox');
-  // if (el) el.addEventListener("mouseleave", function() {
-  //   console.log("I'm out");
-  //   //el.removeEventListener("mouseenter", mouseEnterOnScore)
-  // });
-
   return (
     <div className={`${css.background} ${com.noSelect}`}>
-
       <audio loop>
         <source src={silence} />
       </audio>
-
       <div className={css.backgroundSpinner}>
         <canvas className={css.spinner} id={`spinner`} width="300" height="300" />
         <div className={css.spinnerBottomText}>Loading..</div>
@@ -2334,9 +2302,7 @@ const Main = () => {
           Rounds: {gameEndRoundsNumber.current + 1}
         </div>
         <div
-          style={{
-            display: newGameStarted ? 'flex' : 'none'
-          }}
+          style={{ display: newGameStarted ? 'flex' : 'none' }}
           id={`timerBox`}
           className={css.timer}
         >

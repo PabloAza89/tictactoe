@@ -1,13 +1,6 @@
-interface initialStateI {
-  scoreShown: boolean,
-  allowBgSound: boolean,
-  BgSoundValue: number,
-  allowFXSound: boolean,
-  FXSoundValue: number
-}
+import { initialStateI } from '../interfaces/interfaces';
 
 const initialState: initialStateI = {
-  scoreShown: localStorage.getItem('scoreShown') !== null ? JSON.parse(localStorage.getItem('scoreShown')!) : false,
   allowBgSound: localStorage.getItem('allowBgSound') !== null ? JSON.parse(localStorage.getItem('allowBgSound')!) : true,
   BgSoundValue: localStorage.getItem('BgSoundValue') !== null ? parseFloat(localStorage.getItem('BgSoundValue')!) : 0.4,
   allowFXSound: localStorage.getItem('allowFXSound') !== null ? JSON.parse(localStorage.getItem('allowFXSound')!) : true,
@@ -16,11 +9,6 @@ const initialState: initialStateI = {
 
 const reducer = (state = initialState, action: {type: string; payload: any}) => {
   switch (action.type) {
-    case 'SET_SCORE_SHOWN':
-      return {
-        ...state,
-        scoreShown: action.payload
-      };
     case 'ALLOW_BG_SOUND':
       return {
         ...state,

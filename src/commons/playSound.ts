@@ -1,3 +1,4 @@
+import { playSoundI, loadAllSoundsI } from '../interfaces/interfaces';
 import store from '../store/store'
 export let contextArray: any[] = [];
 export let gainArray: any[] = [];
@@ -5,16 +6,7 @@ export let gainMain: any;
 let bufferArray: any[] = []
 export let soundsArray: any[] = []
 
-interface playSoundI {
-  file?: any,
-  pitch?: number,
-  cV?: number,
-  loop?: boolean,
-}
-
-export const arraySoundResetter = () => {
-  soundsArray = []
-}
+export const arraySoundResetter = () => { soundsArray = [] }
 
 export const playSound = async ({ file, pitch, cV, loop }: playSoundI) => { // cV = currentVolume
   soundsArray[file.i] = contextArray[file.i].createBufferSource();
@@ -24,19 +16,12 @@ export const playSound = async ({ file, pitch, cV, loop }: playSoundI) => { // c
   gainArray[file.i] = contextArray[file.i].createGain();
   if (typeof cV === 'number') gainArray[file.i].gain.value = cV
   if (file.i !== 18) gainArray[file.i].gain.value = file.mV * store.getState().FXSoundValue
-  // soundsArray[file.i].connect(gainArray[file.i]);
-  // gainArray[file.i].connect(contextArray[file.i].destination);
   soundsArray[file.i]
     .connect(gainArray[file.i])
     .connect(contextArray[file.i].destination);
   gainArray[file.i]['maxVolume'] = file.mV
   soundsArray[file.i].start()
   return contextArray[file.i]
-}
-
-interface loadAllSoundsI {
-  file?: any,
-  mV?: any
 }
 
 export const loadAllSounds = async ({ file }: loadAllSoundsI) => {
@@ -48,8 +33,6 @@ export const loadAllSounds = async ({ file }: loadAllSoundsI) => {
     soundsArray[file.i].buffer = bufferArray[file.i]
     gainArray[file.i] = contextArray[file.i].createGain();
     gainArray[file.i]['maxVolume'] = file.mV
-    // soundsArray[file.i].connect(gainArray[file.i]);
-    // gainArray[file.i].connect(contextArray[file.i].destination);
     soundsArray[file.i]
       .connect(gainArray[file.i])
       .connect(contextArray[file.i].destination);
