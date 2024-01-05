@@ -1409,6 +1409,7 @@ const Main = () => {
     rC.current.forEach(e => {
       $(`#${e.id}`)
         .css("background", "red")
+        //.css("background", "rgb(255, 255, 255)")
     })
   }
 
@@ -1445,6 +1446,7 @@ const Main = () => {
     rC.current.forEach(e => {
       $(`#${e.id}`)
       .css("background", "red")
+      //.css("background", "rgb(255, 255, 255)")
     })
   }
 
@@ -2089,30 +2091,11 @@ const Main = () => {
     .then((res: any) => {
       if (res.state === "suspended") {
         document.addEventListener('click', () => {
-          if (allowBgSound.current) {
-            contextArray[aF.bG.i].resume()
-          }
+          if (allowBgSound.current) contextArray[aF.bG.i].resume()
         }, { once: true })
       }
     })
   }
-
-  /* function showNotification() {
-    Notification.requestPermission().then((result) => {
-      if (result === "granted") {
-        navigator.serviceWorker.ready.then((registration) => {
-          registration.showNotification("Vibration Sample", {
-            body: "Buzz! Buzz!",
-            icon: "../images/touch/chrome-touch-icon-192x192.png",
-            vibrate: [200, 100, 200, 100, 200, 100, 200],
-            tag: "vibration-sample",
-          });
-        });
-      }
-    });
-  }
-
-  showNotification() */
 
   const handleBgValue = (value: string) => {
     clearTimeout(timeoutBG)
@@ -2186,9 +2169,7 @@ const Main = () => {
             allSoundsLoaded.current = true
             if (allowBgSound.current) {
               playBackgroundSong()
-              //startAudioNotification()
-              // const audio = document.querySelector("audio"); // WORKAROUND FOR NOTIFICATION
-              // if (audio !== null) audio.play()
+              startNotificationOnlyBGAudio()
             }
             setTimeout(() => {
                 if (bottomText) bottomText.innerHTML = "Loaded."
@@ -2198,7 +2179,6 @@ const Main = () => {
                 .css("display", "none")
               $(`[class*="App_background"]`)
                 .css("overflow-y", "visible")
-              //startAudioNotification()
             }, 800)
           }
         })
@@ -2260,7 +2240,18 @@ const Main = () => {
     })
   }
 
- 
+  const startNotificationOnlyBGAudio = () => {
+    // dispatch(setAllowBgSound(true))
+    // allowBgSound.current = true
+    // localStorage.setItem('allowBgSound', JSON.stringify(true))
+
+    const audio = document.querySelector("audio"); // WORKAROUND FOR NOTIFICATION
+
+    if (audio !== null) {
+      audio.src = silence
+      audio.play()
+    }
+  }
 
   const startBGAudio = () => {
     playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
@@ -2322,12 +2313,7 @@ const Main = () => {
   return (
     <div className={`${css.background} ${com.noSelect}`}>
 
-     {/*  <audio controls>
-        <source src={bG}></source>
-        Your browser does not support the audio tag.
-      </audio> */}
-
-      <audio className={css.testAudio} controls loop>
+      <audio /* className={css.testAudio} */ /* controls */ loop>
         <source src={silence} />
       </audio>
 
