@@ -2087,11 +2087,15 @@ const Main = () => {
   // END CONFETTI //
 
   const playBackgroundSong = () => {
+    startNotificationOnlyBGAudio()
     playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
     .then((res: any) => {
       if (res.state === "suspended") {
         document.addEventListener('click', () => {
-          if (allowBgSound.current) contextArray[aF.bG.i].resume()
+          if (allowBgSound.current) {
+            contextArray[aF.bG.i].resume()
+            startNotificationOnlyBGAudio()
+          }
         }, { once: true })
       }
     })
@@ -2115,33 +2119,10 @@ const Main = () => {
     localStorage.setItem('FXSoundValue', JSON.stringify(parseInt(value,10) / 100))
   }
 
-  const autoHideBG = () => {
-    $(function() {
-      $(`.buttonBGSlider`)
-        .trigger("click")
-    })
-  }
-
-  const autoHideAbout = () => {
-    $(function() {
-      $(`.buttonShowAbout`)
-        .trigger("click")
-    })
-  }
-
-  const autoHideMenuConfetti = () => {
-    $(function() {
-      $(`.buttonMenuConfettiShow`)
-        .trigger("click")
-    })
-  }
-
-  const autoHideFX = () => {
-    $(function() {
-      $(`.buttonFXSlider`)
-        .trigger("click")
-    })
-  }
+  const autoHideBG = () => $(() => $(`.buttonBGSlider`).trigger("click"))
+  const autoHideAbout = () => $(() => $(`.buttonShowAbout`).trigger("click"))
+  const autoHideMenuConfetti = () => $(() => $(`.buttonMenuConfettiShow`).trigger("click"))
+  const autoHideFX = () => $(() => $(`.buttonFXSlider`).trigger("click"))
 
   const [ timeoutAbout, setTimeoutAbout ] = useState<ReturnType<typeof setTimeout>>()
   const [ timeoutMenuConfetti, setTimeoutMenuConfetti ] = useState<ReturnType<typeof setTimeout>>()
@@ -2150,9 +2131,10 @@ const Main = () => {
 
   let degrees: number = 0;
   let newDegrees: number = 0;
+  let eachDegree: number = 360 / Object.keys(aF).length
 
   useEffect(() => { // LOAD ALL SOUNDS
-    let bottomText = document.querySelector('[class*="spinnerBottomText"]')
+    //let bottomText = document.querySelector('[class*="spinnerBottomText"]')
     let fileCounter: number = 0;
     Object.keys(aF).forEach(async (e: any, i: any) => {
       setTimeout(() => {
@@ -2161,25 +2143,24 @@ const Main = () => {
           console.log("FILE NUMBER", fileCounter)
           fileCounter += 1
           // eslint-disable-next-line
-          newDegrees += 19
+          //newDegrees += 19
+          // eslint-disable-next-line
+          newDegrees += eachDegree
           spinnerLoader()
         })
         .then(() => {
           if (fileCounter === Object.keys(aF).length) {
             allSoundsLoaded.current = true
-            if (allowBgSound.current) {
-              playBackgroundSong()
-              startNotificationOnlyBGAudio()
-            }
-            setTimeout(() => {
+            if (allowBgSound.current) playBackgroundSong()
+            /* setTimeout(() => {
                 if (bottomText) bottomText.innerHTML = "Loaded."
-            }, 200)
-            setTimeout(() => {
+            }, 200) */
+            /* setTimeout(() => {
               $(`[class*="backgroundSpinner"]`)
                 .css("display", "none")
               $(`[class*="App_background"]`)
                 .css("overflow-y", "visible")
-            }, 800)
+            }, 800) */
           }
         })
       }, i * 100)
@@ -2202,6 +2183,7 @@ const Main = () => {
       else degrees++
 
       if (ctx !== null) {
+        console.log("DEGREE", Math.floor(degrees/360*100) + "%")
         widthSpinner = spinner.width;
         heightSpinner = spinner.height;
         ctx.clearRect(0, 0, widthSpinner, heightSpinner);
@@ -2218,10 +2200,27 @@ const Main = () => {
         ctx.stroke();
         ctx.fillStyle = color;
         ctx.font = "50px arial";
+        /* text = Math.floor(degrees/360*100) + "%"; */
         text = Math.floor(degrees/360*100) + "%";
         let text_width = ctx.measureText(text).width;
         ctx.fillText(text, widthSpinner/2 - text_width/2, heightSpinner/2 + 15);
       }
+
+      if (Math.floor(degrees/360*100) === 100) {
+        let bottomText = document.querySelector('[class*="spinnerBottomText"]')
+        console.log("REACHED")
+        setTimeout(() => {
+          if (bottomText) bottomText.innerHTML = "Loaded."
+        }, 200)
+        setTimeout(() => {
+          $(`[class*="backgroundSpinner"]`)
+            .css("display", "none")
+          $(`[class*="App_background"]`)
+            .css("overflow-y", "visible")
+        }, 800)
+      }
+
+
     }
     animation_loop = setInterval(animate_to, 5)
   }
@@ -2241,12 +2240,7 @@ const Main = () => {
   }
 
   const startNotificationOnlyBGAudio = () => {
-    // dispatch(setAllowBgSound(true))
-    // allowBgSound.current = true
-    // localStorage.setItem('allowBgSound', JSON.stringify(true))
-
     const audio = document.querySelector("audio"); // WORKAROUND FOR NOTIFICATION
-
     if (audio !== null) {
       audio.src = silence
       audio.play()
@@ -2255,35 +2249,23 @@ const Main = () => {
 
   const startBGAudio = () => {
     playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-
-
     dispatch(setAllowBgSound(true))
     allowBgSound.current = true
     localStorage.setItem('allowBgSound', JSON.stringify(true))
-
     const audio = document.querySelector("audio"); // WORKAROUND FOR NOTIFICATION
-
     if (audio !== null) {
       audio.src = silence
       audio.play()
     }
-
   }
 
-  //const stopAudioNotification = () => {
   const stopBGAudio = () => {
     soundsArray[aF.bG.i].stop()
     dispatch(setAllowBgSound(false))
     allowBgSound.current = false
     localStorage.setItem('allowBgSound', JSON.stringify(false))
     const audio = document.querySelector("audio"); // WORKAROUND FOR NOTIFICATION
-    if (audio !== null) {
-      //audio.stop();
-      //audio.pause();
-      //audio.currentTime = 0;
-      audio.src = "";
-      //navigator.mediaSession.metadata = new MediaMetadata({})
-    }
+    if (audio !== null) audio.src = ""
   }
 
   const pauseBGAudio = () => {
@@ -2293,11 +2275,8 @@ const Main = () => {
     localStorage.setItem('allowBgSound', JSON.stringify(false))
     const audio = document.querySelector("audio"); // WORKAROUND FOR NOTIFICATION
     if (audio !== null) {
-      //audio.stop();
       audio.pause();
       audio.currentTime = 0;
-      //audio.src = "";
-      //navigator.mediaSession.metadata = new MediaMetadata({})
     }
   }
 
@@ -2313,7 +2292,7 @@ const Main = () => {
   return (
     <div className={`${css.background} ${com.noSelect}`}>
 
-      <audio /* className={css.testAudio} */ /* controls */ loop>
+      <audio loop>
         <source src={silence} />
       </audio>
 
@@ -2647,15 +2626,8 @@ const Main = () => {
             dispatch(setAllowBgSound(!allowBgSoundState))
             allowBgSound.current = !allowBgSound.current
             localStorage.setItem('allowBgSound', JSON.stringify(!allowBgSoundState))
-            if (allSoundsLoaded.current && !allowBgSound.current) {
-              //soundsArray[aF.bG.i].stop()
-              //stopAudioNotification()
-              stopBGAudio()
-            } else if (allSoundsLoaded.current && allowBgSound.current) {
-              //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-              //startAudioNotification()
-              startBGAudio()
-            }
+            if (allSoundsLoaded.current && !allowBgSound.current) stopBGAudio()
+            else if (allSoundsLoaded.current && allowBgSound.current) startBGAudio()
           }}
         >
           {
@@ -2717,19 +2689,6 @@ const Main = () => {
           null
         }
       </div>
-
-      <Button
-        variant="outlined"
-        onClick={() => {
-          
-          //startAudioNotification()
-          startBGAudio()
-         
-        }}
-      >
-        TEST
-      </Button>
-
     </div>
   );
 }
