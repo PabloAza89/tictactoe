@@ -1744,6 +1744,7 @@ const Main = () => {
             setTimeout(() => {
               setMenuConfettiShown(true)
               clearTimeout(timeoutMenuConfetti)
+              //if (!menuConfettiShown) setTimeoutMenuConfetti(setTimeout(autoHideMenuConfetti, 5500))
               setTimeoutMenuConfetti(setTimeout(autoHideMenuConfetti, 5500))
             }, 1000)
 
@@ -2012,26 +2013,10 @@ const Main = () => {
         el.addEventListener('mousedown', mouseDownHandler);
         el.addEventListener('mouseleave', function() {
           el.removeEventListener('mousedown', mouseDownHandler)
-          //el.removeEventListener('mouseup', mouseUpHandler)
-          //el.removeEventListener("mouseenter", mouseEnterOnScore)
-          console.log("I'm out");
-          //pos = { top: 0, left: 0, x: 0, y: 0 };
-          el.removeEventListener('mousemove', mouseMoveHandler);
-          el.removeEventListener('mouseup', mouseUpHandler);
-          el.style.cursor = 'default';
-          //mouseMoveHandler()
-          //el.style.removeProperty('user-select')
           el.style.cursor = 'default'
         })
       }
       el.addEventListener("mouseenter", mouseEnterOnScore)
-
-      // el.addEventListener("mouseleave", function() {
-      //   console.log("I'm out");
-      //   //el.removeEventListener("mouseenter", mouseEnterOnScore)
-      //   mouseUpHandler()
-      // });
-
       return () => el.removeEventListener("mouseenter", mouseEnterOnScore)
     }
   })
@@ -2044,7 +2029,9 @@ const Main = () => {
   // BEGIN CONFETTI //
 
   let countConfetti = 200;
-  let defaultsConfetti = { origin: { y: 0.7 } };
+  let defaultsConfetti = {
+    origin: { y: 0.7 }
+  };
 
   const fireConfetti = (particleRatio: any, opts: any) => {
     confetti({
@@ -2056,13 +2043,33 @@ const Main = () => {
 
   const fireAllConfetti = () => {
     if (isSmallDevice) {
-      fireConfetti(0.25, { spread: 26, startVelocity: 55 });
+      fireConfetti(0.25, {
+        spread: 26,
+        startVelocity: 55,
+      });
     } else {
-      fireConfetti(0.25, { spread: 26, startVelocity: 55 });
-      fireConfetti(0.2, { spread: 60 });
-      fireConfetti(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-      fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-      fireConfetti(0.1, { spread: 120, startVelocity: 45 });
+      fireConfetti(0.25, {
+        spread: 26,
+        startVelocity: 55,
+      });
+      fireConfetti(0.2, {
+        spread: 60,
+      });
+      fireConfetti(0.35, {
+        spread: 100,
+        decay: 0.91,
+        scalar: 0.8
+      });
+      fireConfetti(0.1, {
+        spread: 120,
+        startVelocity: 25,
+        decay: 0.92,
+        scalar: 1.2
+      });
+      fireConfetti(0.1, {
+        spread: 120,
+        startVelocity: 45,
+      });
     }
   }
 
@@ -2265,11 +2272,15 @@ const Main = () => {
   navigator.mediaSession.setActionHandler("previoustrack", null);
   navigator.mediaSession.setActionHandler("nexttrack", null);
 
-  // const el = document.getElementById('sliderBox');
-  // if (el) el.addEventListener("mouseleave", function() {
-  //   console.log("I'm out");
-  //   //el.removeEventListener("mouseenter", mouseEnterOnScore)
-  // });
+  document.addEventListener("mouseleave", function(event){
+
+    // if(event.clientY <= 0 || event.clientX <= 0 || (event.clientX >= window.innerWidth || event.clientY >= window.innerHeight))
+    // {
+  
+       console.log("I'm out");
+  
+    //}
+  });
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
