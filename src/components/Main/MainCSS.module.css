@@ -817,6 +817,17 @@ div:nth-child(even of [id*="evenTarget"]) {
   padding: 0px 8px;
 }
 
+.leftBorderHidder {
+  display: flex;
+  position: absolute;
+  /* background: green; */ /* DEV */
+  background: lightblue;
+  width: 20px;
+  height: 35px;
+  left: -10px;
+  z-index: -1;
+}
+
 #bgAndSliderContainer {
   display: flex;
   position: fixed;
@@ -843,7 +854,7 @@ div:nth-child(even of [id*="evenTarget"]) {
   color: darkblue;
   border: 2px solid blue !important;
   background: lightblue;
-  box-shadow: -10px 0px 0px 0px lightblue;
+  /* box-shadow: -10px 0px 0px 0px lightblue; */
   border-radius: 4px 0px 0px 4px;
 }
 

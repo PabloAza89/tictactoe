@@ -2058,36 +2058,25 @@ const Main = () => {
 
   // END CONFETTI //
 
-  // function abc() {
-    
-  // }
-
   let allowBgSoundPreviousValue = allowBgSound.current
 
   useEffect(() => {
     document.addEventListener('click', () => {
-      console.log("FIRST clicked clicked clicked")
-      if (firstUserClick.current && allowBgSoundPreviousValue === allowBgSound.current && !allowBgSound.current) {
-        userClickOutsideWhileMuted.current = true
-      }
+      if (firstUserClick.current && allowBgSoundPreviousValue === allowBgSound.current && !allowBgSound.current) userClickOutsideWhileMuted.current = true
       firstUserClick.current = false
-      
-      //document.removeEventListener('click')
     }, { once: true })
-
   },[])
 
-  // UNMUTED → CLICK AFTER or BEFORE LOADING SPINNER
+  // UNMUTED → (CLICK OUTSIDE) BEFORE or AFTER LOADING SPINNER
   const playBackgroundSong = () => {
     startNotificationOnlyBGAudio()
-    console.log("se ejecuto aca A 1")
+    // UNMUTED → (CLICK OUTSIDE) BEFORE LOADING SPINNER
     playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
     .then((res: any) => {
       if (res.state === "suspended") {
         document.addEventListener('click', () => {
-          //console.log("clicked clicked clicked")
           if (allowBgSound.current) {
-            console.log("se ejecuto aca A 2")
+            // UNMUTED → (CLICK OUTSIDE) AFTER LOADING SPINNER
             contextArray[aF.bG.i].resume()
             startNotificationOnlyBGAudio()
           }
@@ -2226,74 +2215,23 @@ const Main = () => {
   }
 
   const startBGAudio = () => {
-    //console.log("DEBUGG soundsArray", soundsArray[aF.bG.i].context)
-    //console.log("DEBUGG contextArray", contextArray[aF.bG.i])
-    console.log("DEBUGG soundsArray", soundsArray[aF.bG.i].context.state)
-    console.log("DEBUGG contextArray", contextArray[aF.bG.i].state)
-    // if (soundsArray[aF.bG.i].context.state === "suspended") if (allowBgSound.current) contextArray[aF.bG.i].resume()
-    // else playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-    //console.log("se ejecuto aca B 1")
-    //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-    //contextArray[aF.bG.i].resume()
-    // MUTED → UNMUTED
-
+    // MUTED → (CLICK OUTSIDE) → UNMUTED
     if (userClickOutsideWhileMuted.current && executeOnce.current) {
-      console.log("333 OCURRIO ESTO")
       playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
       executeOnce.current = false
     }
-
+    // MUTED → (CLICK BUTTON) → UNMUTED
     else if (soundsArray[aF.bG.i].context.state === "suspended" && firstUserClick.current) {
-      console.log("ENTRO EN ESTE 111")
-      //console.log("ENTRO EN ESTE 111 userHasNotClickedYet.current", userHasNotClickedYet.current)
       playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
     }
-
-    // else if (firstClickWhileMuted.current && !firstClickWhileMutedOnce.current) {
-    //   firstClickWhileMutedOnce.current = true
-    //   console.log("ENTRO EN ESTE 333")
-    //   //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-    //   contextArray[aF.bG.i].resume()
-    // }
-
+    // UNMUTED → (CLICK BUTTON) → MUTED → (CLICK BUTTON) → UNMUTED
     else if (soundsArray[aF.bG.i].context.state === "suspended") {
-      //console.log("se ejecuto aca B ESTE 1")
-      //console.log("se ejecuto aca B ESTE 1 userHasNotClickedYet", userHasNotClickedYet.current)
-
-      console.log("2 DEBUGG soundsArray", soundsArray[aF.bG.i].context)
-      console.log("2 DEBUGG contextArray", contextArray[aF.bG.i])
-      //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-      //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
       contextArray[aF.bG.i].resume()
-      // setTimeout(() => {
-      //   contextArray[aF.bG.i].resume()
-      // }, 1000)
-      //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-      // .then((res: any) => {
-      //   if (res.state === "suspended") {
-      //       if (allowBgSound.current) {
-      //         console.log("se ejecuto aca A 2")
-      //         contextArray[aF.bG.i].resume()
-      //         startNotificationOnlyBGAudio()
-      //       }
-      //   }
-      // })
     }
+    // IF SOUND WAS PLAYED BEFORE
     else if (soundsArray[aF.bG.i].context.state === "running") {
-      console.log("se ejecuto aca B ESTE 2")
       playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
     }
-    //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-    // .then((res: any) => {
-    //   if (res.state === "suspended") {
-    //     if (allowBgSound.current) {
-    //       console.log("se ejecuto aca A 2")
-    //       contextArray[aF.bG.i].resume()
-    //       //startNotificationOnlyBGAudio()
-    //     }
-    //   }
-    // })
-
     dispatch(setAllowBgSound(true))
     allowBgSound.current = true
     localStorage.setItem('allowBgSound', JSON.stringify(true))
@@ -2305,9 +2243,6 @@ const Main = () => {
   }
 
   const stopBGAudio = () => {
-    //console.log("STOP DEBUGG soundsArray", soundsArray[aF.bG.i].context.state)
-    //console.log("STOP DEBUGG contextArray", contextArray[aF.bG.i].state)
-    //console.log("soundsArray[aF.bG.i]", soundsArray[aF.bG.i])
     if (soundsArray[aF.bG.i].context.state === 'running') {
       soundsArray[aF.bG.i].stop()
       dispatch(setAllowBgSound(false))
@@ -2340,8 +2275,6 @@ const Main = () => {
   navigator.mediaSession.setActionHandler("seekto", null);
   navigator.mediaSession.setActionHandler("previoustrack", null);
   navigator.mediaSession.setActionHandler("nexttrack", null);
-
-  //console.log("ENTRO EN ESTE 222 userHasNotClickedYet.current", userHasNotClickedYet.current)
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
@@ -2686,6 +2619,7 @@ const Main = () => {
             <VolumeOffIcon />
           }
         </Button>
+        <div className={css.leftBorderHidder} />
       </div>
 
       <div id={`divFXSlider`} className={css.sliderFXContainer}>
@@ -2726,6 +2660,7 @@ const Main = () => {
             <VolumeOffIcon />
           }
         </Button>
+        <div className={css.leftBorderHidder} />
       </div>
 
       <div className={css.gameMode}>
