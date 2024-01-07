@@ -38,31 +38,22 @@
     Login with Google (use of httpOnly cookies)
   </summary>
   <summary>
-    A complete Settings Filter that can:
+    You can choose between 3 levels:
       <ul>
         <summary>
-          Enable/Disable bad words real-time processing. If disabled, bad words are checked when try form submit & the better experience on low performance devices.
+          Easy mode:
+          <br />Basically, algorithm choose a random empty space (no strategy is done).
+          <br />You can always win & AI can (randomly) win.
         </summary>
         <summary>
-          Enable/Disable user recipes. Select quantity of user recipes
+          Hard mode:
+          <br />On this case, there are strategies previously charged, then AI decide which one use depending on available spaces.
+          <br />On this case it's hard to win, but you can. Also AI will try to win, but their strategy isn't 100% effective.
         </summary>
         <summary>
-          Enable/Disable online recipes. Select quantity of online recipes
-        </summary>
-        <summary>
-          Enable/Disable offline recipes. Select quantity of offline recipes
-        </summary>
-        <summary>
-          Enable/Disable: visual effects (glass effect). If disabled, better experience in low performance devices.
-        </summary>
-        <summary>
-          Enable/Disable tooltips. Tooltips are hints when text overflows.
-          <br />On laptop: tooltips are displayed when hover. At each card, is displayed only if text overflow.
-          <br />On mobile: tooltips are displayed when press. At each card, is displayed always.
-        </summary>
-        <summary>
-          Enable/Disable custom background color. Choose between 6 colors to custom the App.
-          <br />If disabled, default background image is displayed. If enabled, the better experience on low performance devices.
+          Nightmare mode:
+          <br />You cannot win. And AI will win, otherwise AI will tie you. 
+          <br />On this case AI uses effective algorithms, as much as it can decide which strategy use, or block your strategy efficiently.
         </summary>
       </ul>
   </summary>
