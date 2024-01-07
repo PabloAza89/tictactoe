@@ -21,6 +21,7 @@ export const playSound = async ({ file, pitch, cV, loop }: playSoundI) => { // c
     .connect(contextArray[file.i].destination);
   gainArray[file.i]['maxVolume'] = file.mV
   soundsArray[file.i].start()
+  //console.log("ESTE 123 123 soundsArray[file.i]", soundsArray[file.i])
   return contextArray[file.i]
 }
 
@@ -37,6 +38,6 @@ export const loadAllSounds = async ({ file }: loadAllSoundsI) => {
       .connect(gainArray[file.i])
       .connect(contextArray[file.i].destination);
   })
-  console.log("aF state", soundsArray[18] && soundsArray[18].context.state)
+  //console.log("aF state", soundsArray[18] && soundsArray[18].context.state)
   return file.i
 }

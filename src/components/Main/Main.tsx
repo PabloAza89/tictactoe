@@ -152,7 +152,10 @@ const Main = () => {
     if (confettiAllowedLS !== null) setConfettiAllowed(JSON.parse(confettiAllowedLS))
   },[])
 
-  let userHasNotClicked = useRef<boolean>(true)
+  //let firstClickWhileMuted = useRef<boolean>(false)
+  let executeOnce = useRef<boolean>(true)
+  let userClickOutsideWhileMuted = useRef<boolean>(false)
+  let firstUserClick = useRef<boolean>(true)
   const [ scoreShown, setScoreShown ] = useState<boolean>(false)
   const [ aboutShown, setAboutShown ] = useState<boolean>(false)
   const [ firstMenuConfettiAutoShown, setFirstMenuConfettiAutoShown ] = useState<boolean>(true)
@@ -2055,13 +2058,26 @@ const Main = () => {
 
   // END CONFETTI //
 
-  document.addEventListener('click', () => {
-    //console.log("clicked clicked clicked")
-    //userFirstClick.current = true
-    userHasNotClicked.current = false
-   
-  }, { once: true })
+  // function abc() {
+    
+  // }
 
+  let allowBgSoundPreviousValue = allowBgSound.current
+
+  useEffect(() => {
+    document.addEventListener('click', () => {
+      console.log("FIRST clicked clicked clicked")
+      if (firstUserClick.current && allowBgSoundPreviousValue === allowBgSound.current && !allowBgSound.current) {
+        userClickOutsideWhileMuted.current = true
+      }
+      firstUserClick.current = false
+      
+      //document.removeEventListener('click')
+    }, { once: true })
+
+  },[])
+
+  // UNMUTED → CLICK AFTER or BEFORE LOADING SPINNER
   const playBackgroundSong = () => {
     startNotificationOnlyBGAudio()
     console.log("se ejecuto aca A 1")
@@ -2210,6 +2226,8 @@ const Main = () => {
   }
 
   const startBGAudio = () => {
+    //console.log("DEBUGG soundsArray", soundsArray[aF.bG.i].context)
+    //console.log("DEBUGG contextArray", contextArray[aF.bG.i])
     console.log("DEBUGG soundsArray", soundsArray[aF.bG.i].context.state)
     console.log("DEBUGG contextArray", contextArray[aF.bG.i].state)
     // if (soundsArray[aF.bG.i].context.state === "suspended") if (allowBgSound.current) contextArray[aF.bG.i].resume()
@@ -2217,19 +2235,39 @@ const Main = () => {
     //console.log("se ejecuto aca B 1")
     //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
     //contextArray[aF.bG.i].resume()
-    if (soundsArray[aF.bG.i].context.state === "suspended" && userHasNotClicked.current) {
+    // MUTED → UNMUTED
+
+    if (userClickOutsideWhileMuted.current && executeOnce.current) {
+      console.log("333 OCURRIO ESTO")
+      playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+      executeOnce.current = false
+    }
+
+    else if (soundsArray[aF.bG.i].context.state === "suspended" && firstUserClick.current) {
+      console.log("ENTRO EN ESTE 111")
+      //console.log("ENTRO EN ESTE 111 userHasNotClickedYet.current", userHasNotClickedYet.current)
       playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
     }
 
-    else if (soundsArray[aF.bG.i].context.state === "suspended") {
-      console.log("se ejecuto aca B ESTE 1")
-      console.log("se ejecuto aca B ESTE 1 userHasNotClicked", userHasNotClicked.current)
-      //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
-      
-      contextArray[aF.bG.i].resume()
-      
-      
+    // else if (firstClickWhileMuted.current && !firstClickWhileMutedOnce.current) {
+    //   firstClickWhileMutedOnce.current = true
+    //   console.log("ENTRO EN ESTE 333")
+    //   //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+    //   contextArray[aF.bG.i].resume()
+    // }
 
+    else if (soundsArray[aF.bG.i].context.state === "suspended") {
+      //console.log("se ejecuto aca B ESTE 1")
+      //console.log("se ejecuto aca B ESTE 1 userHasNotClickedYet", userHasNotClickedYet.current)
+
+      console.log("2 DEBUGG soundsArray", soundsArray[aF.bG.i].context)
+      console.log("2 DEBUGG contextArray", contextArray[aF.bG.i])
+      //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+      //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
+      contextArray[aF.bG.i].resume()
+      // setTimeout(() => {
+      //   contextArray[aF.bG.i].resume()
+      // }, 1000)
       //playSound({ file: aF.bG, cV: BgSoundValueState, loop: true })
       // .then((res: any) => {
       //   if (res.state === "suspended") {
@@ -2240,9 +2278,6 @@ const Main = () => {
       //       }
       //   }
       // })
-
-
-
     }
     else if (soundsArray[aF.bG.i].context.state === "running") {
       console.log("se ejecuto aca B ESTE 2")
@@ -2305,6 +2340,8 @@ const Main = () => {
   navigator.mediaSession.setActionHandler("seekto", null);
   navigator.mediaSession.setActionHandler("previoustrack", null);
   navigator.mediaSession.setActionHandler("nexttrack", null);
+
+  //console.log("ENTRO EN ESTE 222 userHasNotClickedYet.current", userHasNotClickedYet.current)
 
   return (
     <div className={`${css.background} ${com.noSelect}`}>
