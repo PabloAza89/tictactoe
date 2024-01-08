@@ -10,7 +10,7 @@
 </div>
 <ul>
   <summary>
-    Tic Tac Toe is a responsive Web App that displays the classic game.<br />
+    Tic Tac Toe is a responsive Web App that displays the classic tic-tac-toe game.<br />
     The game have 3 type of levels: Easy, Hard & Nightmare.<br />
     Also is featuring background music & FX sounds.
   </summary>
@@ -28,14 +28,13 @@
 </div>
 <ul>
   <summary>
-    It's implemented  CRUD to get a persistent storage (Create, Read, Update & Delete).
+    For the audio, it's used the Web Audio API.
+    <br />You can mute, unmute, or select volume level thanks
+to hidden sliders for background music or FX sounds.
   </summary>
   <summary>
-    When creating a recipe, there is an algorithm checking out bad words in form (available on English & Spanish).
-    <br />Also, there is an algorithm checking out allowed characters: , ; . : - ! ¡ ¿ ? ' " ( ) [ ] á Á é É í Í ó Ó ú Ú ü Ü ñ Ñ
-  </summary>
-  <summary>
-    Login with Google (use of httpOnly cookies)
+    It's used a real-time loading spinner that block user to interact with the page until all sounds are loaded.
+    <br />The last one it's the heaviest weighted file (backgroundMusic.mp3) that is played in loop.
   </summary>
   <summary>
     You can choose between 3 levels:
@@ -44,6 +43,7 @@
           Easy mode:
           <br />Basically, algorithm choose a random empty space (no strategy is done).
           <br />You can always win & AI can (randomly) win.
+          <br />Sound effects are triggered in almost any action.
         </summary>
         <summary>
           Hard mode:
@@ -58,24 +58,27 @@
       </ul>
   </summary>
   <summary>
-    A complete cumulative Navbar Filter that works in this order:
-      <ul>
+    If you win, there is a confetti effect played.
+    <br />On mobile devices, the effect is low, but bigger on medium and large screens.
+    <br />When confetti is displayed for very first time, an auto-menu is displayed offering the options:
+    <ul>
         <summary>
-          Filter by name
+          Stop confetti animation.
         </summary>
         <summary>
-          Filter by diet type
-        </summary>
-        <summary>
-          Filter by dish type
-        </summary>
-        <summary>
-          Order by health or alphabetical
+          Disallow (for the next time) the confetti animation.
         </summary>
       </ul>
   </summary>
   <summary>
-    Button "Server Status" that show the current status of the server.
+    When a round is being played, there is a chronometer that displays minutes, seconds and milliseconds of the current play.
+    <br />It stops when reach 59:59:999.
+  </summary>
+  <summary>
+    There is a Score Board on the right-side of the screen, that displays each user or AI score & time per round, also adding all the results at the very bottom of the board.
+  </summary>
+  <summary>
+    All slider buttons have an auto-hide effect except the Total Score board.
   </summary>
 </ul>
 <div id="user-content-toc" align="left">
